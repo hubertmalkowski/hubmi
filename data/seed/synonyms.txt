@@ -1,0 +1,12 @@
+# Search-time synonyms (Solr format). Applied before hunspell lemmatization.
+senior, osoba starsza, emeryt, starszy
+samotność, osamotnienie, izolacja
+OzN, osoba z niepełnosprawnością, niepełnosprawny
+CUS, centrum usług społecznych
+GOPS, OPS, MOPS, ośrodek pomocy społecznej
+DPS, dom pomocy społecznej
+KGW, koło gospodyń wiejskich
+opiekun, opiekunka, opiekunowie
+e-usługi, epuap, profil zaufany, e-recepta
+uchodźca, migrant, cudzoziemiec
+depresja, kryzys psychiczny, załamanie

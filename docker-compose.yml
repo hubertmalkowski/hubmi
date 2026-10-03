@@ -1,0 +1,55 @@
+# Local development: `pnpm es:dict && docker compose up -d`
+# Production: also start `app` and `worker` with `docker compose --profile app up -d`.
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: zaczyn
+      POSTGRES_PASSWORD: zaczyn
+      POSTGRES_DB: zaczyn
+    ports: ['5432:5432']
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U zaczyn']
+      interval: 5s
+      retries: 10
+
+  es:
+    build:
+      context: docker/elasticsearch
+      args:
+        REGISTRY: ${REGISTRY:-docker.io/library}
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: 'false'
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+    ports: ['9200:9200']
+    volumes: [esdata:/usr/share/elasticsearch/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -fs localhost:9200/_cluster/health || exit 1']
+      interval: 10s
+      retries: 20
+
+  app:
+    profiles: [app]
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://zaczyn:zaczyn@db:5432/zaczyn
+      ELASTICSEARCH_URL: http://es:9200
+    ports: ['3000:3000']
+    depends_on: { db: { condition: service_healthy }, es: { condition: service_healthy } }
+
+  worker:
+    profiles: [app]
+    build: .
+    command: ['node', 'build-worker/worker.js']
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://zaczyn:zaczyn@db:5432/zaczyn
+      ELASTICSEARCH_URL: http://es:9200
+    depends_on: { db: { condition: service_healthy }, es: { condition: service_healthy } }
+
+volumes:
+  pgdata:
+  esdata:

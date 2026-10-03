@@ -1,0 +1,12 @@
+[
+	{ "slug": "seniors", "name_pl": "Seniorzy", "description_en": "older people or seniors" },
+	{ "slug": "disabled", "name_pl": "Osoby z niepełnosprawnościami", "description_en": "people with disabilities" },
+	{ "slug": "youth", "name_pl": "Młodzież", "description_en": "teenagers or young adults" },
+	{ "slug": "children", "name_pl": "Dzieci", "description_en": "children" },
+	{ "slug": "families", "name_pl": "Rodziny", "description_en": "families, including parents" },
+	{ "slug": "caregivers", "name_pl": "Opiekunowie nieformalni", "description_en": "informal carers looking after a family member" },
+	{ "slug": "migrants", "name_pl": "Migranci i uchodźcy", "description_en": "migrants or refugees" },
+	{ "slug": "unemployed", "name_pl": "Osoby bezrobotne", "description_en": "unemployed people or people looking for work" },
+	{ "slug": "rural_residents", "name_pl": "Mieszkańcy wsi", "description_en": "residents of villages or rural areas" },
+	{ "slug": "homeless", "name_pl": "Osoby w kryzysie bezdomności", "description_en": "people experiencing homelessness" }
+]
