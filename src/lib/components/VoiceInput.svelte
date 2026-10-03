@@ -7,7 +7,8 @@
 	import MicIcon from '@lucide/svelte/icons/mic';
 	import MicOffIcon from '@lucide/svelte/icons/mic-off';
 
-	let { onText }: { onText: (text: string) => void } = $props();
+	// compact: icon-only button for embedding in a prompt box; status is announced but not shown.
+	let { onText, compact = false }: { onText: (text: string) => void; compact?: boolean } = $props();
 
 	type Recognition = {
 		lang: string;
@@ -71,7 +72,24 @@
 	}
 </script>
 
-{#if supported}
+{#if supported && compact}
+	<Button
+		type="button"
+		variant={listening ? 'destructive' : 'ghost'}
+		size="icon-lg"
+		class="rounded-full"
+		onclick={toggle}
+		aria-pressed={listening}
+		aria-label={listening ? m.voice_stop() : m.voice_start()}
+		title={listening ? m.voice_stop() : m.voice_start()}
+	>
+		{#if listening}<MicOffIcon class="size-5" aria-hidden="true" />{:else}<MicIcon
+				class="size-5"
+				aria-hidden="true"
+			/>{/if}
+	</Button>
+	<span class="sr-only" aria-live="polite">{status}</span>
+{:else if supported}
 	<div class="flex items-center gap-3">
 		<Button
 			type="button"

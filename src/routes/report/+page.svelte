@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages';
 	import { enhance } from '$app/forms';
+	import { untrack } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Label } from '$lib/components/ui/label';
@@ -11,66 +12,31 @@
 	import VoiceInput from '$lib/components/VoiceInput.svelte';
 	import { areaLabel, groupLabel } from '$lib/labels';
 	import { NEED_MIN, NEED_MAX } from '$lib/schemas/need';
+	import { createClassifier } from '$lib/need-classifier.svelte';
 	import MapPinIcon from '@lucide/svelte/icons/map-pin';
 	import TriangleAlertIcon from '@lucide/svelte/icons/triangle-alert';
 	import ShieldIcon from '@lucide/svelte/icons/shield-check';
 
 	let { data, form } = $props();
 
-	type Classified = {
-		area: { slug: string; p: number; confidence: number };
-		target_groups: { slug: string; p: number }[];
-		urgent: boolean;
-		is_need: number;
-		pii: number;
-		place: { teryt: string; name: string; powiat: string } | null;
-	};
-
 	// svelte-ignore state_referenced_locally
 	let text = $state(form?.text ?? '');
 	let placeTeryt = $state('');
-	let classified = $state<Classified | null>(null);
-	let classifying = $state(false);
 	let submitting = $state(false);
-	let timer: ReturnType<typeof setTimeout> | undefined;
-	let controller: AbortController | undefined;
+	const classifier = createClassifier(() => text);
+	const classified = $derived(classifier.result);
+	const classifying = $derived(classifier.pending);
+
+	// Prefill the place on each new classification, unless the user already picked one.
+	$effect(() => {
+		const place = classified?.place;
+		untrack(() => {
+			if (place && !placeTeryt) placeTeryt = place.teryt;
+		});
+	});
 
 	const length = $derived(text.trim().length);
 	const powiats = $derived([...new Set(data.places.map((p) => p.powiat))]);
-
-	// Classify whenever the text changes (typing, dictation, or text entered before hydration).
-	$effect(() => {
-		const current = text.trim();
-		clearTimeout(timer);
-		if (current.length < NEED_MIN) {
-			classified = null;
-			return;
-		}
-		timer = setTimeout(classify, 600);
-		return () => clearTimeout(timer);
-	});
-
-	async function classify() {
-		controller?.abort();
-		controller = new AbortController();
-		classifying = true;
-		try {
-			const res = await fetch('/api/classify', {
-				method: 'POST',
-				headers: { 'content-type': 'application/json' },
-				body: JSON.stringify({ text }),
-				signal: controller.signal
-			});
-			if (res.ok) {
-				classified = await res.json();
-				if (classified?.place && !placeTeryt) placeTeryt = classified.place.teryt;
-			}
-		} catch {
-			/* aborted or offline: the form still works without classification */
-		} finally {
-			classifying = false;
-		}
-	}
 
 	function appendDictation(t: string) {
 		text = text ? `${text.trimEnd()} ${t}` : t;
