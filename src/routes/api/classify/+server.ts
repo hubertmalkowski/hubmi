@@ -4,6 +4,8 @@ import { classifyNeed } from '$lib/server/match/classify';
 import { rateLimit } from '$lib/server/ratelimit';
 import { taxonomy } from '$lib/server/taxonomy';
 import { hybridSearch } from '$lib/server/search/hybrid';
+import { findAbuse } from '$lib/server/entities/abuse';
+import { POLICY } from '$lib/server/match/policy';
 import type { RequestHandler } from './$types';
 
 /** Innovations both BM25 and kNN rank in their top 10: a cheap "likely relevant" signal. */
@@ -45,6 +47,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		urgent: c.pUrgent >= 0.5,
 		is_need: c.isNeed,
 		pii: c.pii,
+		// same rule as the pipeline gate, so the warning matches what will happen on submit
+		abusive: findAbuse(parsed.data.text).length > 0 || c.abusive >= POLICY.abuseHold,
 		place: c.place ?? null,
 		preview: related
 	});

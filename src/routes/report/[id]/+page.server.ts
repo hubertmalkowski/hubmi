@@ -50,6 +50,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			// the author and admins see their own words; everyone else sees the redacted text
 			text: isOwnerOrAdmin ? need.rawText : need.redactedText,
 			status: need.status,
+			moderationReasons: need.moderationReasons,
 			areaSlug: need.areaSlug,
 			targetGroups: need.targetGroups,
 			createdAt: need.createdAt,

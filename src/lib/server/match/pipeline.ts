@@ -12,9 +12,24 @@ import { hybridSearch, type HybridHit } from '../search/hybrid';
 import { indexNeed } from '../search/sync';
 import { mmr } from '../search/rrf';
 import { overlap } from '../ai/text';
-import { POLICY, decide, scoreFromAnswer, type Scored } from './policy';
+import {
+	POLICY,
+	decide,
+	moderationReasons,
+	scoreFromAnswer,
+	type ModerationReason,
+	type Scored
+} from './policy';
+import { findAbuse } from '../entities/abuse';
 import { assignChallenge } from './challenges';
 import { addStatus, notify, notifyAdmins } from '../status';
+
+// Timeline notes (stored in Polish, like the other status notes).
+const MODERATION_NOTE: Record<ModerationReason, string> = {
+	pii: 'Zgłoszenie może zawierać dane osobowe i czeka na moderację.',
+	abuse: 'Zgłoszenie może zawierać obraźliwe lub groźne treści i czeka na moderację.',
+	not_need: 'Zgłoszenie może nie opisywać problemu społecznego i czeka na moderację.'
+};
 
 export type Step = 'redact' | 'classify' | 'search' | 'rerank' | 'decide' | 'done';
 export type Progress = (step: Step, detail?: Record<string, unknown>) => void | Promise<void>;
@@ -32,17 +47,23 @@ export async function processNeed(needId: string, progress: Progress = () => {})
 	// 2. Classification on the redacted text.
 	await progress('classify');
 	const c = await classifyNeed(redacted);
-	if (c.pii >= 0.5) {
+	const holdReasons = moderationReasons(
+		c,
+		findAbuse(need.rawText).length > 0,
+		need.moderationApprovedAt !== null
+	);
+	if (holdReasons.length) {
 		await db
 			.update(needs)
-			.set({ redactedText: redacted, piiFlag: true, status: 'moderation', areaSlug: c.area.slug })
+			.set({
+				redactedText: redacted,
+				piiFlag: holdReasons.includes('pii'),
+				moderationReasons: holdReasons,
+				status: 'moderation',
+				areaSlug: c.area.slug
+			})
 			.where(eq(needs.id, needId));
-		await addStatus(
-			'need',
-			needId,
-			'moderation',
-			'Zgłoszenie może zawierać dane osobowe i czeka na moderację.'
-		);
+		await addStatus('need', needId, 'moderation', MODERATION_NOTE[holdReasons[0]]);
 		await notifyAdmins('need.moderation', 'need', needId);
 		await progress('done', { status: 'moderation' });
 		return { status: 'moderation' as const };

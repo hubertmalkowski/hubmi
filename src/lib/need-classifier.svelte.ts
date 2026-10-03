@@ -7,6 +7,8 @@ export type Classified = {
 	urgent: boolean;
 	is_need: number;
 	pii: number;
+	/** will be held for moderation as offensive or threatening */
+	abusive: boolean;
 	place: { teryt: string; name: string; powiat: string } | null;
 	/** likely related innovations from retrieval only, before reranking */
 	preview: { slug: string; title: string }[];

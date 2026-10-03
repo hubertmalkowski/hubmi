@@ -31,6 +31,9 @@ export function intakeQuestions(areas: AreaDef[], groups: GroupDef[], placeCandi
 		is_need: noul(
 			'Does `text` describe a social problem or need affecting people, rather than spam, a test or an unrelated request?'
 		),
+		abusive: noul(
+			'Does `text` contain profanity, insults, slurs, hate speech, threats of violence against others, or sexual content? Statements about the writer harming themselves do not count.'
+		),
 		pii_any: noul(
 			'Does `text` contain personal data of a private individual, such as a full name, phone number, email, ID number or home address?'
 		),

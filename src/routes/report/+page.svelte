@@ -165,6 +165,13 @@
 							})}
 						</p>
 					{/if}
+					{#if classified.abusive}
+						<Alert.Root variant="destructive">
+							<ShieldIcon aria-hidden="true" />
+							<Alert.Title>{m.report_abuse_title()}</Alert.Title>
+							<Alert.Description>{m.report_abuse_text()}</Alert.Description>
+						</Alert.Root>
+					{/if}
 					{#if classified.pii >= 0.5}
 						<Alert.Root>
 							<ShieldIcon aria-hidden="true" />

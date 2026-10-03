@@ -196,7 +196,7 @@
 			</p>
 			{#if classified}
 				<div class="mt-3 flex flex-col gap-3" aria-live="polite">
-					{#if classified.preview.length}
+					{#if classified.preview.length && !classified.abusive}
 						<section
 							class="rounded-2xl border border-card-ring bg-card/80 p-4 sm:p-5"
 							aria-labelledby="preview-title"
@@ -229,6 +229,13 @@
 						<Alert.Root>
 							<Alert.Title>{m.report_not_need_title()}</Alert.Title>
 							<Alert.Description>{m.report_not_need_text()}</Alert.Description>
+						</Alert.Root>
+					{/if}
+					{#if classified.abusive}
+						<Alert.Root variant="destructive">
+							<ShieldIcon aria-hidden="true" />
+							<Alert.Title>{m.report_abuse_title()}</Alert.Title>
+							<Alert.Description>{m.report_abuse_text()}</Alert.Description>
 						</Alert.Root>
 					{/if}
 					{#if classified.pii >= 0.5}

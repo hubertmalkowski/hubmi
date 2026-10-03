@@ -13,8 +13,31 @@ export const POLICY = {
 	mmrLambda: 0.7,
 	/** attach a need to an existing challenge when P(same problem) ≥ this */
 	sameChallengeThreshold: 0.7,
-	similarNeedsMinCosine: 0.8
+	similarNeedsMinCosine: 0.8,
+	/** intake: hold for human moderation when P(personal data) ≥ this */
+	piiHold: 0.5,
+	/** intake: hold on any real suspicion of profanity or threats (lexical hits always hold) */
+	abuseHold: 0.3,
+	/** intake: hold when P(describes a social problem) < this, so it cannot become a challenge */
+	notNeedHold: 0.3
 } as const;
+
+export type ModerationReason = 'pii' | 'abuse' | 'not_need';
+
+/** Reasons to hold a classified need for moderation; empty means it may be published. */
+export function moderationReasons(
+	c: { pii: number; abusive: number; isNeed: number },
+	lexicalAbuse: boolean,
+	approved: boolean
+): ModerationReason[] {
+	const out: ModerationReason[] = [];
+	if (c.pii >= POLICY.piiHold) out.push('pii');
+	// once ROPS approved the text, only fresh personal data can hold it again
+	if (approved) return out;
+	if (lexicalAbuse || c.abusive >= POLICY.abuseHold) out.push('abuse');
+	if (c.isNeed < POLICY.notNeedHold) out.push('not_need');
+	return out;
+}
 
 export type Scored = {
 	id: string;

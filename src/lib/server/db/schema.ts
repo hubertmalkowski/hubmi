@@ -181,6 +181,10 @@ export const needs = pgTable(
 		placeTeryt: text('place_teryt').references(() => places.teryt),
 		urgency: real('urgency'),
 		piiFlag: boolean('pii_flag').notNull().default(false),
+		/** why the need was held for review: 'pii' | 'abuse' | 'not_need' */
+		moderationReasons: text('moderation_reasons').array().notNull().default([]),
+		/** set when ROPS approves a held need; the abuse/not-a-need gates are skipped afterwards */
+		moderationApprovedAt: timestamp('moderation_approved_at', { withTimezone: true }),
 		embedding: real('embedding').array(),
 		status: needStatusEnum('status').notNull().default('new'),
 		challengeId: uuid('challenge_id').references(() => challenges.id),

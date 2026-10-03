@@ -9,12 +9,17 @@
 	import { POWIAT_TILES } from '$lib/powiats';
 	import XIcon from '@lucide/svelte/icons/x';
 	import SearchIcon from '@lucide/svelte/icons/search';
+	import MapPinIcon from '@lucide/svelte/icons/map-pin';
+	import SearchableSelect from '$lib/components/SearchableSelect.svelte';
 
 	let { data } = $props();
 	const powiat = $derived(POWIAT_TILES.find((p) => p.teryt === data.powiat));
 	const filtered = $derived(Boolean(data.q || data.powiat || data.area));
 	const areas = AREA_SLUGS.filter((a) => a !== 'other');
-	const powiats = [...POWIAT_TILES].sort((a, b) => a.name.localeCompare(b.name, 'pl'));
+	const powiatOptions = [...POWIAT_TILES]
+		.sort((a, b) => a.name.localeCompare(b.name, 'pl'))
+		.map((p) => ({ value: p.teryt, label: p.city ? `${p.name} (m.)` : p.name }));
+	let form = $state<HTMLFormElement | null>(null);
 	const select = 'h-11 w-full rounded-full border border-input bg-background px-4 text-base';
 </script>
 
@@ -28,6 +33,7 @@
 >
 
 <form
+	bind:this={form}
 	method="GET"
 	class="mt-10 grid gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-[minmax(0,2fr)_1fr_1fr_1fr_auto] lg:items-end"
 	role="search"
@@ -59,15 +65,23 @@
 			{#each areas as a (a)}<option value={a}>{areaLabel(a)}</option>{/each}
 		</select>
 	</label>
-	<label class="flex flex-col gap-2 text-sm font-medium">
-		{m.challenges_powiat()}
-		<select name="powiat" value={data.powiat ?? ''} class={select}>
-			<option value="">{m.challenges_all_powiats()}</option>
-			{#each powiats as p (p.teryt)}<option value={p.teryt}
-					>{p.city ? `${p.name} (m.)` : p.name}</option
-				>{/each}
-		</select>
-	</label>
+	<div class="flex flex-col gap-2 text-sm font-medium">
+		<label for="filter-powiat">{m.challenges_powiat()}</label>
+		<SearchableSelect
+			options={powiatOptions}
+			value={data.powiat ?? ''}
+			name="powiat"
+			id="filter-powiat"
+			label={m.challenges_powiat()}
+			placeholder={m.challenges_all_powiats()}
+			noneLabel={m.challenges_all_powiats()}
+			searchPlaceholder={m.powiat_search_placeholder()}
+			emptyText={m.powiat_search_empty()}
+			icon={MapPinIcon}
+			onValueChange={() => form?.requestSubmit()}
+			class="h-11 w-full px-4 text-base"
+		/>
+	</div>
 	<label class="flex flex-col gap-2 text-sm font-medium">
 		{m.challenges_sort()}
 		<select name="sort" value={data.sort} class={select}>

@@ -12,6 +12,8 @@ export type Classification = {
 	urgency: number;
 	pUrgent: number;
 	isNeed: number;
+	/** P(profanity, slurs, threats or sexual content) */
+	abusive: number;
 	pii: number;
 	place?: { teryt: string; name: string; powiat: string; confidence: number };
 	placeCandidates: PlaceCandidate[];
@@ -48,6 +50,7 @@ export async function classifyNeed(text: string): Promise<Classification> {
 		urgency: a.urgency.score,
 		pUrgent: pAtLeast(a.urgency.probabilities, 2),
 		isNeed: a.is_need.noul,
+		abusive: a.abusive.noul,
 		pii: a.pii_any.noul,
 		place,
 		placeCandidates: candidates

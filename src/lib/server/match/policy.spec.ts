@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { decide, scoreFromAnswer, fitLabel, POLICY } from './policy';
+import { decide, scoreFromAnswer, fitLabel, moderationReasons, POLICY } from './policy';
 
 const ans = (p: number[]) => ({
 	score: p.reduce((s, x, i) => s + i * x, 0),
@@ -49,5 +49,35 @@ describe('fitLabel', () => {
 		expect(fitLabel(2)).toBe('partial');
 		expect(fitLabel(0.5)).toBe('weak');
 		expect(fitLabel(null)).toBe('weak');
+	});
+});
+
+describe('moderationReasons', () => {
+	const clean = { pii: 0.05, abusive: 0.02, isNeed: 0.95 };
+
+	it('publishes a clean need', () => {
+		expect(moderationReasons(clean, false, false)).toEqual([]);
+	});
+
+	it('holds any suspicion of abuse, from the model or the word list', () => {
+		expect(moderationReasons({ ...clean, abusive: 0.35 }, false, false)).toEqual(['abuse']);
+		expect(moderationReasons(clean, true, false)).toEqual(['abuse']);
+	});
+
+	it('holds text that is probably not a social problem, so it cannot become a challenge', () => {
+		expect(moderationReasons({ ...clean, isNeed: 0.1 }, false, false)).toEqual(['not_need']);
+	});
+
+	it('collects every reason that applies', () => {
+		expect(moderationReasons({ pii: 0.9, abusive: 0.9, isNeed: 0.1 }, true, false)).toEqual([
+			'pii',
+			'abuse',
+			'not_need'
+		]);
+	});
+
+	it('does not re-hold an approved need except for new personal data', () => {
+		expect(moderationReasons({ ...clean, abusive: 0.9, isNeed: 0.1 }, true, true)).toEqual([]);
+		expect(moderationReasons({ ...clean, pii: 0.9 }, false, true)).toEqual(['pii']);
 	});
 });

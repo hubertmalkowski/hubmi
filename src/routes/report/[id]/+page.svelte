@@ -88,7 +88,12 @@
 			<Alert.Root>
 				<ShieldIcon aria-hidden="true" />
 				<Alert.Title>{m.results_moderation_title()}</Alert.Title>
-				<Alert.Description>{m.results_moderation_text()}</Alert.Description>
+				<Alert.Description>
+					{#if data.need.moderationReasons.includes('abuse')}{m.results_moderation_abuse()}
+					{:else if data.need.moderationReasons.includes('pii')}{m.results_moderation_text()}
+					{:else if data.need.moderationReasons.includes('not_need')}{m.results_moderation_not_need()}
+					{:else}{m.results_moderation_text()}{/if}
+				</Alert.Description>
 			</Alert.Root>
 		{:else}
 			{#if data.matches.length}

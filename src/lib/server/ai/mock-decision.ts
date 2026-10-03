@@ -6,6 +6,7 @@ import type { DecisionProvider, Answers } from './decision';
 import { overlap, sigmoid, clamp } from './text';
 import { recordAi } from './audit';
 import { findPii } from '../entities/pii';
+import { findAbuse } from '../entities/abuse';
 
 function entryText(e: unknown): string {
 	if (e == null) return '';
@@ -104,6 +105,9 @@ function answer(state: EntryType, q: Question) {
 	if (q.type === 'noul') {
 		if (/personal data|private person|person's name/i.test(instr)) {
 			return { type: 'noul', noul: findPii(values[0] ?? entryText(state)).length ? 0.9 : 0.08 };
+		}
+		if (/profanity, insults/i.test(instr)) {
+			return { type: 'noul', noul: findAbuse(entryText(state)).length ? 0.95 : 0.04 };
 		}
 		if (/social problem or need/i.test(instr)) {
 			const text = entryText(state);

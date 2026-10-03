@@ -13,6 +13,16 @@ export function roleLabel(role: string) {
 	)();
 }
 
+export function moderationReasonLabel(reason: string) {
+	return (
+		{
+			pii: m.moderation_reason_pii,
+			abuse: m.moderation_reason_abuse,
+			not_need: m.moderation_reason_not_need
+		}[reason] ?? (() => reason)
+	)();
+}
+
 export function stageLabel(stage: string) {
 	return (
 		{

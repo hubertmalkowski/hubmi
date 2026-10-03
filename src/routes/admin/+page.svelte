@@ -9,7 +9,7 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Label } from '$lib/components/ui/label';
 	import { Spinner } from '$lib/components/ui/spinner';
-	import { areaLabel, needStatusLabel, formatDate } from '$lib/labels';
+	import { areaLabel, needStatusLabel, formatDate, moderationReasonLabel } from '$lib/labels';
 	import SparklesIcon from '@lucide/svelte/icons/sparkles';
 	import { toast } from 'svelte-sonner';
 	import { onMount } from 'svelte';
@@ -191,6 +191,17 @@
 				<li>
 					<Card.Root>
 						<Card.Content class="flex flex-col gap-3 pt-6">
+							{#if n.reasons.length}
+								<ul class="flex flex-wrap gap-2" aria-label={m.admin_moderation_reasons()}>
+									{#each n.reasons as r (r)}
+										<li>
+											<Badge variant={r === 'abuse' ? 'destructive' : 'secondary'}
+												>{moderationReasonLabel(r)}</Badge
+											>
+										</li>
+									{/each}
+								</ul>
+							{/if}
 							<p><strong>{m.admin_original()}</strong> {n.raw}</p>
 							<p><strong>{m.admin_redacted()}</strong> {n.redacted}</p>
 							<div class="flex gap-2">

@@ -29,6 +29,7 @@ export const load: PageServerLoad = async () => {
 				id: needs.id,
 				raw: needs.rawText,
 				redacted: needs.redactedText,
+				reasons: needs.moderationReasons,
 				createdAt: needs.createdAt
 			})
 			.from(needs)
@@ -96,7 +97,12 @@ export const actions: Actions = {
 		// approved after review: the redacted text becomes the working text, then matching re-runs
 		await db
 			.update(needs)
-			.set({ rawText: need.redactedText, status: 'new' })
+			.set({
+				rawText: need.redactedText,
+				status: 'new',
+				moderationReasons: [],
+				moderationApprovedAt: new Date()
+			})
 			.where(eq(needs.id, id));
 		await addStatus('need', id, 'new', 'Zatwierdzone po moderacji.', locals.user!.id);
 		await enqueue(QUEUES.needProcess, { id });
