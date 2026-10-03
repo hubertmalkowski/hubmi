@@ -1,19 +1,58 @@
 <script lang="ts">
-	import type { Pathname } from '$app/types';
-	import { resolve } from '$app/paths';
-	import { page } from '$app/state';
-	import { locales, localizeHref } from '$lib/paraglide/runtime';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import { m } from '$lib/paraglide/messages';
+	import SiteHeader from '$lib/components/SiteHeader.svelte';
+	import A11yToolbar from '$lib/components/A11yToolbar.svelte';
+	import { Toaster } from '$lib/components/ui/sonner';
+	import { setA11y } from '$lib/a11y-state.svelte';
+	import { onMount } from 'svelte';
+	import { invalidate } from '$app/navigation';
+	import { toast } from 'svelte-sonner';
+	import { notificationText } from '$lib/notifications';
 
-	let { children } = $props();
+	let { data, children } = $props();
+	const a11y = setA11y(() => data.a11y);
+
+	// Live notifications for signed-in users: toast + refresh of the unread badge.
+	onMount(() => {
+		if (!data.user) return;
+		const es = new EventSource('/api/notifications/stream');
+		es.addEventListener('notification', (e) => {
+			const { kind } = JSON.parse((e as MessageEvent).data);
+			toast.info(notificationText(kind));
+			invalidate('app:unread');
+		});
+		return () => es.close();
+	});
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
-{@render children()}
+<svelte:head>
+	<link rel="icon" href={favicon} />
+	<title>{m.app_name()}: {m.app_tagline()}</title>
+	<meta name="description" content={m.app_description()} />
+</svelte:head>
 
-<div style="display:none">
-	{#each locales as locale (locale)}
-		<a href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}>{locale}</a>
-	{/each}
-</div>
+<a
+	href="#main"
+	class="bg-primary text-primary-foreground sr-only z-50 rounded-md px-4 py-3 font-semibold focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+>
+	{m.a11y_skip_to_content()}
+</a>
+
+<A11yToolbar {a11y} />
+<SiteHeader user={data.user} unread={data.unread} />
+
+<main id="main" tabindex="-1" class="mx-auto w-full max-w-6xl px-4 py-8 focus:outline-none sm:px-6">
+	{@render children()}
+</main>
+
+<footer class="border-border text-muted-foreground no-print mt-16 border-t">
+	<div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-8 text-sm sm:px-6">
+		<p class="text-foreground font-semibold">{m.app_name()}: {m.footer_hub()}</p>
+		<p>{m.footer_rops()}</p>
+		<p>{m.footer_demo_data()}</p>
+	</div>
+</footer>
+
+<Toaster richColors closeButton position="bottom-right" />

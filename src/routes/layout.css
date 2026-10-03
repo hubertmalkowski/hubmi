@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn-svelte/tailwind.css';
-@import '../lib/styles/style-vega.css';
+@import '../lib/styles/style-vega.css' layer(components);
 @plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:is(.dark *));
@@ -204,3 +204,67 @@
 .text-scale-150 {
 	--font-scale: 1.5;
 }
+
+/* Data-viz tokens (reference palette from the dataviz method, validated light/dark). */
+:root {
+	--viz-surface: #fcfcfb;
+	--viz-ink: #0b0b0b;
+	--viz-ink-2: #52514e;
+	--viz-muted: #6b6a66;
+	--viz-grid: #e1e0d9;
+	--viz-axis: #c3c2b7;
+	--viz-1: #2a78d6;
+	--viz-2: #eb6834;
+	--viz-3: #1baf7a;
+	--viz-4: #eda100;
+	--viz-5: #e87ba4;
+	--viz-6: #008300;
+	--viz-7: #4a3aa7;
+	--viz-8: #e34948;
+	--seq-0: #f0efec;
+	--seq-1: #cde2fb;
+	--seq-2: #9ec5f4;
+	--seq-3: #6da7ec;
+	--seq-4: #3987e5;
+	--seq-5: #256abf;
+	--seq-6: #184f95;
+	--seq-7: #0d366b;
+}
+.dark {
+	--viz-surface: #1a1a19;
+	--viz-ink: #ffffff;
+	--viz-ink-2: #c3c2b7;
+	--viz-muted: #a3a29c;
+	--viz-grid: #2c2c2a;
+	--viz-axis: #383835;
+	--viz-1: #3987e5;
+	--viz-2: #d95926;
+	--viz-3: #199e70;
+	--viz-4: #c98500;
+	--viz-5: #d55181;
+	--viz-6: #008300;
+	--viz-7: #9085e9;
+	--viz-8: #e66767;
+	--seq-0: #2c2c2a;
+	--seq-1: #104281;
+	--seq-2: #184f95;
+	--seq-3: #1c5cab;
+	--seq-4: #256abf;
+	--seq-5: #3987e5;
+	--seq-6: #6da7ec;
+	--seq-7: #9ec5f4;
+}
+.high-contrast {
+	--viz-grid: #6b6a66;
+	--viz-axis: currentColor;
+}
+
+/* Tile text on the sequential ramp: dark ink on light steps, white on dark steps (>= 4.5:1). */
+.tile-ink-0, .tile-ink-1, .tile-ink-2, .tile-ink-3, .tile-ink-4 { fill: #0b0b0b; }
+.tile-ink-5, .tile-ink-6, .tile-ink-7 { fill: #ffffff; }
+.dark .tile-ink-0, .dark .tile-ink-1, .dark .tile-ink-2, .dark .tile-ink-3, .dark .tile-ink-4 { fill: #ffffff; }
+.dark .tile-ink-5, .dark .tile-ink-6, .dark .tile-ink-7 { fill: #0b0b0b; }
+.tile-ink-text-0, .tile-ink-text-1, .tile-ink-text-2, .tile-ink-text-3, .tile-ink-text-4 { color: #0b0b0b; }
+.tile-ink-text-5, .tile-ink-text-6, .tile-ink-text-7 { color: #ffffff; }
+.dark .tile-ink-text-0, .dark .tile-ink-text-1, .dark .tile-ink-text-2, .dark .tile-ink-text-3, .dark .tile-ink-text-4 { color: #ffffff; }
+.dark .tile-ink-text-5, .dark .tile-ink-text-6, .dark .tile-ink-text-7 { color: #0b0b0b; }
