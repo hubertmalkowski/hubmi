@@ -5,7 +5,13 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
 	const rows = await db
-		.select({ id: calls.id, name: calls.name, description: calls.description, opensAt: calls.opensAt, closesAt: calls.closesAt })
+		.select({
+			id: calls.id,
+			name: calls.name,
+			description: calls.description,
+			opensAt: calls.opensAt,
+			closesAt: calls.closesAt
+		})
 		.from(calls)
 		.orderBy(desc(calls.closesAt));
 	const now = Date.now();

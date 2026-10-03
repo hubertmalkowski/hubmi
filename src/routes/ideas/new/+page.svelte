@@ -29,7 +29,12 @@
 
 	onMount(() => (js = true));
 
-	const STEP_TITLES = $derived([m.idea_step_what(), m.idea_step_who(), m.idea_step_how(), m.idea_step_stage()]);
+	const STEP_TITLES = $derived([
+		m.idea_step_what(),
+		m.idea_step_who(),
+		m.idea_step_how(),
+		m.idea_step_stage()
+	]);
 	const CHECKS = $derived([
 		['has_problem', m.idea_check_problem()],
 		['has_beneficiary', m.idea_check_beneficiary()],
@@ -74,13 +79,21 @@
 <svelte:head><title>{m.idea_new_title()} | {m.app_name()}</title></svelte:head>
 
 <h1 class="text-3xl font-bold">{m.idea_new_title()}</h1>
-<p class="text-muted-foreground mt-2 max-w-3xl text-lg">{m.idea_new_lead()}</p>
+<p class="mt-2 max-w-3xl text-lg text-muted-foreground">{m.idea_new_lead()}</p>
 {#if data.challenge}
-	<p class="bg-secondary mt-4 rounded-lg p-3">{m.idea_for_challenge({ title: data.challenge.title })}</p>
+	<p class="mt-4 rounded-lg bg-secondary p-3">
+		{m.idea_for_challenge({ title: data.challenge.title })}
+	</p>
 {/if}
 
 <div class="mt-6 grid gap-8 lg:grid-cols-[1fr_18rem]">
-	<form method="POST" class="flex flex-col gap-6" oninput={schedule} novalidate={js} onsubmit={onSubmit}>
+	<form
+		method="POST"
+		class="flex flex-col gap-6"
+		oninput={schedule}
+		novalidate={js}
+		onsubmit={onSubmit}
+	>
 		<input type="hidden" name="challenge_id" value={data.challenge?.id ?? ''} />
 		{#if js}
 			<ol class="flex flex-wrap gap-2" aria-label={m.idea_steps()}>
@@ -90,7 +103,7 @@
 							type="button"
 							onclick={() => go(i)}
 							aria-current={step === i ? 'step' : undefined}
-							class="border-border aria-[current=step]:bg-primary aria-[current=step]:text-primary-foreground min-h-11 rounded-full border px-4 text-sm font-medium"
+							class="min-h-11 rounded-full border border-border px-4 text-sm font-medium aria-[current=step]:bg-primary aria-[current=step]:text-primary-foreground"
 						>
 							{i + 1}. {t}
 						</button>
@@ -100,37 +113,80 @@
 		{/if}
 
 		<fieldset hidden={js && step !== 0} class="flex flex-col gap-4">
-			<legend bind:this={headings[0]} tabindex="-1" class="text-xl font-semibold">{m.idea_step_what()}</legend>
+			<legend bind:this={headings[0]} tabindex="-1" class="text-xl font-semibold"
+				>{m.idea_step_what()}</legend
+			>
 			<div class="flex flex-col gap-2">
 				<Label for="title">{m.idea_field_title()}</Label>
-				<Input id="title" name="title" bind:value={title} required minlength={5} maxlength={140} aria-invalid={err('title') ? 'true' : undefined} class="min-h-11 text-base" />
+				<Input
+					id="title"
+					name="title"
+					bind:value={title}
+					required
+					minlength={5}
+					maxlength={140}
+					aria-invalid={err('title') ? 'true' : undefined}
+					class="min-h-11 text-base"
+				/>
 			</div>
 			<div class="flex flex-col gap-2">
 				<Label for="essence">{m.idea_field_essence()}</Label>
-				<p id="essence-help" class="text-muted-foreground text-sm">{m.idea_field_essence_help()}</p>
-				<Textarea id="essence" name="essence" rows={5} bind:value={essence} required minlength={20} aria-describedby="essence-help" aria-invalid={err('essence') ? 'true' : undefined} />
+				<p id="essence-help" class="text-sm text-muted-foreground">{m.idea_field_essence_help()}</p>
+				<Textarea
+					id="essence"
+					name="essence"
+					rows={5}
+					bind:value={essence}
+					required
+					minlength={20}
+					aria-describedby="essence-help"
+					aria-invalid={err('essence') ? 'true' : undefined}
+				/>
 			</div>
 		</fieldset>
 
 		<fieldset hidden={js && step !== 1} class="flex flex-col gap-4">
-			<legend bind:this={headings[1]} tabindex="-1" class="text-xl font-semibold">{m.idea_step_who()}</legend>
+			<legend bind:this={headings[1]} tabindex="-1" class="text-xl font-semibold"
+				>{m.idea_step_who()}</legend
+			>
 			<div class="flex flex-col gap-2">
 				<Label for="for_whom">{m.idea_field_for_whom()}</Label>
-				<Textarea id="for_whom" name="for_whom" rows={4} bind:value={forWhom} required minlength={5} aria-invalid={err('for_whom') ? 'true' : undefined} />
+				<Textarea
+					id="for_whom"
+					name="for_whom"
+					rows={4}
+					bind:value={forWhom}
+					required
+					minlength={5}
+					aria-invalid={err('for_whom') ? 'true' : undefined}
+				/>
 			</div>
 		</fieldset>
 
 		<fieldset hidden={js && step !== 2} class="flex flex-col gap-4">
-			<legend bind:this={headings[2]} tabindex="-1" class="text-xl font-semibold">{m.idea_step_how()}</legend>
+			<legend bind:this={headings[2]} tabindex="-1" class="text-xl font-semibold"
+				>{m.idea_step_how()}</legend
+			>
 			<div class="flex flex-col gap-2">
 				<Label for="how_it_works">{m.idea_field_how()}</Label>
-				<p id="how-help" class="text-muted-foreground text-sm">{m.idea_field_how_help()}</p>
-				<Textarea id="how_it_works" name="how_it_works" rows={6} bind:value={howItWorks} required minlength={20} aria-describedby="how-help" aria-invalid={err('how_it_works') ? 'true' : undefined} />
+				<p id="how-help" class="text-sm text-muted-foreground">{m.idea_field_how_help()}</p>
+				<Textarea
+					id="how_it_works"
+					name="how_it_works"
+					rows={6}
+					bind:value={howItWorks}
+					required
+					minlength={20}
+					aria-describedby="how-help"
+					aria-invalid={err('how_it_works') ? 'true' : undefined}
+				/>
 			</div>
 		</fieldset>
 
 		<fieldset hidden={js && step !== 3} class="flex flex-col gap-4">
-			<legend bind:this={headings[3]} tabindex="-1" class="text-xl font-semibold">{m.idea_step_stage()}</legend>
+			<legend bind:this={headings[3]} tabindex="-1" class="text-xl font-semibold"
+				>{m.idea_step_stage()}</legend
+			>
 			<RadioGroup.Root name="stage" bind:value={stage} class="flex flex-col gap-3">
 				{#each [['idea', m.stage_idea()], ['prototype', m.stage_prototype()], ['micro_tested', m.stage_micro_tested()]] as [val, label] (val)}
 					<div class="flex min-h-11 items-center gap-3">
@@ -142,19 +198,24 @@
 		</fieldset>
 
 		{#if form?.errors}
-			<p class="text-destructive font-medium" role="alert">{m.idea_form_errors()}</p>
+			<p class="font-medium text-destructive" role="alert">{m.idea_form_errors()}</p>
 		{/if}
 
 		<div class="flex flex-wrap gap-2">
-			{#if js && step > 0}<Button type="button" variant="outline" onclick={() => go(step - 1)}>{m.idea_prev()}</Button>{/if}
+			{#if js && step > 0}<Button type="button" variant="outline" onclick={() => go(step - 1)}
+					>{m.idea_prev()}</Button
+				>{/if}
 			{#if js && step < 3}
 				<Button type="button" onclick={() => go(step + 1)}>{m.idea_next()}</Button>
 			{:else}
 				<Button type="submit" size="lg">{m.idea_submit()}</Button>
 			{/if}
 		</div>
-		<p class="text-muted-foreground text-sm">
-			{m.idea_canvas_hint()} <a class="underline underline-offset-4" href={localizeHref('/knowledge/materials#canvas')}>{m.knowledge_materials()}</a>
+		<p class="text-sm text-muted-foreground">
+			{m.idea_canvas_hint()}
+			<a class="underline underline-offset-4" href={localizeHref('/knowledge/materials#canvas')}
+				>{m.knowledge_materials()}</a
+			>
 		</p>
 	</form>
 
@@ -169,11 +230,18 @@
 					{#each CHECKS as [key, label] (key)}
 						{@const ok = (checks[key] ?? 0) >= 0.6}
 						<li class="flex items-start gap-2">
-							{#if ok}<CheckIcon class="text-primary mt-0.5 size-5 shrink-0" aria-hidden="true" />{:else}<CircleIcon
-									class="text-muted-foreground mt-0.5 size-5 shrink-0"
+							{#if ok}<CheckIcon
+									class="mt-0.5 size-5 shrink-0 text-primary"
+									aria-hidden="true"
+								/>{:else}<CircleIcon
+									class="mt-0.5 size-5 shrink-0 text-muted-foreground"
 									aria-hidden="true"
 								/>{/if}
-							<span>{label}<span class="sr-only">: {ok ? m.idea_check_done() : m.idea_check_missing()}</span></span>
+							<span
+								>{label}<span class="sr-only"
+									>: {ok ? m.idea_check_done() : m.idea_check_missing()}</span
+								></span
+							>
 						</li>
 					{/each}
 				</ul>

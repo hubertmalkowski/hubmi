@@ -42,7 +42,9 @@ export async function matchReasons(
 
 // ---------- challenge ----------
 
-export async function challengeText(needs: string[]): Promise<{ title: string; description: string }> {
+export async function challengeText(
+	needs: string[]
+): Promise<{ title: string; description: string }> {
 	return structured({
 		kind: 'challenge.create',
 		system: `You turn reported social problems into an open innovation challenge for the Małopolska Social Innovation Hub. Write in Polish. Title: max 12 words, starts with "Jak" (How might we). Description: max 80 words, describe who is affected and what is missing, without naming any person or address. ${GROUNDING}`,
@@ -89,7 +91,12 @@ export async function easyRead(text: string, locale: Locale): Promise<string> {
 
 // ---------- admin reply ----------
 
-export async function adminReply(item: { kind: string; title: string; text: string; status: string }): Promise<string> {
+export async function adminReply(item: {
+	kind: string;
+	title: string;
+	text: string;
+	status: string;
+}): Promise<string> {
 	const out = await structured({
 		kind: 'admin.reply',
 		system: `You draft a short, warm reply (max 120 words, Polish) from the Małopolska Social Innovation Hub team (ROPS Kraków) to a person who submitted an ${item.kind}. Thank them, state the current status in plain words and the next step. Sign as "Zespół Hubu Innowacji Społecznych". ${GROUNDING}`,
@@ -104,12 +111,18 @@ export async function adminReply(item: { kind: string; title: string; text: stri
 
 // ---------- feedback summary ----------
 
-export async function feedbackSummary(items: { rating: number; text: string | null; category: string | null }[]) {
+export async function feedbackSummary(
+	items: { rating: number; text: string | null; category: string | null }[]
+) {
 	return structured({
 		kind: 'tests.feedback_summary',
 		system: `Summarize tester feedback for the innovator in Polish: the top 3 concrete improvements, each with how many testers raised it. ${GROUNDING}`,
-		user: items.map((f) => `- [${f.category ?? 'other'}] ocena ${f.rating}/5: ${f.text ?? ''}`).join('\n'),
-		schema: z.object({ improvements: z.array(z.object({ text: z.string(), count: z.number().int() })) }),
+		user: items
+			.map((f) => `- [${f.category ?? 'other'}] ocena ${f.rating}/5: ${f.text ?? ''}`)
+			.join('\n'),
+		schema: z.object({
+			improvements: z.array(z.object({ text: z.string(), count: z.number().int() }))
+		}),
 		mock: () => ({
 			improvements: items
 				.filter((f) => f.text)
@@ -195,7 +208,9 @@ Reply in ${LANG[opts.locale]}. Be concrete and encouraging, ask one question at 
 			const q = typeof last?.content === 'string' ? last.content : '';
 			const rel = opts.related[0];
 			return `Dobry kierunek. Zacznijmy od problemu: kto dokładnie odczuwa go najbardziej i jak często? ${
-				rel ? `W Bibliotece jest podobne rozwiązanie „${rel.title}”, warto sprawdzić, czym Twój pomysł się od niego różni. ` : ''
+				rel
+					? `W Bibliotece jest podobne rozwiązanie „${rel.title}”, warto sprawdzić, czym Twój pomysł się od niego różni. `
+					: ''
 			}Nietypowy pomysł: zaangażuj osoby, których problem dotyczy, jako współprowadzących pilotaż.${q ? `\n\n(Twoja wiadomość: „${q.slice(0, 80)}”)` : ''}`;
 		}
 	});
@@ -216,7 +231,10 @@ export async function applicationPrefill(opts: {
 		maxTokens: 8000,
 		system: `You pre-fill a grant application form for a social innovation in Polish, in a clear and factual style. Respect each field's maximum length. ${GROUNDING}`,
 		user: `Call: ${opts.call.name}\n${opts.call.description}\n\nIdea: ${JSON.stringify(opts.idea)}\nCanvas: ${JSON.stringify(opts.canvas)}\n\nFields:\n${opts.fields
-			.map((f) => `- ${f.key}: ${f.label_pl}${f.help_pl ? ` (${f.help_pl})` : ''}${f.max_length ? ` [max ${f.max_length} znaków]` : ''}${f.options ? ` options: ${f.options.join(' | ')}` : ''}`)
+			.map(
+				(f) =>
+					`- ${f.key}: ${f.label_pl}${f.help_pl ? ` (${f.help_pl})` : ''}${f.max_length ? ` [max ${f.max_length} znaków]` : ''}${f.options ? ` options: ${f.options.join(' | ')}` : ''}`
+			)
 			.join('\n')}`,
 		schema: z.object(shape),
 		mock: () =>
@@ -251,7 +269,13 @@ export type InstitutionProfile = {
 };
 
 export function adaptStream(opts: {
-	innovation: { title: string; description: string; implementationNotes: string; costHint: string; slug: string };
+	innovation: {
+		title: string;
+		description: string;
+		implementationNotes: string;
+		costHint: string;
+		slug: string;
+	};
 	profile: InstitutionProfile;
 	placeStats?: string;
 	locale: Locale;

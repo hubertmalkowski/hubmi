@@ -25,47 +25,341 @@
 		{ "teryt": "1263", "name": "Tarnów" }
 	],
 	"gminas": [
-		{ "teryt": "1261011", "name": "Kraków", "kind": "urban", "powiat_teryt": "1261", "population": 800000, "aliases": ["Nowa Huta", "Podgórze", "Krowodrza", "Bronowice", "Prądnik"] },
-		{ "teryt": "1262011", "name": "Nowy Sącz", "kind": "urban", "powiat_teryt": "1262", "population": 83000, "aliases": [] },
-		{ "teryt": "1263011", "name": "Tarnów", "kind": "urban", "powiat_teryt": "1263", "population": 105000, "aliases": ["Mościce"] },
-		{ "teryt": "1201011", "name": "Bochnia", "kind": "urban", "powiat_teryt": "1201", "population": 29000, "aliases": [] },
-		{ "teryt": "1201052", "name": "Nowy Wiśnicz", "kind": "urban_rural", "powiat_teryt": "1201", "population": 14000, "aliases": ["Wiśnicz"] },
-		{ "teryt": "1202013", "name": "Brzesko", "kind": "urban_rural", "powiat_teryt": "1202", "population": 36000, "aliases": ["Jasień"] },
-		{ "teryt": "1203013", "name": "Chrzanów", "kind": "urban_rural", "powiat_teryt": "1203", "population": 46000, "aliases": ["Kościelec"] },
-		{ "teryt": "1204013", "name": "Dąbrowa Tarnowska", "kind": "urban_rural", "powiat_teryt": "1204", "population": 20000, "aliases": [] },
-		{ "teryt": "1204062", "name": "Olesno", "kind": "rural", "powiat_teryt": "1204", "population": 8000, "aliases": [] },
-		{ "teryt": "1205011", "name": "Gorlice", "kind": "urban", "powiat_teryt": "1205", "population": 27000, "aliases": [] },
-		{ "teryt": "1205072", "name": "Uście Gorlickie", "kind": "rural", "powiat_teryt": "1205", "population": 6800, "aliases": ["Wysowa-Zdrój", "Hańczowa"] },
-		{ "teryt": "1206033", "name": "Skawina", "kind": "urban_rural", "powiat_teryt": "1206", "population": 45000, "aliases": [] },
-		{ "teryt": "1206092", "name": "Zielonki", "kind": "rural", "powiat_teryt": "1206", "population": 27000, "aliases": ["Bibice", "Węgrzce"] },
-		{ "teryt": "1206112", "name": "Wielka Wieś", "kind": "rural", "powiat_teryt": "1206", "population": 13000, "aliases": ["Modlnica"] },
-		{ "teryt": "1206022", "name": "Michałowice", "kind": "rural", "powiat_teryt": "1206", "population": 13000, "aliases": [] },
-		{ "teryt": "1207011", "name": "Limanowa", "kind": "urban", "powiat_teryt": "1207", "population": 15000, "aliases": [] },
-		{ "teryt": "1207082", "name": "Tymbark", "kind": "rural", "powiat_teryt": "1207", "population": 6700, "aliases": [] },
-		{ "teryt": "1208013", "name": "Miechów", "kind": "urban_rural", "powiat_teryt": "1208", "population": 19000, "aliases": [] },
-		{ "teryt": "1208052", "name": "Racławice", "kind": "rural", "powiat_teryt": "1208", "population": 2000, "aliases": [] },
-		{ "teryt": "1209013", "name": "Myślenice", "kind": "urban_rural", "powiat_teryt": "1209", "population": 44000, "aliases": [] },
-		{ "teryt": "1209072", "name": "Wiśniowa", "kind": "rural", "powiat_teryt": "1209", "population": 7300, "aliases": [] },
-		{ "teryt": "1210013", "name": "Krynica-Zdrój", "kind": "urban_rural", "powiat_teryt": "1210", "population": 16000, "aliases": ["Krynica"] },
-		{ "teryt": "1210112", "name": "Łabowa", "kind": "rural", "powiat_teryt": "1210", "population": 5500, "aliases": [] },
-		{ "teryt": "1211011", "name": "Nowy Targ", "kind": "urban", "powiat_teryt": "1211", "population": 33000, "aliases": [] },
-		{ "teryt": "1211082", "name": "Czarny Dunajec", "kind": "rural", "powiat_teryt": "1211", "population": 22000, "aliases": [] },
-		{ "teryt": "1211052", "name": "Łapsze Niżne", "kind": "rural", "powiat_teryt": "1211", "population": 9000, "aliases": ["Niedzica"] },
-		{ "teryt": "1212043", "name": "Olkusz", "kind": "urban_rural", "powiat_teryt": "1212", "population": 49000, "aliases": [] },
-		{ "teryt": "1212062", "name": "Trzyciąż", "kind": "rural", "powiat_teryt": "1212", "population": 7200, "aliases": [] },
-		{ "teryt": "1213011", "name": "Oświęcim", "kind": "urban", "powiat_teryt": "1213", "population": 35000, "aliases": [] },
-		{ "teryt": "1213082", "name": "Przeciszów", "kind": "rural", "powiat_teryt": "1213", "population": 6800, "aliases": [] },
-		{ "teryt": "1214033", "name": "Proszowice", "kind": "urban_rural", "powiat_teryt": "1214", "population": 15000, "aliases": [] },
-		{ "teryt": "1214022", "name": "Radziemice", "kind": "rural", "powiat_teryt": "1214", "population": 2800, "aliases": [] },
-		{ "teryt": "1215011", "name": "Sucha Beskidzka", "kind": "urban", "powiat_teryt": "1215", "population": 9000, "aliases": [] },
-		{ "teryt": "1215092", "name": "Zawoja", "kind": "rural", "powiat_teryt": "1215", "population": 9500, "aliases": [] },
-		{ "teryt": "1216142", "name": "Wierzchosławice", "kind": "rural", "powiat_teryt": "1216", "population": 11000, "aliases": [] },
-		{ "teryt": "1216053", "name": "Tuchów", "kind": "urban_rural", "powiat_teryt": "1216", "population": 18000, "aliases": [] },
-		{ "teryt": "1217011", "name": "Zakopane", "kind": "urban", "powiat_teryt": "1217", "population": 26000, "aliases": [] },
-		{ "teryt": "1217032", "name": "Kościelisko", "kind": "rural", "powiat_teryt": "1217", "population": 8800, "aliases": [] },
-		{ "teryt": "1218093", "name": "Wadowice", "kind": "urban_rural", "powiat_teryt": "1218", "population": 37000, "aliases": [] },
-		{ "teryt": "1218042", "name": "Mucharz", "kind": "rural", "powiat_teryt": "1218", "population": 4000, "aliases": [] },
-		{ "teryt": "1219053", "name": "Wieliczka", "kind": "urban_rural", "powiat_teryt": "1219", "population": 68000, "aliases": [] },
-		{ "teryt": "1219042", "name": "Kłaj", "kind": "rural", "powiat_teryt": "1219", "population": 11000, "aliases": [] }
+		{
+			"teryt": "1261011",
+			"name": "Kraków",
+			"kind": "urban",
+			"powiat_teryt": "1261",
+			"population": 800000,
+			"aliases": ["Nowa Huta", "Podgórze", "Krowodrza", "Bronowice", "Prądnik"]
+		},
+		{
+			"teryt": "1262011",
+			"name": "Nowy Sącz",
+			"kind": "urban",
+			"powiat_teryt": "1262",
+			"population": 83000,
+			"aliases": []
+		},
+		{
+			"teryt": "1263011",
+			"name": "Tarnów",
+			"kind": "urban",
+			"powiat_teryt": "1263",
+			"population": 105000,
+			"aliases": ["Mościce"]
+		},
+		{
+			"teryt": "1201011",
+			"name": "Bochnia",
+			"kind": "urban",
+			"powiat_teryt": "1201",
+			"population": 29000,
+			"aliases": []
+		},
+		{
+			"teryt": "1201052",
+			"name": "Nowy Wiśnicz",
+			"kind": "urban_rural",
+			"powiat_teryt": "1201",
+			"population": 14000,
+			"aliases": ["Wiśnicz"]
+		},
+		{
+			"teryt": "1202013",
+			"name": "Brzesko",
+			"kind": "urban_rural",
+			"powiat_teryt": "1202",
+			"population": 36000,
+			"aliases": ["Jasień"]
+		},
+		{
+			"teryt": "1203013",
+			"name": "Chrzanów",
+			"kind": "urban_rural",
+			"powiat_teryt": "1203",
+			"population": 46000,
+			"aliases": ["Kościelec"]
+		},
+		{
+			"teryt": "1204013",
+			"name": "Dąbrowa Tarnowska",
+			"kind": "urban_rural",
+			"powiat_teryt": "1204",
+			"population": 20000,
+			"aliases": []
+		},
+		{
+			"teryt": "1204062",
+			"name": "Olesno",
+			"kind": "rural",
+			"powiat_teryt": "1204",
+			"population": 8000,
+			"aliases": []
+		},
+		{
+			"teryt": "1205011",
+			"name": "Gorlice",
+			"kind": "urban",
+			"powiat_teryt": "1205",
+			"population": 27000,
+			"aliases": []
+		},
+		{
+			"teryt": "1205072",
+			"name": "Uście Gorlickie",
+			"kind": "rural",
+			"powiat_teryt": "1205",
+			"population": 6800,
+			"aliases": ["Wysowa-Zdrój", "Hańczowa"]
+		},
+		{
+			"teryt": "1206033",
+			"name": "Skawina",
+			"kind": "urban_rural",
+			"powiat_teryt": "1206",
+			"population": 45000,
+			"aliases": []
+		},
+		{
+			"teryt": "1206092",
+			"name": "Zielonki",
+			"kind": "rural",
+			"powiat_teryt": "1206",
+			"population": 27000,
+			"aliases": ["Bibice", "Węgrzce"]
+		},
+		{
+			"teryt": "1206112",
+			"name": "Wielka Wieś",
+			"kind": "rural",
+			"powiat_teryt": "1206",
+			"population": 13000,
+			"aliases": ["Modlnica"]
+		},
+		{
+			"teryt": "1206022",
+			"name": "Michałowice",
+			"kind": "rural",
+			"powiat_teryt": "1206",
+			"population": 13000,
+			"aliases": []
+		},
+		{
+			"teryt": "1207011",
+			"name": "Limanowa",
+			"kind": "urban",
+			"powiat_teryt": "1207",
+			"population": 15000,
+			"aliases": []
+		},
+		{
+			"teryt": "1207082",
+			"name": "Tymbark",
+			"kind": "rural",
+			"powiat_teryt": "1207",
+			"population": 6700,
+			"aliases": []
+		},
+		{
+			"teryt": "1208013",
+			"name": "Miechów",
+			"kind": "urban_rural",
+			"powiat_teryt": "1208",
+			"population": 19000,
+			"aliases": []
+		},
+		{
+			"teryt": "1208052",
+			"name": "Racławice",
+			"kind": "rural",
+			"powiat_teryt": "1208",
+			"population": 2000,
+			"aliases": []
+		},
+		{
+			"teryt": "1209013",
+			"name": "Myślenice",
+			"kind": "urban_rural",
+			"powiat_teryt": "1209",
+			"population": 44000,
+			"aliases": []
+		},
+		{
+			"teryt": "1209072",
+			"name": "Wiśniowa",
+			"kind": "rural",
+			"powiat_teryt": "1209",
+			"population": 7300,
+			"aliases": []
+		},
+		{
+			"teryt": "1210013",
+			"name": "Krynica-Zdrój",
+			"kind": "urban_rural",
+			"powiat_teryt": "1210",
+			"population": 16000,
+			"aliases": ["Krynica"]
+		},
+		{
+			"teryt": "1210112",
+			"name": "Łabowa",
+			"kind": "rural",
+			"powiat_teryt": "1210",
+			"population": 5500,
+			"aliases": []
+		},
+		{
+			"teryt": "1211011",
+			"name": "Nowy Targ",
+			"kind": "urban",
+			"powiat_teryt": "1211",
+			"population": 33000,
+			"aliases": []
+		},
+		{
+			"teryt": "1211082",
+			"name": "Czarny Dunajec",
+			"kind": "rural",
+			"powiat_teryt": "1211",
+			"population": 22000,
+			"aliases": []
+		},
+		{
+			"teryt": "1211052",
+			"name": "Łapsze Niżne",
+			"kind": "rural",
+			"powiat_teryt": "1211",
+			"population": 9000,
+			"aliases": ["Niedzica"]
+		},
+		{
+			"teryt": "1212043",
+			"name": "Olkusz",
+			"kind": "urban_rural",
+			"powiat_teryt": "1212",
+			"population": 49000,
+			"aliases": []
+		},
+		{
+			"teryt": "1212062",
+			"name": "Trzyciąż",
+			"kind": "rural",
+			"powiat_teryt": "1212",
+			"population": 7200,
+			"aliases": []
+		},
+		{
+			"teryt": "1213011",
+			"name": "Oświęcim",
+			"kind": "urban",
+			"powiat_teryt": "1213",
+			"population": 35000,
+			"aliases": []
+		},
+		{
+			"teryt": "1213082",
+			"name": "Przeciszów",
+			"kind": "rural",
+			"powiat_teryt": "1213",
+			"population": 6800,
+			"aliases": []
+		},
+		{
+			"teryt": "1214033",
+			"name": "Proszowice",
+			"kind": "urban_rural",
+			"powiat_teryt": "1214",
+			"population": 15000,
+			"aliases": []
+		},
+		{
+			"teryt": "1214022",
+			"name": "Radziemice",
+			"kind": "rural",
+			"powiat_teryt": "1214",
+			"population": 2800,
+			"aliases": []
+		},
+		{
+			"teryt": "1215011",
+			"name": "Sucha Beskidzka",
+			"kind": "urban",
+			"powiat_teryt": "1215",
+			"population": 9000,
+			"aliases": []
+		},
+		{
+			"teryt": "1215092",
+			"name": "Zawoja",
+			"kind": "rural",
+			"powiat_teryt": "1215",
+			"population": 9500,
+			"aliases": []
+		},
+		{
+			"teryt": "1216142",
+			"name": "Wierzchosławice",
+			"kind": "rural",
+			"powiat_teryt": "1216",
+			"population": 11000,
+			"aliases": []
+		},
+		{
+			"teryt": "1216053",
+			"name": "Tuchów",
+			"kind": "urban_rural",
+			"powiat_teryt": "1216",
+			"population": 18000,
+			"aliases": []
+		},
+		{
+			"teryt": "1217011",
+			"name": "Zakopane",
+			"kind": "urban",
+			"powiat_teryt": "1217",
+			"population": 26000,
+			"aliases": []
+		},
+		{
+			"teryt": "1217032",
+			"name": "Kościelisko",
+			"kind": "rural",
+			"powiat_teryt": "1217",
+			"population": 8800,
+			"aliases": []
+		},
+		{
+			"teryt": "1218093",
+			"name": "Wadowice",
+			"kind": "urban_rural",
+			"powiat_teryt": "1218",
+			"population": 37000,
+			"aliases": []
+		},
+		{
+			"teryt": "1218042",
+			"name": "Mucharz",
+			"kind": "rural",
+			"powiat_teryt": "1218",
+			"population": 4000,
+			"aliases": []
+		},
+		{
+			"teryt": "1219053",
+			"name": "Wieliczka",
+			"kind": "urban_rural",
+			"powiat_teryt": "1219",
+			"population": 68000,
+			"aliases": []
+		},
+		{
+			"teryt": "1219042",
+			"name": "Kłaj",
+			"kind": "rural",
+			"powiat_teryt": "1219",
+			"population": 11000,
+			"aliases": []
+		}
 	]
 }

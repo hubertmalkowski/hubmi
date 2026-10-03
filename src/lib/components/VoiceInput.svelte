@@ -15,7 +15,12 @@
 		interimResults: boolean;
 		start(): void;
 		stop(): void;
-		onresult: ((e: { resultIndex: number; results: ArrayLike<{ isFinal: boolean; 0: { transcript: string } }> }) => void) | null;
+		onresult:
+			| ((e: {
+					resultIndex: number;
+					results: ArrayLike<{ isFinal: boolean; 0: { transcript: string } }>;
+			  }) => void)
+			| null;
 		onend: (() => void) | null;
 		onerror: ((e: { error: string }) => void) | null;
 	};
@@ -28,7 +33,10 @@
 	const LANGS: Record<string, string> = { pl: 'pl-PL', en: 'en-GB', uk: 'uk-UA' };
 
 	onMount(() => {
-		const w = window as unknown as { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition };
+		const w = window as unknown as {
+			SpeechRecognition?: new () => Recognition;
+			webkitSpeechRecognition?: new () => Recognition;
+		};
 		const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
 		if (!Ctor) return;
 		supported = true;
@@ -65,12 +73,18 @@
 
 {#if supported}
 	<div class="flex items-center gap-3">
-		<Button type="button" variant={listening ? 'destructive' : 'secondary'} size="lg" onclick={toggle} aria-pressed={listening}>
+		<Button
+			type="button"
+			variant={listening ? 'destructive' : 'secondary'}
+			size="lg"
+			onclick={toggle}
+			aria-pressed={listening}
+		>
 			{#if listening}<MicOffIcon class="size-5" aria-hidden="true" />{m.voice_stop()}{:else}<MicIcon
 					class="size-5"
 					aria-hidden="true"
 				/>{m.voice_start()}{/if}
 		</Button>
-		<span class="text-muted-foreground text-sm" aria-live="polite">{status}</span>
+		<span class="text-sm text-muted-foreground" aria-live="polite">{status}</span>
 	</div>
 {/if}

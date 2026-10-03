@@ -19,7 +19,14 @@ type AreaSeed = { slug: string; name_pl: string; description_pl: string; descrip
 type GroupSeed = { slug: string; name_pl: string; description_en: string };
 type PlacesSeed = {
 	powiats: { teryt: string; name: string }[];
-	gminas: { teryt: string; name: string; kind: 'urban' | 'rural' | 'urban_rural'; powiat_teryt: string; population: number; aliases: string[] }[];
+	gminas: {
+		teryt: string;
+		name: string;
+		kind: 'urban' | 'rural' | 'urban_rural';
+		powiat_teryt: string;
+		population: number;
+		aliases: string[];
+	}[];
 };
 type InnovationSeed = {
 	slug: string;
@@ -32,7 +39,12 @@ type InnovationSeed = {
 	implementation_notes: string;
 	cost_hint: string;
 };
-type NeedSeed = { text: string; place: string | null; locale?: 'pl' | 'en' | 'uk'; expected: string[] };
+type NeedSeed = {
+	text: string;
+	place: string | null;
+	locale?: 'pl' | 'en' | 'uk';
+	expected: string[];
+};
 
 async function resetIndices() {
 	for (const alias of Object.values(INDEX)) {
@@ -47,9 +59,29 @@ async function main() {
 	console.log(`seeding (embeddings: ${embeddingModel()})`);
 	await sql`TRUNCATE ${sql.unsafe(
 		[
-			'audit_ai', 'ai_cache', 'rate_limits', 'translations', 'notifications', 'status_events', 'messages',
-			'threads', 'feedback', 'test_signups', 'test_campaigns', 'applications', 'calls', 'ideas', 'matches',
-			'needs', 'challenges', 'innovations', 'target_groups', 'challenge_areas', 'places', 'sessions', 'users',
+			'audit_ai',
+			'ai_cache',
+			'rate_limits',
+			'translations',
+			'notifications',
+			'status_events',
+			'messages',
+			'threads',
+			'feedback',
+			'test_signups',
+			'test_campaigns',
+			'applications',
+			'calls',
+			'ideas',
+			'matches',
+			'needs',
+			'challenges',
+			'innovations',
+			'target_groups',
+			'challenge_areas',
+			'places',
+			'sessions',
+			'users',
 			'organizations'
 		].join(', ')
 	)} CASCADE`;
@@ -66,9 +98,15 @@ async function main() {
 			mapStats: {}
 		}))
 	);
-	await db.insert(s.targetGroups).values(
-		json<GroupSeed[]>('data/seed/target_groups.json').map((g) => ({ slug: g.slug, namePl: g.name_pl, descriptionEn: g.description_en }))
-	);
+	await db
+		.insert(s.targetGroups)
+		.values(
+			json<GroupSeed[]>('data/seed/target_groups.json').map((g) => ({
+				slug: g.slug,
+				namePl: g.name_pl,
+				descriptionEn: g.description_en
+			}))
+		);
 
 	const places = json<PlacesSeed>('data/seed/places.json');
 	const powiatName = new Map(places.powiats.map((p) => [p.teryt, p.name]));
@@ -100,8 +138,16 @@ async function main() {
 			{ displayName: 'Halina (mieszkanka)', role: 'resident', locale: 'pl' },
 			{ displayName: 'Ola (NGO)', role: 'ngo', orgId: ngo.id },
 			{ displayName: 'Piotr (gmina)', role: 'jst', orgId: gmina.id },
-			{ displayName: 'Dr Anna (ekspertka)', role: 'expert', expertTags: ['aging', 'loneliness', 'service_access'] },
-			{ displayName: 'Marek (ekspert)', role: 'expert', expertTags: ['mental_health', 'digital_exclusion', 'depopulation'] },
+			{
+				displayName: 'Dr Anna (ekspertka)',
+				role: 'expert',
+				expertTags: ['aging', 'loneliness', 'service_access']
+			},
+			{
+				displayName: 'Marek (ekspert)',
+				role: 'expert',
+				expertTags: ['mental_health', 'digital_exclusion', 'depopulation']
+			},
 			{ displayName: 'Zespół ROPS (admin)', role: 'admin', orgId: cus.id },
 			{ displayName: 'Olena (mieszkanka)', role: 'resident', locale: 'uk' }
 		])
@@ -140,7 +186,9 @@ async function main() {
 	const needSeeds = json<NeedSeed[]>('data/seed/needs.json');
 	let n = 0;
 	for (const [i, ns] of needSeeds.entries()) {
-		const createdAt = new Date(Date.now() - ((needSeeds.length - i) / needSeeds.length) * 56 * 86400_000);
+		const createdAt = new Date(
+			Date.now() - ((needSeeds.length - i) / needSeeds.length) * 56 * 86400_000
+		);
 		const [row] = await db
 			.insert(s.needs)
 			.values({
@@ -162,17 +210,38 @@ async function main() {
 	const now = Date.now();
 	const formSchema: s.FormField[] = [
 		{ key: 'title', label_pl: 'Nazwa projektu', type: 'text', max_length: 120 },
-		{ key: 'problem', label_pl: 'Na jaki problem społeczny odpowiada projekt?', type: 'textarea', max_length: 1500 },
+		{
+			key: 'problem',
+			label_pl: 'Na jaki problem społeczny odpowiada projekt?',
+			type: 'textarea',
+			max_length: 1500
+		},
 		{ key: 'beneficiaries', label_pl: 'Odbiorcy i ich liczba', type: 'textarea', max_length: 800 },
-		{ key: 'solution', label_pl: 'Opis rozwiązania i jego innowacyjności', type: 'textarea', max_length: 2000 },
+		{
+			key: 'solution',
+			label_pl: 'Opis rozwiązania i jego innowacyjności',
+			type: 'textarea',
+			max_length: 2000
+		},
 		{ key: 'partners', label_pl: 'Partnerzy', type: 'textarea', max_length: 600 },
-		{ key: 'budget', label_pl: 'Szacowany budżet i główne koszty', type: 'textarea', max_length: 800 },
-		{ key: 'stage', label_pl: 'Etap rozwoju', type: 'select', options: ['pomysł', 'prototyp', 'przetestowane w mikroskali'] }
+		{
+			key: 'budget',
+			label_pl: 'Szacowany budżet i główne koszty',
+			type: 'textarea',
+			max_length: 800
+		},
+		{
+			key: 'stage',
+			label_pl: 'Etap rozwoju',
+			type: 'select',
+			options: ['pomysł', 'prototyp', 'przetestowane w mikroskali']
+		}
 	];
 	await db.insert(s.calls).values([
 		{
 			name: 'Inkubator Innowacji Społecznych 2026: nabór II',
-			description: 'Granty do 30 tys. zł na przetestowanie innowacji społecznej w Małopolsce. Priorytet: samotność i starzenie się.',
+			description:
+				'Granty do 30 tys. zł na przetestowanie innowacji społecznej w Małopolsce. Priorytet: samotność i starzenie się.',
 			opensAt: new Date(now - 7 * 86400_000),
 			closesAt: new Date(now + 21 * 86400_000),
 			formSchema
@@ -186,18 +255,23 @@ async function main() {
 		}
 	]);
 
-	const firstInno = await db.query.innovations.findFirst({ where: (t, { eq }) => eq(t.slug, 'kawiarenka-pokolen') });
+	const firstInno = await db.query.innovations.findFirst({
+		where: (t, { eq }) => eq(t.slug, 'kawiarenka-pokolen')
+	});
 	await db.insert(s.testCampaigns).values([
 		{
 			innovationId: firstInno?.id,
 			title: 'Testujemy: Kawiarenka Pokoleń w nowej formule online',
-			description: 'Sprawdź, czy spotkania pokoleń działają także przez wideorozmowy. 4 spotkania, listopad.',
+			description:
+				'Sprawdź, czy spotkania pokoleń działają także przez wideorozmowy. 4 spotkania, listopad.',
 			slots: 15
 		}
 	]);
 
 	await refreshTrends();
-	const counts = await db.execute(dsql`select status, count(*)::int as n from needs group by status order by status`);
+	const counts = await db.execute(
+		dsql`select status, count(*)::int as n from needs group by status order by status`
+	);
 	console.log('needs by status:', counts);
 	await sql.end();
 	process.exit(0);

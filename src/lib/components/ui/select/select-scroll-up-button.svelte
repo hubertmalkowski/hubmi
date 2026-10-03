@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Select as SelectPrimitive } from "bits-ui";
+	import { Select as SelectPrimitive } from 'bits-ui';
 	import ChevronUpIcon from '@lucide/svelte/icons/chevron-up';
-	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
+	import { cn, type WithoutChildrenOrChild } from '$lib/utils.js';
 
 	let {
 		ref = $bindable(null),
@@ -13,8 +13,8 @@
 <SelectPrimitive.ScrollUpButton
 	bind:ref
 	data-slot="select-scroll-up-button"
-	class={cn("cn-select-scroll-up-button", className)}
+	class={cn('cn-select-scroll-up-button', className)}
 	{...restProps}
 >
-	<ChevronUpIcon  />
+	<ChevronUpIcon />
 </SelectPrimitive.ScrollUpButton>

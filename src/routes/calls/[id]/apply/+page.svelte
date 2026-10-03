@@ -44,15 +44,22 @@
 
 <h1 class="text-3xl font-bold">{m.apply_title()}</h1>
 <p class="mt-2 text-lg font-medium">{data.call.name}</p>
-<p class="text-muted-foreground">{m.calls_closes({ date: formatDay(data.call.closesAt, getLocale()) })}</p>
+<p class="text-muted-foreground">
+	{m.calls_closes({ date: formatDay(data.call.closesAt, getLocale()) })}
+</p>
 
 {#if !data.ideas.length}
 	<Alert.Root class="mt-6"><Alert.Title>{m.apply_no_ideas()}</Alert.Title></Alert.Root>
 {:else}
 	<form method="POST" class="mt-6 flex max-w-3xl flex-col gap-5">
-		<div class="bg-card border-border flex flex-col gap-3 rounded-xl border p-4">
+		<div class="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
 			<Label for="idea_id">{m.apply_choose_idea()}</Label>
-			<select id="idea_id" name="idea_id" bind:value={ideaId} class="border-input bg-background min-h-11 rounded-md border px-3 text-base">
+			<select
+				id="idea_id"
+				name="idea_id"
+				bind:value={ideaId}
+				class="min-h-11 rounded-md border border-input bg-background px-3 text-base"
+			>
 				{#each data.ideas as i (i.id)}<option value={i.id}>{i.title}</option>{/each}
 			</select>
 			<div class="flex flex-wrap items-center gap-3">
@@ -60,28 +67,55 @@
 					{#if filling}<Spinner />{:else}<SparklesIcon class="size-4" aria-hidden="true" />{/if}
 					{m.apply_prefill()}
 				</Button>
-				<span class="text-muted-foreground text-sm" role="status">{status}</span>
+				<span class="text-sm text-muted-foreground" role="status">{status}</span>
 			</div>
-			<p class="text-muted-foreground text-sm">{m.apply_prefill_note()}</p>
+			<p class="text-sm text-muted-foreground">{m.apply_prefill_note()}</p>
 		</div>
 
-		{#if form?.missing}<p class="text-destructive font-medium" role="alert">{m.apply_missing()}</p>{/if}
+		{#if form?.missing}<p class="font-medium text-destructive" role="alert">
+				{m.apply_missing()}
+			</p>{/if}
 
 		{#each data.call.fields as f (f.key)}
 			<div class="flex flex-col gap-2">
 				<Label for="f_{f.key}">{f.label_pl}</Label>
-				{#if f.help_pl}<p id="h_{f.key}" class="text-muted-foreground text-sm">{f.help_pl}</p>{/if}
+				{#if f.help_pl}<p id="h_{f.key}" class="text-sm text-muted-foreground">{f.help_pl}</p>{/if}
 				{#if f.type === 'textarea'}
-					<Textarea id="f_{f.key}" name="f_{f.key}" rows={5} maxlength={f.max_length} bind:value={answers[f.key]} required aria-invalid={missing(f.key) ? 'true' : undefined} aria-describedby={f.help_pl ? `h_${f.key}` : undefined} />
+					<Textarea
+						id="f_{f.key}"
+						name="f_{f.key}"
+						rows={5}
+						maxlength={f.max_length}
+						bind:value={answers[f.key]}
+						required
+						aria-invalid={missing(f.key) ? 'true' : undefined}
+						aria-describedby={f.help_pl ? `h_${f.key}` : undefined}
+					/>
 				{:else if f.type === 'select'}
-					<select id="f_{f.key}" name="f_{f.key}" bind:value={answers[f.key]} required class="border-input bg-background min-h-11 rounded-md border px-3 text-base">
+					<select
+						id="f_{f.key}"
+						name="f_{f.key}"
+						bind:value={answers[f.key]}
+						required
+						class="min-h-11 rounded-md border border-input bg-background px-3 text-base"
+					>
 						<option value="">–</option>
 						{#each f.options ?? [] as o (o)}<option value={o}>{o}</option>{/each}
 					</select>
 				{:else}
-					<Input id="f_{f.key}" name="f_{f.key}" type={f.type === 'number' ? 'number' : 'text'} maxlength={f.max_length} bind:value={answers[f.key]} required class="min-h-11 text-base" />
+					<Input
+						id="f_{f.key}"
+						name="f_{f.key}"
+						type={f.type === 'number' ? 'number' : 'text'}
+						maxlength={f.max_length}
+						bind:value={answers[f.key]}
+						required
+						class="min-h-11 text-base"
+					/>
 				{/if}
-				{#if f.max_length}<p class="text-muted-foreground text-right text-xs">{(answers[f.key] ?? '').length}/{f.max_length}</p>{/if}
+				{#if f.max_length}<p class="text-right text-xs text-muted-foreground">
+						{(answers[f.key] ?? '').length}/{f.max_length}
+					</p>{/if}
 			</div>
 		{/each}
 		<div><Button type="submit" size="lg">{m.apply_submit()}</Button></div>

@@ -12,7 +12,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const r = await needResult(params.id);
 	if (!r) error(404, { message: 'Nie znaleziono zgłoszenia' });
 	const { need } = r;
-	const isOwnerOrAdmin = locals.user?.role === 'admin' || (need.authorId && need.authorId === locals.user?.id);
+	const isOwnerOrAdmin =
+		locals.user?.role === 'admin' || (need.authorId && need.authorId === locals.user?.id);
 
 	const [timeline, challenge, place, similar] = await Promise.all([
 		db
@@ -20,8 +21,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			.from(statusEvents)
 			.where(and(eq(statusEvents.subjectType, 'need'), eq(statusEvents.subjectId, need.id)))
 			.orderBy(asc(statusEvents.createdAt)),
-		need.challengeId ? db.query.challenges.findFirst({ where: eq(challenges.id, need.challengeId) }) : undefined,
-		need.placeTeryt ? db.query.places.findFirst({ where: eq(places.teryt, need.placeTeryt) }) : undefined,
+		need.challengeId
+			? db.query.challenges.findFirst({ where: eq(challenges.id, need.challengeId) })
+			: undefined,
+		need.placeTeryt
+			? db.query.places.findFirst({ where: eq(places.teryt, need.placeTeryt) })
+			: undefined,
 		similarNeeds(need)
 	]);
 
@@ -52,7 +57,9 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		},
 		matches: r.matches.map(card),
 		uncertain: r.uncertain.map(card),
-		challenge: challenge ? { id: challenge.id, title: challenge.title, needCount: challenge.needCount } : null,
+		challenge: challenge
+			? { id: challenge.id, title: challenge.title, needCount: challenge.needCount }
+			: null,
 		similar,
 		timeline: timeline.map((t) => ({ status: t.status, note: t.note, at: t.createdAt })),
 		canAccept: !!isOwnerOrAdmin,

@@ -16,7 +16,12 @@ const fieldSchema = z.object({
 
 const DEFAULT_SCHEMA = [
 	{ key: 'title', label_pl: 'Nazwa projektu', type: 'text', max_length: 120 },
-	{ key: 'problem', label_pl: 'Na jaki problem odpowiada projekt?', type: 'textarea', max_length: 1500 },
+	{
+		key: 'problem',
+		label_pl: 'Na jaki problem odpowiada projekt?',
+		type: 'textarea',
+		max_length: 1500
+	},
 	{ key: 'solution', label_pl: 'Opis rozwiązania', type: 'textarea', max_length: 2000 },
 	{ key: 'budget', label_pl: 'Budżet', type: 'textarea', max_length: 800 }
 ];
@@ -44,8 +49,10 @@ export const actions: Actions = {
 				form_schema: z.array(fieldSchema).min(1).max(30)
 			})
 			.safeParse({ ...f, form_schema: schemaJson });
-		if (!parsed.success) return fail(400, { schemaError: parsed.error.issues[0]?.message ?? 'invalid', values: f });
-		if (parsed.data.closes_at <= parsed.data.opens_at) return fail(400, { schemaError: 'dates', values: f });
+		if (!parsed.success)
+			return fail(400, { schemaError: parsed.error.issues[0]?.message ?? 'invalid', values: f });
+		if (parsed.data.closes_at <= parsed.data.opens_at)
+			return fail(400, { schemaError: 'dates', values: f });
 		await db.insert(calls).values({
 			name: parsed.data.name,
 			description: parsed.data.description,

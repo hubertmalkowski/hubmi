@@ -53,19 +53,34 @@
 	<div class="flex flex-col gap-8">
 		<header>
 			<h1 class="text-3xl font-bold">{m.results_title()}</h1>
-			<blockquote class="border-primary bg-card mt-4 rounded-lg border-l-4 p-4 text-lg">{data.need.text}</blockquote>
+			<blockquote class="mt-4 rounded-lg border-l-4 border-primary bg-card p-4 text-lg">
+				{data.need.text}
+			</blockquote>
 			<div class="mt-3 flex flex-wrap items-center gap-2">
 				{#if data.need.areaSlug}<Badge>{areaLabel(data.need.areaSlug)}</Badge>{/if}
-				{#each data.need.targetGroups as g (g)}<Badge variant="secondary">{groupLabel(g)}</Badge>{/each}
-				{#if data.need.place}<Badge variant="outline">{data.need.place.name}, {m.report_powiat({ name: data.need.place.powiat })}</Badge>{/if}
-				<span class="text-muted-foreground text-sm">{formatDay(data.need.createdAt, getLocale())}</span>
+				{#each data.need.targetGroups as g (g)}<Badge variant="secondary">{groupLabel(g)}</Badge
+					>{/each}
+				{#if data.need.place}<Badge variant="outline"
+						>{data.need.place.name}, {m.report_powiat({ name: data.need.place.powiat })}</Badge
+					>{/if}
+				<span class="text-sm text-muted-foreground"
+					>{formatDay(data.need.createdAt, getLocale())}</span
+				>
 			</div>
 		</header>
 
 		{#if pending}
-			<section aria-live="polite" aria-busy="true" class="bg-card border-border rounded-xl border p-6">
+			<section
+				aria-live="polite"
+				aria-busy="true"
+				class="rounded-xl border border-border bg-card p-6"
+			>
 				<h2 class="text-xl font-semibold">{m.progress_title()}</h2>
-				<Progress value={((STEPS.indexOf(step as (typeof STEPS)[number]) + 1) / STEPS.length) * 100} class="mt-4" aria-label={m.progress_title()} />
+				<Progress
+					value={((STEPS.indexOf(step as (typeof STEPS)[number]) + 1) / STEPS.length) * 100}
+					class="mt-4"
+					aria-label={m.progress_title()}
+				/>
 				<p class="mt-3">{stepLabel(step)}</p>
 				<noscript><p class="mt-2">{m.progress_noscript()}</p></noscript>
 			</section>
@@ -78,27 +93,46 @@
 		{:else}
 			{#if data.matches.length}
 				<section aria-labelledby="matches-title" aria-live="polite">
-					<h2 id="matches-title" class="text-2xl font-bold">{m.results_matches_title({ count: String(data.matches.length) })}</h2>
-					<p class="text-muted-foreground mt-1">{m.results_matches_help()}</p>
+					<h2 id="matches-title" class="text-2xl font-bold">
+						{m.results_matches_title({ count: String(data.matches.length) })}
+					</h2>
+					<p class="mt-1 text-muted-foreground">{m.results_matches_help()}</p>
 					<ol class="mt-4 grid gap-4 md:grid-cols-2">
 						{#each data.matches as match, i (match.id)}
-							<li><MatchCard {match} rank={i + 1} canAccept={data.canAccept} showRanks={data.showRanks} /></li>
+							<li>
+								<MatchCard
+									{match}
+									rank={i + 1}
+									canAccept={data.canAccept}
+									showRanks={data.showRanks}
+								/>
+							</li>
 						{/each}
 					</ol>
 				</section>
 			{/if}
 
 			{#if data.challenge}
-				<section aria-labelledby="challenge-title" class="border-primary bg-secondary rounded-xl border-2 p-6">
+				<section
+					aria-labelledby="challenge-title"
+					class="rounded-xl border-2 border-primary bg-secondary p-6"
+				>
 					<h2 id="challenge-title" class="flex items-center gap-2 text-2xl font-bold">
 						<FlagIcon class="size-6" aria-hidden="true" />{m.results_challenge_title()}
 					</h2>
 					<p class="mt-2 text-lg">{m.results_challenge_text()}</p>
 					<p class="mt-3 font-semibold">{data.challenge.title}</p>
-					<p class="text-muted-foreground text-sm">{m.results_challenge_count({ count: String(data.challenge.needCount) })}</p>
+					<p class="text-sm text-muted-foreground">
+						{m.results_challenge_count({ count: String(data.challenge.needCount) })}
+					</p>
 					<div class="mt-4 flex flex-wrap gap-2">
-						<Button href={localizeHref(`/challenges/${data.challenge.id}`)}>{m.results_challenge_open()}</Button>
-						<Button href={localizeHref(`/ideas/new?challenge=${data.challenge.id}`)} variant="outline">{m.results_challenge_idea()}</Button>
+						<Button href={localizeHref(`/challenges/${data.challenge.id}`)}
+							>{m.results_challenge_open()}</Button
+						>
+						<Button
+							href={localizeHref(`/ideas/new?challenge=${data.challenge.id}`)}
+							variant="outline">{m.results_challenge_idea()}</Button
+						>
 					</div>
 				</section>
 			{/if}
@@ -106,10 +140,12 @@
 			{#if data.uncertain.length}
 				<section aria-labelledby="uncertain-title">
 					<h2 id="uncertain-title" class="text-xl font-semibold">{m.results_uncertain_title()}</h2>
-					<p class="text-muted-foreground mt-1">{m.results_uncertain_help()}</p>
+					<p class="mt-1 text-muted-foreground">{m.results_uncertain_help()}</p>
 					<ul class="mt-4 grid gap-4 md:grid-cols-2">
 						{#each data.uncertain as match, i (match.id)}
-							<li><MatchCard {match} rank={i + 1} canAccept={false} showRanks={data.showRanks} /></li>
+							<li>
+								<MatchCard {match} rank={i + 1} canAccept={false} showRanks={data.showRanks} />
+							</li>
 						{/each}
 					</ul>
 				</section>
@@ -119,13 +155,15 @@
 
 	<aside class="flex flex-col gap-6">
 		{#if data.similar.count > 0}
-			<section class="bg-card border-border rounded-xl border p-4" aria-labelledby="similar-title">
-				<h2 id="similar-title" class="flex items-center gap-2 font-semibold"><UsersIcon class="size-5" aria-hidden="true" />{m.similar_title()}</h2>
+			<section class="rounded-xl border border-border bg-card p-4" aria-labelledby="similar-title">
+				<h2 id="similar-title" class="flex items-center gap-2 font-semibold">
+					<UsersIcon class="size-5" aria-hidden="true" />{m.similar_title()}
+				</h2>
 				<p class="mt-2">{m.similar_text({ count: String(data.similar.count) })}</p>
-				<p class="text-muted-foreground mt-1 text-sm">
+				<p class="mt-1 text-sm text-muted-foreground">
 					{data.similar.powiats.map((p) => POWIAT_NAME.get(p) ?? p).join(', ')}
 				</p>
-				<p class="text-muted-foreground mt-2 text-sm">{m.similar_partner()}</p>
+				<p class="mt-2 text-sm text-muted-foreground">{m.similar_partner()}</p>
 			</section>
 		{/if}
 		<StatusTimeline events={data.timeline} />

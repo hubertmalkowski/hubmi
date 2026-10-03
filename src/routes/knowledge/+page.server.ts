@@ -8,7 +8,9 @@ export const load: PageServerLoad = async ({ url, setHeaders }) => {
 	const [byPowiat, areas, innovationsPerArea] = await Promise.all([
 		needsByPowiat(area),
 		areaCounts(),
-		sql<{ area: string; n: number }[]>`SELECT area_slug AS area, count(*)::int AS n FROM innovations WHERE status = 'published' GROUP BY 1`
+		sql<
+			{ area: string; n: number }[]
+		>`SELECT area_slug AS area, count(*)::int AS n FROM innovations WHERE status = 'published' GROUP BY 1`
 	]);
 	return {
 		byPowiat,

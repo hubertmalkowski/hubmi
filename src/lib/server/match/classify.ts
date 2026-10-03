@@ -32,11 +32,16 @@ export async function classifyNeed(text: string): Promise<Classification> {
 	let place: Classification['place'];
 	if (a.place && a.place.choice !== 'none' && a.place.confidence >= PLACE_CONFIDENCE) {
 		const c = candidates[Number(String(a.place.choice).slice(1)) - 1];
-		if (c) place = { teryt: c.teryt, name: c.name, powiat: c.powiat, confidence: a.place.confidence };
+		if (c)
+			place = { teryt: c.teryt, name: c.name, powiat: c.powiat, confidence: a.place.confidence };
 	}
 
 	return {
-		area: { slug: a.area.choice, p: a.area.probabilities[a.area.choice], confidence: a.area.confidence },
+		area: {
+			slug: a.area.choice,
+			p: a.area.probabilities[a.area.choice],
+			confidence: a.area.confidence
+		},
 		targetGroups: groups
 			.map((g) => ({ slug: g.slug, p: a[`tg_${g.slug}`]?.noul ?? 0 }))
 			.sort((x, y) => y.p - x.p),
@@ -66,7 +71,9 @@ export async function redactPii(text: string): Promise<Redaction> {
 			{ text, candidates: Object.fromEntries(names.map((n, i) => [keys[i], n.text])) },
 			personNameQuestions(keys)
 		)) as Record<string, { noul: number }>;
-		confirmed = confirmed.concat(names.filter((_, i) => (ans[`name_${keys[i]}`]?.noul ?? 0) >= 0.5));
+		confirmed = confirmed.concat(
+			names.filter((_, i) => (ans[`name_${keys[i]}`]?.noul ?? 0) >= 0.5)
+		);
 	}
 	return { text: redact(text, confirmed), spans: confirmed };
 }

@@ -21,12 +21,19 @@ export async function userThreads(user: SessionUser) {
 	const myIdeas = db.select({ id: ideas.id }).from(ideas).where(eq(ideas.authorId, user.id));
 	const myNeeds = db.select({ id: needs.id }).from(needs).where(eq(needs.authorId, user.id));
 	return base
-		.where(dsql`${threads.subjectId} in (${myIdeas}) or ${threads.subjectId} in (${myNeeds}) or ${threads.assignedExpertId} = ${user.id}`)
+		.where(
+			dsql`${threads.subjectId} in (${myIdeas}) or ${threads.subjectId} in (${myNeeds}) or ${threads.assignedExpertId} = ${user.id}`
+		)
 		.orderBy(desc(threads.updatedAt));
 }
 
 export async function userNotifications(userId: string, limit = 30) {
-	return db.select().from(notifications).where(eq(notifications.userId, userId)).orderBy(desc(notifications.createdAt)).limit(limit);
+	return db
+		.select()
+		.from(notifications)
+		.where(eq(notifications.userId, userId))
+		.orderBy(desc(notifications.createdAt))
+		.limit(limit);
 }
 
 export async function markRead(userId: string, ids?: string[]) {

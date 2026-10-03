@@ -35,7 +35,7 @@
 
 <a
 	href="#main"
-	class="bg-primary text-primary-foreground sr-only z-50 rounded-md px-4 py-3 font-semibold focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+	class="sr-only z-50 rounded-md bg-primary px-4 py-3 font-semibold text-primary-foreground focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
 >
 	{m.a11y_skip_to_content()}
 </a>
@@ -47,9 +47,9 @@
 	{@render children()}
 </main>
 
-<footer class="border-border text-muted-foreground no-print mt-16 border-t">
+<footer class="no-print mt-16 border-t border-border text-muted-foreground">
 	<div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-8 text-sm sm:px-6">
-		<p class="text-foreground font-semibold">{m.app_name()}: {m.footer_hub()}</p>
+		<p class="font-semibold text-foreground">{m.app_name()}: {m.footer_hub()}</p>
 		<p>{m.footer_rops()}</p>
 		<p>{m.footer_demo_data()}</p>
 	</div>

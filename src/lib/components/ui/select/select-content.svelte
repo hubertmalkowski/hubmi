@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { Select as SelectPrimitive } from "bits-ui";
-	import { cn, type WithoutChild } from "$lib/utils.js";
-	import type { WithoutChildrenOrChild } from "$lib/utils.js";
-	import SelectPortal from "./select-portal.svelte";
-	import SelectScrollDownButton from "./select-scroll-down-button.svelte";
-	import SelectScrollUpButton from "./select-scroll-up-button.svelte";
-	import type { ComponentProps } from "svelte";
+	import { Select as SelectPrimitive } from 'bits-ui';
+	import { cn, type WithoutChild } from '$lib/utils.js';
+	import type { WithoutChildrenOrChild } from '$lib/utils.js';
+	import SelectPortal from './select-portal.svelte';
+	import SelectScrollDownButton from './select-scroll-down-button.svelte';
+	import SelectScrollUpButton from './select-scroll-up-button.svelte';
+	import type { ComponentProps } from 'svelte';
 
 	let {
 		ref = $bindable(null),
@@ -30,7 +30,7 @@
 		{preventScroll}
 		data-slot="select-content"
 		class={cn(
-			"cn-select-content cn-select-content-logical relative z-50 max-h-(--bits-select-content-available-height) origin-(--bits-select-content-transform-origin) overflow-x-hidden overflow-y-auto",
+			'cn-select-content cn-select-content-logical relative z-50 max-h-(--bits-select-content-available-height) origin-(--bits-select-content-transform-origin) overflow-x-hidden overflow-y-auto',
 			className
 		)}
 		{...restProps}
@@ -39,7 +39,7 @@
 		<SelectPrimitive.Viewport
 			class={cn(
 				// parity-ignore: Bits anchors the viewport to the trigger box unconditionally; Radix gates the same sizing behind data-[position=popper]
-				"cn-select-viewport h-(--bits-select-anchor-height) w-full min-w-(--bits-select-anchor-width) scroll-my-1"
+				'cn-select-viewport h-(--bits-select-anchor-height) w-full min-w-(--bits-select-anchor-width) scroll-my-1'
 			)}
 		>
 			{@render children?.()}

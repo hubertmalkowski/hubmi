@@ -6,7 +6,10 @@ import type { RequestHandler } from './$types';
 
 /** Server-sent progress of the need pipeline, relayed from Postgres LISTEN/NOTIFY. */
 export const GET: RequestHandler = async ({ params, request }) => {
-	const need = await db.query.needs.findFirst({ where: eq(needs.id, params.id), columns: { status: true } });
+	const need = await db.query.needs.findFirst({
+		where: eq(needs.id, params.id),
+		columns: { status: true }
+	});
 	if (!need) return new Response('not found', { status: 404 });
 
 	const enc = new TextEncoder();
@@ -39,7 +42,10 @@ export const GET: RequestHandler = async ({ params, request }) => {
 			});
 			unlisten = l.unlisten;
 			// re-check after subscribing, in case processing finished in between
-			const now = await db.query.needs.findFirst({ where: eq(needs.id, params.id), columns: { status: true } });
+			const now = await db.query.needs.findFirst({
+				where: eq(needs.id, params.id),
+				columns: { status: true }
+			});
 			if (now && now.status !== 'new' && now.status !== 'processing') {
 				send('done', { status: now.status });
 				return close();
@@ -53,6 +59,10 @@ export const GET: RequestHandler = async ({ params, request }) => {
 	});
 
 	return new Response(stream, {
-		headers: { 'content-type': 'text/event-stream', 'cache-control': 'no-cache', connection: 'keep-alive' }
+		headers: {
+			'content-type': 'text/event-stream',
+			'cache-control': 'no-cache',
+			connection: 'keep-alive'
+		}
 	});
 };

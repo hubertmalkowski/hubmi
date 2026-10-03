@@ -8,9 +8,16 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, locals, url }) => {
 	if (!locals.user) redirect(303, localizeHref(`/login?next=${encodeURIComponent(url.pathname)}`));
-	if (!/^[0-9a-f-]{36}$/.test(params.threadId) || !(await canAccessThread(params.threadId, locals.user))) error(404, { message: 'Nie znaleziono' });
+	if (
+		!/^[0-9a-f-]{36}$/.test(params.threadId) ||
+		!(await canAccessThread(params.threadId, locals.user))
+	)
+		error(404, { message: 'Nie znaleziono' });
 	const t = await db.query.threads.findFirst({ where: eq(threads.id, params.threadId) });
-	return { thread: { id: t!.id, title: t!.title, subjectType: t!.subjectType, subjectId: t!.subjectId }, messages: await threadMessages(t!.id) };
+	return {
+		thread: { id: t!.id, title: t!.title, subjectType: t!.subjectType, subjectId: t!.subjectId },
+		messages: await threadMessages(t!.id)
+	};
 };
 
 export const actions: Actions = {

@@ -9,11 +9,15 @@ import { localizeHref } from '$lib/paraglide/runtime';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-	if (!locals.user) redirect(303, localizeHref(`/login?next=${encodeURIComponent(url.pathname + url.search)}`));
+	if (!locals.user)
+		redirect(303, localizeHref(`/login?next=${encodeURIComponent(url.pathname + url.search)}`));
 	const challengeId = url.searchParams.get('challenge');
 	const challenge =
 		challengeId && /^[0-9a-f-]{36}$/.test(challengeId)
-			? await db.query.challenges.findFirst({ where: eq(challenges.id, challengeId), columns: { id: true, title: true } })
+			? await db.query.challenges.findFirst({
+					where: eq(challenges.id, challengeId),
+					columns: { id: true, title: true }
+				})
 			: undefined;
 	return { challenge: challenge ?? null };
 };
@@ -24,7 +28,10 @@ export const actions: Actions = {
 		const form = Object.fromEntries(await request.formData());
 		const parsed = ideaSchema.safeParse(form);
 		if (!parsed.success) {
-			return fail(400, { values: form as Record<string, string>, errors: parsed.error.flatten().fieldErrors });
+			return fail(400, {
+				values: form as Record<string, string>,
+				errors: parsed.error.flatten().fieldErrors
+			});
 		}
 		const d = parsed.data;
 		const [idea] = await db

@@ -24,7 +24,8 @@ export function decisions(): DecisionProvider {
 	if (cached) return cached;
 	if (mockDecisions()) return (cached = mockDecisionProvider);
 	const primary = env.decisionProvider === 'claude' ? claudeDecisionProvider : jevProvider;
-	const fallback = primary === jevProvider && anthropicAvailable() ? claudeDecisionProvider : undefined;
+	const fallback =
+		primary === jevProvider && anthropicAvailable() ? claudeDecisionProvider : undefined;
 	cached = {
 		name: primary.name,
 		async ask(kind, state, questions) {
@@ -32,7 +33,10 @@ export function decisions(): DecisionProvider {
 				return await primary.ask(kind, state, questions);
 			} catch (e) {
 				if (!fallback) throw new DecisionError(`${primary.name} failed: ${(e as Error).message}`);
-				console.warn(`[decision] ${primary.name} failed for ${kind}, falling back to Claude:`, (e as Error).message);
+				console.warn(
+					`[decision] ${primary.name} failed for ${kind}, falling back to Claude:`,
+					(e as Error).message
+				);
 				return fallback.ask(kind, state, questions);
 			}
 		}

@@ -18,7 +18,9 @@ export const actions: Actions = {
 		const form = await request.formData();
 		const userId = String(form.get('userId') ?? '');
 		const next = String(form.get('next') ?? '/');
-		const user = userId ? await db.query.users.findFirst({ where: eq(users.id, userId) }) : undefined;
+		const user = userId
+			? await db.query.users.findFirst({ where: eq(users.id, userId) })
+			: undefined;
 		if (!user) return fail(400, { error: true });
 		await createSession(cookies, user.id, url.protocol === 'https:');
 		redirect(303, next.startsWith('/') && !next.startsWith('//') ? next : '/');

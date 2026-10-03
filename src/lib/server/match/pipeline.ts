@@ -37,7 +37,12 @@ export async function processNeed(needId: string, progress: Progress = () => {})
 			.update(needs)
 			.set({ redactedText: redacted, piiFlag: true, status: 'moderation', areaSlug: c.area.slug })
 			.where(eq(needs.id, needId));
-		await addStatus('need', needId, 'moderation', 'Zgłoszenie może zawierać dane osobowe i czeka na moderację.');
+		await addStatus(
+			'need',
+			needId,
+			'moderation',
+			'Zgłoszenie może zawierać dane osobowe i czeka na moderację.'
+		);
 		await notifyAdmins('need.moderation', 'need', needId);
 		await progress('done', { status: 'moderation' });
 		return { status: 'moderation' as const };
@@ -45,9 +50,14 @@ export async function processNeed(needId: string, progress: Progress = () => {})
 
 	const locale = need.locale as Locale;
 	const normalized = locale === 'pl' ? null : await normalizePl(redacted);
-	const targetGroups = c.targetGroups.filter((g) => g.p >= TARGET_GROUP_THRESHOLD).map((g) => g.slug);
+	const targetGroups = c.targetGroups
+		.filter((g) => g.p >= TARGET_GROUP_THRESHOLD)
+		.map((g) => g.slug);
 	const placeTeryt = need.placeTeryt ?? c.place?.teryt ?? null;
-	const [docVector, queryVector] = await Promise.all([embedOne(redacted, 'document'), embedOne(redacted, 'query')]);
+	const [docVector, queryVector] = await Promise.all([
+		embedOne(redacted, 'document'),
+		embedOne(redacted, 'query')
+	]);
 
 	await db
 		.update(needs)
@@ -95,7 +105,9 @@ export async function processNeed(needId: string, progress: Progress = () => {})
 		title: byId.get(s.id)!.doc.title,
 		summary: byId.get(s.id)!.doc.summary
 	}));
-	const reasons = await matchReasons(redacted, explain, locale).catch(() => ({}) as Record<string, string>);
+	const reasons = await matchReasons(redacted, explain, locale).catch(
+		() => ({}) as Record<string, string>
+	);
 	const shownIds = new Set(shown.map((s) => s.id));
 
 	await db.delete(matches).where(eq(matches.needId, needId));
@@ -138,7 +150,9 @@ export async function processNeed(needId: string, progress: Progress = () => {})
 		'need',
 		needId,
 		status,
-		isChallenge ? 'Brak pewnego dopasowania: potrzeba trafiła do otwartych wyzwań.' : `Znaleziono ${shown.length} dopasowań.`
+		isChallenge
+			? 'Brak pewnego dopasowania: potrzeba trafiła do otwartych wyzwań.'
+			: `Znaleziono ${shown.length} dopasowań.`
 	);
 	if (need.authorId) await notify([need.authorId], `need.${status}`, 'need', needId);
 	if (c.pUrgent >= 0.5) await notifyAdmins('need.urgent', 'need', needId);
@@ -147,7 +161,12 @@ export async function processNeed(needId: string, progress: Progress = () => {})
 	return { status, kept: shown.length, challengeId };
 }
 
-async function rerank(text: string, placeTeryt: string | null, groups: string[], hits: HybridHit[]): Promise<Scored[]> {
+export async function rerank(
+	text: string,
+	placeTeryt: string | null,
+	groups: string[],
+	hits: HybridHit[]
+): Promise<Scored[]> {
 	if (!hits.length) return [];
 	const keys = hits.map((_, i) => `c${i + 1}`);
 	const state = {
@@ -155,7 +174,12 @@ async function rerank(text: string, placeTeryt: string | null, groups: string[],
 		candidates: Object.fromEntries(
 			hits.map((h, i) => [
 				keys[i],
-				{ title: h.doc.title, summary: h.doc.summary, target_groups: h.doc.target_groups, stage: h.doc.stage }
+				{
+					title: h.doc.title,
+					summary: h.doc.summary,
+					target_groups: h.doc.target_groups,
+					stage: h.doc.stage
+				}
 			])
 		)
 	};
@@ -182,12 +206,15 @@ export async function needResult(needId: string) {
 	if (!need) return null;
 	const rows = await db.select().from(matches).where(eq(matches.needId, needId));
 	const inno = rows.length
-		? await db.select().from(innovations).where(
-				inArray(
-					innovations.id,
-					rows.map((r) => r.innovationId)
+		? await db
+				.select()
+				.from(innovations)
+				.where(
+					inArray(
+						innovations.id,
+						rows.map((r) => r.innovationId)
+					)
 				)
-			)
 		: [];
 	const byId = new Map(inno.map((i) => [i.id, i]));
 	const withDoc = rows

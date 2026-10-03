@@ -43,7 +43,15 @@
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({
 					innovation_slug: data.innovation.slug,
-					profile: { institutionType, placeTeryt: placeTeryt || undefined, populationBand, budgetBand, existingServices: services, staff, notes }
+					profile: {
+						institutionType,
+						placeTeryt: placeTeryt || undefined,
+						populationBand,
+						budgetBand,
+						existingServices: services,
+						staff,
+						notes
+					}
 				})
 			});
 			if (!res.ok || !res.body) throw new Error();
@@ -66,11 +74,17 @@
 <svelte:head><title>{m.adapt_title()} | {m.app_name()}</title></svelte:head>
 
 <div class="no-print">
-	<nav aria-label={m.breadcrumb()} class="text-muted-foreground text-sm">
-		<a class="underline underline-offset-4" href={localizeHref(`/knowledge/library/${data.innovation.slug}`)}>{data.innovation.title}</a> / <span aria-current="page">{m.adapt_title()}</span>
+	<nav aria-label={m.breadcrumb()} class="text-sm text-muted-foreground">
+		<a
+			class="underline underline-offset-4"
+			href={localizeHref(`/knowledge/library/${data.innovation.slug}`)}>{data.innovation.title}</a
+		>
+		/ <span aria-current="page">{m.adapt_title()}</span>
 	</nav>
 	<h1 class="mt-3 text-3xl font-bold">{m.adapt_title()}</h1>
-	<p class="text-muted-foreground mt-2 max-w-3xl text-lg">{m.adapt_lead({ title: data.innovation.title })}</p>
+	<p class="mt-2 max-w-3xl text-lg text-muted-foreground">
+		{m.adapt_lead({ title: data.innovation.title })}
+	</p>
 </div>
 
 <div class="mt-6 grid gap-8 lg:grid-cols-[22rem_1fr]">
@@ -78,26 +92,33 @@
 		<div class="flex flex-col gap-2">
 			<Label for="itype">{m.adapt_institution()}</Label>
 			<select id="itype" bind:value={institutionType} class={sel}>
-				{#each ['gmina (OPS/CUS)', 'powiat (PCPR)', 'organizacja pozarządowa', 'szkoła lub biblioteka'] as o (o)}<option value={o}>{o}</option>{/each}
+				{#each ['gmina (OPS/CUS)', 'powiat (PCPR)', 'organizacja pozarządowa', 'szkoła lub biblioteka'] as o (o)}<option
+						value={o}>{o}</option
+					>{/each}
 			</select>
 		</div>
 		<div class="flex flex-col gap-2">
 			<Label for="gmina">{m.adapt_gmina()}</Label>
 			<select id="gmina" bind:value={placeTeryt} class={sel}>
 				<option value="">{m.report_place_unknown()}</option>
-				{#each data.gminas as g (g.teryt)}<option value={g.teryt}>{g.name} ({g.powiat})</option>{/each}
+				{#each data.gminas as g (g.teryt)}<option value={g.teryt}>{g.name} ({g.powiat})</option
+					>{/each}
 			</select>
 		</div>
 		<div class="flex flex-col gap-2">
 			<Label for="pop">{m.adapt_population()}</Label>
 			<select id="pop" bind:value={populationBand} class={sel}>
-				{#each ['do 5 tys.', '5-20 tys.', '20-50 tys.', 'powyżej 50 tys.'] as o (o)}<option value={o}>{o}</option>{/each}
+				{#each ['do 5 tys.', '5-20 tys.', '20-50 tys.', 'powyżej 50 tys.'] as o (o)}<option
+						value={o}>{o}</option
+					>{/each}
 			</select>
 		</div>
 		<div class="flex flex-col gap-2">
 			<Label for="budget">{m.adapt_budget()}</Label>
 			<select id="budget" bind:value={budgetBand} class={sel}>
-				{#each ['do 50 tys. zł rocznie', '50-200 tys. zł rocznie', 'powyżej 200 tys. zł rocznie'] as o (o)}<option value={o}>{o}</option>{/each}
+				{#each ['do 50 tys. zł rocznie', '50-200 tys. zł rocznie', 'powyżej 200 tys. zł rocznie'] as o (o)}<option
+						value={o}>{o}</option
+					>{/each}
 			</select>
 		</div>
 		<fieldset class="flex flex-col gap-2">
@@ -107,7 +128,8 @@
 					<Checkbox
 						id="svc-{key}"
 						checked={services.includes(label)}
-						onCheckedChange={(v) => (services = v ? [...services, label] : services.filter((s) => s !== label))}
+						onCheckedChange={(v) =>
+							(services = v ? [...services, label] : services.filter((s) => s !== label))}
 					/>
 					<Label for="svc-{key}" class="font-normal">{label}</Label>
 				</div>
@@ -115,26 +137,36 @@
 		</fieldset>
 		<div class="flex flex-col gap-2">
 			<Label for="staff">{m.adapt_staff()}</Label>
-			<Textarea id="staff" rows={2} bind:value={staff} maxlength={200} placeholder={m.adapt_staff_placeholder()} />
+			<Textarea
+				id="staff"
+				rows={2}
+				bind:value={staff}
+				maxlength={200}
+				placeholder={m.adapt_staff_placeholder()}
+			/>
 		</div>
 		<div class="flex flex-col gap-2">
 			<Label for="notes">{m.adapt_notes()}</Label>
 			<Textarea id="notes" rows={3} bind:value={notes} maxlength={1000} />
 		</div>
-		<Button type="submit" size="lg" disabled={busy}>{#if busy}<Spinner />{/if}{m.adapt_generate()}</Button>
-		<p class="text-muted-foreground text-sm" role="status">{status}</p>
+		<Button type="submit" size="lg" disabled={busy}
+			>{#if busy}<Spinner />{/if}{m.adapt_generate()}</Button
+		>
+		<p class="text-sm text-muted-foreground" role="status">{status}</p>
 	</form>
 
 	<section aria-labelledby="sheet-title" aria-live="polite" aria-busy={busy}>
 		<div class="no-print flex items-center justify-between gap-2">
 			<h2 id="sheet-title" class="text-xl font-semibold">{m.adapt_sheet_title()}</h2>
-			{#if sheet && !busy}<Button variant="outline" onclick={() => window.print()}><PrinterIcon class="size-4" aria-hidden="true" />{m.adapt_print()}</Button>{/if}
+			{#if sheet && !busy}<Button variant="outline" onclick={() => window.print()}
+					><PrinterIcon class="size-4" aria-hidden="true" />{m.adapt_print()}</Button
+				>{/if}
 		</div>
-		<div class="bg-card border-border mt-3 min-h-64 rounded-xl border p-6">
+		<div class="mt-3 min-h-64 rounded-xl border border-border bg-card p-6">
 			{#if sheet}
 				<p class="mb-4 text-lg font-semibold print:text-2xl">{data.innovation.title}</p>
 				<Markdown source={sheet} />
-				<p class="text-muted-foreground mt-6 text-xs">{m.adapt_disclaimer()}</p>
+				<p class="mt-6 text-xs text-muted-foreground">{m.adapt_disclaimer()}</p>
 			{:else}
 				<p class="text-muted-foreground">{m.adapt_empty()}</p>
 			{/if}

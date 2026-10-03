@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { cn, type WithElementRef } from "$lib/utils.js";
-	import type { HTMLAttributes } from "svelte/elements";
+	import { cn, type WithElementRef } from '$lib/utils.js';
+	import type { HTMLAttributes } from 'svelte/elements';
 
 	let {
 		ref = $bindable(null),
@@ -13,7 +13,7 @@
 <caption
 	bind:this={ref}
 	data-slot="table-caption"
-	class={cn("cn-table-caption", className)}
+	class={cn('cn-table-caption', className)}
 	{...restProps}
 >
 	{@render children?.()}

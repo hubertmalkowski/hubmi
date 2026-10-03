@@ -45,7 +45,11 @@ Confidence is your probability (0 to 1) that the chosen answer is correct.`;
 
 export const claudeDecisionProvider: DecisionProvider = {
 	name: 'claude',
-	async ask<const Q extends Questions>(kind: string, state: EntryType, questions: Q): Promise<Answers<Q>> {
+	async ask<const Q extends Questions>(
+		kind: string,
+		state: EntryType,
+		questions: Q
+	): Promise<Answers<Q>> {
 		const shape: Record<string, z.ZodType> = {};
 		for (const [name, q] of Object.entries(questions)) shape[name] = answerSchema(q);
 		const raw = (await structured({
@@ -62,7 +66,10 @@ export const claudeDecisionProvider: DecisionProvider = {
 			mock: () => {
 				throw new Error('claude decision provider used in mock mode');
 			}
-		})) as Record<string, { label?: string; level?: number; probability?: number; confidence?: number }>;
+		})) as Record<
+			string,
+			{ label?: string; level?: number; probability?: number; confidence?: number }
+		>;
 
 		const out: Record<string, unknown> = {};
 		for (const [name, q] of Object.entries(questions)) {
@@ -84,7 +91,9 @@ export const claudeDecisionProvider: DecisionProvider = {
 				const n = q.criteria.length;
 				const level = Math.min(n - 1, Math.max(0, Math.round(a.level ?? 0)));
 				const rest = n > 1 ? (1 - conf) / (n - 1) : 0;
-				const probabilities = Object.fromEntries(q.criteria.map((_, i) => [String(i), i === level ? conf : rest]));
+				const probabilities = Object.fromEntries(
+					q.criteria.map((_, i) => [String(i), i === level ? conf : rest])
+				);
 				const score = Object.entries(probabilities).reduce((s, [k, p]) => s + Number(k) * p, 0);
 				out[name] = {
 					type: 'score',

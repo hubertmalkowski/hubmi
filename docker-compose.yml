@@ -43,7 +43,7 @@ services:
   worker:
     profiles: [app]
     build: .
-    command: ['node', 'build-worker/worker.js']
+    command: ['node', '--import', 'tsx', 'src/worker.ts']
     env_file: .env
     environment:
       DATABASE_URL: postgres://zaczyn:zaczyn@db:5432/zaczyn

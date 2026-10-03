@@ -31,7 +31,9 @@ export const models = {
 } as const;
 
 export function mockDecisions() {
-	return env.aiMock || (env.decisionProvider === 'jev' ? !env.typesafeApiKey : !env.anthropicApiKey);
+	return (
+		env.aiMock || (env.decisionProvider === 'jev' ? !env.typesafeApiKey : !env.anthropicApiKey)
+	);
 }
 export function mockClaude() {
 	return env.aiMock || !env.anthropicApiKey;

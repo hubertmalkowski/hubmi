@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { cn, type WithElementRef } from "$lib/utils.js";
-	import type { HTMLAttributes } from "svelte/elements";
+	import { cn, type WithElementRef } from '$lib/utils.js';
+	import type { HTMLAttributes } from 'svelte/elements';
 
 	let {
 		ref = $bindable(null),
@@ -13,7 +13,7 @@
 <tfoot
 	bind:this={ref}
 	data-slot="table-footer"
-	class={cn("cn-table-footer", className)}
+	class={cn('cn-table-footer', className)}
 	{...restProps}
 >
 	{@render children?.()}

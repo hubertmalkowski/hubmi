@@ -40,12 +40,14 @@
 			<Skeleton class="h-16 w-full" />
 			<span class="sr-only">{m.a11y_easy_loading()}</span>
 		{:else if simple}
-			<div class="border-primary bg-secondary mt-2 rounded-lg border-l-4 p-4 text-lg leading-relaxed whitespace-pre-line">
-				<p class="text-muted-foreground mb-1 text-sm font-semibold">{m.a11y_easy_badge()}</p>
+			<div
+				class="mt-2 rounded-lg border-l-4 border-primary bg-secondary p-4 text-lg leading-relaxed whitespace-pre-line"
+			>
+				<p class="mb-1 text-sm font-semibold text-muted-foreground">{m.a11y_easy_badge()}</p>
 				{simple}
 			</div>
 		{:else if failed}
-			<p class="text-muted-foreground text-sm">{m.a11y_easy_failed()}</p>
+			<p class="text-sm text-muted-foreground">{m.a11y_easy_failed()}</p>
 		{/if}
 	</div>
 {/if}

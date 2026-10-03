@@ -37,7 +37,10 @@ export async function assignChallenge(need: {
 		const keys = hits.map((_, i) => `c${i + 1}`);
 		const ans = (await decisions().ask(
 			'challenge.attach',
-			{ need: { text: need.redactedText }, challenges: Object.fromEntries(hits.map((h, i) => [keys[i], h._source!])) },
+			{
+				need: { text: need.redactedText },
+				challenges: Object.fromEntries(hits.map((h, i) => [keys[i], h._source!]))
+			},
 			sameChallengeQuestions(keys)
 		)) as Record<string, { noul: number }>;
 		let best = -1;

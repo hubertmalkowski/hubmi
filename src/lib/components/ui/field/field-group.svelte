@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { cn, type WithElementRef } from "$lib/utils.js";
-	import type { HTMLAttributes } from "svelte/elements";
+	import { cn, type WithElementRef } from '$lib/utils.js';
+	import type { HTMLAttributes } from 'svelte/elements';
 
 	let {
 		ref = $bindable(null),
@@ -14,7 +14,7 @@
 	bind:this={ref}
 	data-slot="field-group"
 	class={cn(
-		"cn-field-group group/field-group @container/field-group flex w-full flex-col",
+		'cn-field-group group/field-group @container/field-group flex w-full flex-col',
 		className
 	)}
 	{...restProps}

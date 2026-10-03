@@ -25,7 +25,12 @@ export async function getBoss(): Promise<PgBoss> {
 		b.on('error', (e) => console.error('[pg-boss]', e));
 		await b.start();
 		for (const name of Object.values(QUEUES)) {
-			await b.createQueue(name, { retryLimit: 2, retryDelay: 5, retryBackoff: true, expireInSeconds: 300 });
+			await b.createQueue(name, {
+				retryLimit: 2,
+				retryDelay: 5,
+				retryBackoff: true,
+				expireInSeconds: 300
+			});
 		}
 		boss = b;
 		return b;

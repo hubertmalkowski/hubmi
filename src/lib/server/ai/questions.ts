@@ -35,9 +35,15 @@ export function intakeQuestions(areas: AreaDef[], groups: GroupDef[], placeCandi
 			'Does `text` contain personal data of a private individual, such as a full name, phone number, email, ID number or home address?'
 		),
 		...Object.fromEntries(
-			groups.map((g) => [`tg_${g.slug}`, noul(`Are ${g.descriptionEn} among the people affected by the problem in \`text\`?`)])
+			groups.map((g) => [
+				`tg_${g.slug}`,
+				noul(`Are ${g.descriptionEn} among the people affected by the problem in \`text\`?`)
+			])
 		)
-	} as Record<string, ReturnType<typeof noul> | ReturnType<typeof choice> | ReturnType<typeof score>>;
+	} as Record<
+		string,
+		ReturnType<typeof noul> | ReturnType<typeof choice> | ReturnType<typeof score>
+	>;
 	if (placeCandidates.length) {
 		qs.place = choice(
 			'Which place is where the problem described in `text` occurs?',
@@ -78,7 +84,10 @@ export function sameChallengeQuestions(keys: string[]) {
 /** Over state `{ text, candidates: { n1: "Jan Kowalski" } }`. */
 export function personNameQuestions(keys: string[]) {
 	return Object.fromEntries(
-		keys.map((k) => [`name_${k}`, noul(`Is \`candidates.${k}\` the name of a private person in \`text\`?`)])
+		keys.map((k) => [
+			`name_${k}`,
+			noul(`Is \`candidates.${k}\` the name of a private person in \`text\`?`)
+		])
 	);
 }
 
@@ -88,7 +97,9 @@ export const completenessQuestions = {
 	has_beneficiary: noul('Does `idea` say who exactly will benefit from it?'),
 	has_mechanism: noul('Does `idea` explain how the solution works in practice?'),
 	has_novelty: noul('Does `idea` say what is new or different compared with existing services?'),
-	has_stage_evidence: noul('Does `idea` describe what has already been done or tested, if anything?')
+	has_stage_evidence: noul(
+		'Does `idea` describe what has already been done or tested, if anything?'
+	)
 };
 
 /** Over state `{ item: { title, text } }`. */

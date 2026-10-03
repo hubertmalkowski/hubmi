@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { cn, type WithElementRef } from "$lib/utils.js";
-	import type { HTMLThAttributes } from "svelte/elements";
+	import { cn, type WithElementRef } from '$lib/utils.js';
+	import type { HTMLThAttributes } from 'svelte/elements';
 
 	let {
 		ref = $bindable(null),
@@ -10,6 +10,6 @@
 	}: WithElementRef<HTMLThAttributes> = $props();
 </script>
 
-<th bind:this={ref} data-slot="table-head" class={cn("cn-table-head", className)} {...restProps}>
+<th bind:this={ref} data-slot="table-head" class={cn('cn-table-head', className)} {...restProps}>
 	{@render children?.()}
 </th>

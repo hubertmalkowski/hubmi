@@ -10,7 +10,12 @@
 		title,
 		selected = $bindable<string | null>(null),
 		interactive = false
-	}: { counts: Record<string, number>; title: string; selected?: string | null; interactive?: boolean } = $props();
+	}: {
+		counts: Record<string, number>;
+		title: string;
+		selected?: string | null;
+		interactive?: boolean;
+	} = $props();
 
 	let showTable = $state(false);
 	const max = $derived(Math.max(1, ...Object.values(counts)));
@@ -21,14 +26,22 @@
 	const GAP = 4;
 	const cols = 7;
 	const rows = 6;
-	const tooltip = (name: string, n: number) => m.map_tile_tooltip({ powiat: name, count: String(n) });
-	const sorted = $derived([...POWIAT_TILES].sort((a, b) => (counts[b.teryt] ?? 0) - (counts[a.teryt] ?? 0)));
+	const tooltip = (name: string, n: number) =>
+		m.map_tile_tooltip({ powiat: name, count: String(n) });
+	const sorted = $derived(
+		[...POWIAT_TILES].sort((a, b) => (counts[b.teryt] ?? 0) - (counts[a.teryt] ?? 0))
+	);
 </script>
 
 <figure class="w-full">
 	<figcaption class="mb-3 flex flex-wrap items-center justify-between gap-2">
 		<span class="text-lg font-semibold">{title}</span>
-		<Button variant="outline" size="sm" onclick={() => (showTable = !showTable)} aria-expanded={showTable}>
+		<Button
+			variant="outline"
+			size="sm"
+			onclick={() => (showTable = !showTable)}
+			aria-expanded={showTable}
+		>
 			{showTable ? m.map_show_map() : m.map_show_table()}
 		</Button>
 	</figcaption>
@@ -52,7 +65,9 @@
 					tabindex={interactive ? 0 : undefined}
 					aria-label={interactive ? tooltip(p.name, n) : undefined}
 					aria-pressed={interactive ? selected === p.teryt : undefined}
-					class={interactive ? 'cursor-pointer focus:outline-none [&:focus-visible>rect]:stroke-[var(--ring)] [&:focus-visible>rect]:stroke-[4]' : ''}
+					class={interactive
+						? 'cursor-pointer focus:outline-none [&:focus-visible>rect]:stroke-[var(--ring)] [&:focus-visible>rect]:stroke-[4]'
+						: ''}
 					onclick={() => interactive && (selected = selected === p.teryt ? null : p.teryt)}
 					onkeydown={(e) => {
 						if (interactive && (e.key === 'Enter' || e.key === ' ')) {
@@ -75,29 +90,24 @@
 					<text x={x + 8} y={y + 22} font-size="12" class="tile-ink-{s}"
 						>{p.city ? `${p.name} (m.)` : p.name}</text
 					>
-					<text
-						x={x + 8}
-						y={y + 50}
-						font-size="20"
-						font-weight="700"
-						class="tile-ink-{s}">{n}</text
+					<text x={x + 8} y={y + 50} font-size="20" font-weight="700" class="tile-ink-{s}">{n}</text
 					>
 				</g>
 			{/each}
 		</svg>
-		<p class="text-muted-foreground mt-2 text-sm">{m.map_legend({ max: String(max) })}</p>
+		<p class="mt-2 text-sm text-muted-foreground">{m.map_legend({ max: String(max) })}</p>
 	{:else}
 		<table class="w-full max-w-xl text-left text-sm">
 			<caption class="sr-only">{title}</caption>
 			<thead>
-				<tr class="border-border border-b">
+				<tr class="border-b border-border">
 					<th scope="col" class="py-2">{m.map_col_powiat()}</th>
 					<th scope="col" class="py-2 text-right">{m.map_col_count()}</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each sorted as p (p.teryt)}
-					<tr class="border-border border-b">
+					<tr class="border-b border-border">
 						<th scope="row" class="py-2 font-normal">{p.name}</th>
 						<td class="py-2 text-right tabular-nums">{counts[p.teryt] ?? 0}</td>
 					</tr>

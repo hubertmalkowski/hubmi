@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Select as SelectPrimitive } from "bits-ui";
+	import { Select as SelectPrimitive } from 'bits-ui';
 	import CheckIcon from '@lucide/svelte/icons/check';
-	import { cn, type WithoutChild } from "$lib/utils.js";
+	import { cn, type WithoutChild } from '$lib/utils.js';
 
 	let {
 		ref = $bindable(null),
@@ -19,9 +19,9 @@
 	{label}
 	data-slot="select-item"
 	class={cn(
-		"cn-select-item relative flex w-full cursor-default items-center outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+		'cn-select-item relative flex w-full cursor-default items-center outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0',
 		// parity-ignore: Bits marks the active item with data-highlighted; Radix uses :focus, which cn-select-item already styles
-		"data-highlighted:bg-accent data-highlighted:text-accent-foreground",
+		'data-highlighted:bg-accent data-highlighted:text-accent-foreground',
 		className
 	)}
 	{...restProps}

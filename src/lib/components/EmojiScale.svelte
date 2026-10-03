@@ -16,7 +16,7 @@
 	<div class="mt-2 grid grid-cols-5 gap-2">
 		{#each options as o (o.v)}
 			<label
-				class="border-border has-checked:border-primary has-checked:bg-secondary has-focus-visible:outline-ring flex min-h-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 p-2 text-center has-focus-visible:outline-3"
+				class="flex min-h-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-border p-2 text-center has-checked:border-primary has-checked:bg-secondary has-focus-visible:outline-3 has-focus-visible:outline-ring"
 			>
 				<input type="radio" {name} value={o.v} bind:group={value} required class="sr-only" />
 				<span class="text-3xl" aria-hidden="true">{o.e}</span>

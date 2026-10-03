@@ -1,29 +1,29 @@
 <script lang="ts" module>
-	import { tv, type VariantProps } from "tailwind-variants";
+	import { tv, type VariantProps } from 'tailwind-variants';
 
 	export const tabsListVariants = tv({
-		base: "cn-tabs-list group/tabs-list inline-flex w-fit items-center justify-center text-muted-foreground group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col",
+		base: 'cn-tabs-list group/tabs-list inline-flex w-fit items-center justify-center text-muted-foreground group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col',
 		variants: {
 			variant: {
-				default: "cn-tabs-list-variant-default bg-muted",
-				line: "cn-tabs-list-variant-line gap-1 bg-transparent",
-			},
+				default: 'cn-tabs-list-variant-default bg-muted',
+				line: 'cn-tabs-list-variant-line gap-1 bg-transparent'
+			}
 		},
 		defaultVariants: {
-			variant: "default",
-		},
+			variant: 'default'
+		}
 	});
 
-	export type TabsListVariant = VariantProps<typeof tabsListVariants>["variant"];
+	export type TabsListVariant = VariantProps<typeof tabsListVariants>['variant'];
 </script>
 
 <script lang="ts">
-	import { Tabs as TabsPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils.js";
+	import { Tabs as TabsPrimitive } from 'bits-ui';
+	import { cn } from '$lib/utils.js';
 
 	let {
 		ref = $bindable(null),
-		variant = "default",
+		variant = 'default',
 		class: className,
 		...restProps
 	}: TabsPrimitive.ListProps & {

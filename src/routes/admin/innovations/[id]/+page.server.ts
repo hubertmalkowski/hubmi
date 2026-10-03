@@ -8,14 +8,21 @@ import { localizeHref } from '$lib/paraglide/runtime';
 import type { Actions, PageServerLoad } from './$types';
 
 const schema = z.object({
-	slug: z.string().trim().regex(/^[a-z0-9-]{3,80}$/),
+	slug: z
+		.string()
+		.trim()
+		.regex(/^[a-z0-9-]{3,80}$/),
 	title: z.string().trim().min(3).max(160),
 	summary: z.string().trim().min(10).max(300),
 	description: z.string().trim().min(20).max(6000),
 	area_slug: z.string().min(2),
 	target_groups: z.array(z.string()).default([]),
 	stage: z.enum(['idea', 'prototype', 'tested', 'implemented']),
-	video_url: z.string().url().optional().or(z.literal('').transform(() => undefined)),
+	video_url: z
+		.string()
+		.url()
+		.optional()
+		.or(z.literal('').transform(() => undefined)),
 	implementation_notes: z.string().max(3000).default(''),
 	cost_hint: z.string().max(300).default(''),
 	status: z.enum(['draft', 'published'])
@@ -33,9 +40,16 @@ export const load: PageServerLoad = async ({ params }) => {
 export const actions: Actions = {
 	default: async ({ params, request }) => {
 		const fd = await request.formData();
-		const raw = { ...Object.fromEntries(fd), target_groups: fd.getAll('target_groups').map(String) };
+		const raw = {
+			...Object.fromEntries(fd),
+			target_groups: fd.getAll('target_groups').map(String)
+		};
 		const parsed = schema.safeParse(raw);
-		if (!parsed.success) return fail(400, { errors: parsed.error.flatten().fieldErrors, values: raw as Record<string, unknown> });
+		if (!parsed.success)
+			return fail(400, {
+				errors: parsed.error.flatten().fieldErrors,
+				values: raw as Record<string, unknown>
+			});
 		const d = parsed.data;
 		const values = {
 			slug: d.slug,

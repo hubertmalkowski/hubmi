@@ -24,20 +24,40 @@ export type Scored = {
 	confidence: number;
 };
 
-export function scoreFromAnswer(id: string, rrfRank: number, a: { score: number; confidence: number; probabilities: Record<string, number> }): Scored {
-	return { id, rrfRank, jevScore: a.score, pGood: pAtLeast(a.probabilities, POLICY.goodLevel), confidence: a.confidence };
+export function scoreFromAnswer(
+	id: string,
+	rrfRank: number,
+	a: { score: number; confidence: number; probabilities: Record<string, number> }
+): Scored {
+	return {
+		id,
+		rrfRank,
+		jevScore: a.score,
+		pGood: pAtLeast(a.probabilities, POLICY.goodLevel),
+		confidence: a.confidence
+	};
 }
 
 /** Splits reranked candidates into confident matches and uncertain related items. */
-export function decide(scored: Scored[]): { kept: Scored[]; uncertain: Scored[]; isChallenge: boolean } {
+export function decide(scored: Scored[]): {
+	kept: Scored[];
+	uncertain: Scored[];
+	isChallenge: boolean;
+} {
 	const order = (a: Scored, b: Scored) => b.jevScore - a.jevScore || a.rrfRank - b.rrfRank;
 	const kept = scored.filter((s) => s.pGood >= POLICY.pGoodThreshold).sort(order);
 	if (kept.length) return { kept, uncertain: [], isChallenge: false };
-	return { kept: [], uncertain: [...scored].sort(order).slice(0, POLICY.uncertainShown), isChallenge: true };
+	return {
+		kept: [],
+		uncertain: [...scored].sort(order).slice(0, POLICY.uncertainShown),
+		isChallenge: true
+	};
 }
 
 /** Plain-language fit label for the UI (never colour alone). */
-export function fitLabel(jevScore: number | null | undefined): 'direct' | 'good' | 'partial' | 'weak' {
+export function fitLabel(
+	jevScore: number | null | undefined
+): 'direct' | 'good' | 'partial' | 'weak' {
 	if (jevScore == null) return 'weak';
 	if (jevScore >= 3.5) return 'direct';
 	if (jevScore >= 2.6) return 'good';

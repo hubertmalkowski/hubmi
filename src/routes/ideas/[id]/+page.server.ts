@@ -26,8 +26,16 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			.where(and(eq(statusEvents.subjectType, 'idea'), eq(statusEvents.subjectId, idea.id)))
 			.orderBy(asc(statusEvents.createdAt)),
 		isOwner || staff ? threadFor('idea', idea.id) : undefined,
-		db.select({ id: calls.id, name: calls.name, closesAt: calls.closesAt }).from(calls).where(and(lt(calls.opensAt, now), gt(calls.closesAt, now))),
-		idea.challengeId ? db.query.challenges.findFirst({ where: eq(challenges.id, idea.challengeId), columns: { id: true, title: true } }) : undefined,
+		db
+			.select({ id: calls.id, name: calls.name, closesAt: calls.closesAt })
+			.from(calls)
+			.where(and(lt(calls.opensAt, now), gt(calls.closesAt, now))),
+		idea.challengeId
+			? db.query.challenges.findFirst({
+					where: eq(challenges.id, idea.challengeId),
+					columns: { id: true, title: true }
+				})
+			: undefined,
 		db.query.users.findFirst({ where: eq(users.id, idea.authorId), columns: { displayName: true } })
 	]);
 	return {
@@ -55,7 +63,8 @@ export const actions: Actions = {
 	message: async ({ params, request, locals }) => {
 		const idea = await loadIdea(params.id);
 		const u = locals.user;
-		if (!u || (u.id !== idea.authorId && u.role !== 'admin' && u.role !== 'expert')) return fail(403);
+		if (!u || (u.id !== idea.authorId && u.role !== 'admin' && u.role !== 'expert'))
+			return fail(403);
 		const body = String((await request.formData()).get('body') ?? '').trim();
 		if (!body) return fail(400, { empty: true });
 		const t = await ensureThread('idea', idea.id, idea.title);

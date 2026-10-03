@@ -16,7 +16,9 @@
 <svelte:head><title>{m.knowledge_materials()} | {m.app_name()}</title></svelte:head>
 
 <h1 class="text-3xl font-bold">{m.knowledge_materials()}</h1>
-<EasyRead key="materials.lead"><p class="text-muted-foreground mt-2 max-w-3xl text-lg">{m.materials_lead()}</p></EasyRead>
+<EasyRead key="materials.lead"
+	><p class="mt-2 max-w-3xl text-lg text-muted-foreground">{m.materials_lead()}</p></EasyRead
+>
 
 <ul class="mt-6 grid gap-4 sm:grid-cols-2">
 	{#each materials as mat (mat.title)}

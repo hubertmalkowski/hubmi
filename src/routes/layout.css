@@ -260,11 +260,51 @@
 }
 
 /* Tile text on the sequential ramp: dark ink on light steps, white on dark steps (>= 4.5:1). */
-.tile-ink-0, .tile-ink-1, .tile-ink-2, .tile-ink-3, .tile-ink-4 { fill: #0b0b0b; }
-.tile-ink-5, .tile-ink-6, .tile-ink-7 { fill: #ffffff; }
-.dark .tile-ink-0, .dark .tile-ink-1, .dark .tile-ink-2, .dark .tile-ink-3, .dark .tile-ink-4 { fill: #ffffff; }
-.dark .tile-ink-5, .dark .tile-ink-6, .dark .tile-ink-7 { fill: #0b0b0b; }
-.tile-ink-text-0, .tile-ink-text-1, .tile-ink-text-2, .tile-ink-text-3, .tile-ink-text-4 { color: #0b0b0b; }
-.tile-ink-text-5, .tile-ink-text-6, .tile-ink-text-7 { color: #ffffff; }
-.dark .tile-ink-text-0, .dark .tile-ink-text-1, .dark .tile-ink-text-2, .dark .tile-ink-text-3, .dark .tile-ink-text-4 { color: #ffffff; }
-.dark .tile-ink-text-5, .dark .tile-ink-text-6, .dark .tile-ink-text-7 { color: #0b0b0b; }
+.tile-ink-0,
+.tile-ink-1,
+.tile-ink-2,
+.tile-ink-3,
+.tile-ink-4 {
+	fill: #0b0b0b;
+}
+.tile-ink-5,
+.tile-ink-6,
+.tile-ink-7 {
+	fill: #ffffff;
+}
+.dark .tile-ink-0,
+.dark .tile-ink-1,
+.dark .tile-ink-2,
+.dark .tile-ink-3,
+.dark .tile-ink-4 {
+	fill: #ffffff;
+}
+.dark .tile-ink-5,
+.dark .tile-ink-6,
+.dark .tile-ink-7 {
+	fill: #0b0b0b;
+}
+.tile-ink-text-0,
+.tile-ink-text-1,
+.tile-ink-text-2,
+.tile-ink-text-3,
+.tile-ink-text-4 {
+	color: #0b0b0b;
+}
+.tile-ink-text-5,
+.tile-ink-text-6,
+.tile-ink-text-7 {
+	color: #ffffff;
+}
+.dark .tile-ink-text-0,
+.dark .tile-ink-text-1,
+.dark .tile-ink-text-2,
+.dark .tile-ink-text-3,
+.dark .tile-ink-text-4 {
+	color: #ffffff;
+}
+.dark .tile-ink-text-5,
+.dark .tile-ink-text-6,
+.dark .tile-ink-text-7 {
+	color: #0b0b0b;
+}

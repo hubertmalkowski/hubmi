@@ -1,10 +1,50 @@
 [
-	{ "slug": "aging", "name_pl": "Starzenie się społeczeństwa", "description_pl": "Potrzeby osób starszych: opieka, aktywność, mieszkalnictwo, wsparcie opiekunów.", "description_en": "Ageing population: care, activity, housing and support needs of older people and their carers." },
-	{ "slug": "mental_health", "name_pl": "Zdrowie psychiczne", "description_pl": "Kryzysy psychiczne, profilaktyka, dostęp do wsparcia psychologicznego, zwłaszcza dzieci i młodzieży.", "description_en": "Mental health: crises, prevention and access to psychological support, especially for children and young people." },
-	{ "slug": "loneliness", "name_pl": "Samotność i izolacja", "description_pl": "Osamotnienie, brak kontaktów społecznych, słabe więzi sąsiedzkie.", "description_en": "Loneliness and social isolation: lack of social contact and weak neighbourhood ties." },
-	{ "slug": "digital_exclusion", "name_pl": "Wykluczenie cyfrowe", "description_pl": "Brak umiejętności, sprzętu lub dostępu do internetu i e-usług.", "description_en": "Digital exclusion: lack of skills, devices or internet access needed to use online and public e-services." },
-	{ "slug": "service_access", "name_pl": "Dostęp do usług społecznych", "description_pl": "Bariery w dostępie do usług opiekuńczych, zdrowotnych, transportu i informacji, szczególnie dla osób z niepełnosprawnościami.", "description_en": "Access to social services: barriers to care, health, transport and information services, especially for people with disabilities." },
-	{ "slug": "coordination", "name_pl": "Koordynacja i współpraca międzysektorowa", "description_pl": "Współpraca samorządów, NGO i instytucji, wymiana danych, wspólne planowanie usług.", "description_en": "Coordination: cooperation between local government, NGOs and public institutions, shared planning and information exchange for public services." },
-	{ "slug": "depopulation", "name_pl": "Zmiany demograficzne i depopulacja", "description_pl": "Wyludnianie się gmin, odpływ młodych, szybki wzrost przedmieść Krakowa.", "description_en": "Demographic change: depopulating rural municipalities, young people leaving, and fast-growing suburbs around Kraków." },
-	{ "slug": "other", "name_pl": "Inne", "description_pl": "Inne wyzwania społeczne.", "description_en": "None of the above areas." }
+	{
+		"slug": "aging",
+		"name_pl": "Starzenie się społeczeństwa",
+		"description_pl": "Potrzeby osób starszych: opieka, aktywność, mieszkalnictwo, wsparcie opiekunów.",
+		"description_en": "Ageing population: care, activity, housing and support needs of older people and their carers."
+	},
+	{
+		"slug": "mental_health",
+		"name_pl": "Zdrowie psychiczne",
+		"description_pl": "Kryzysy psychiczne, profilaktyka, dostęp do wsparcia psychologicznego, zwłaszcza dzieci i młodzieży.",
+		"description_en": "Mental health: crises, prevention and access to psychological support, especially for children and young people."
+	},
+	{
+		"slug": "loneliness",
+		"name_pl": "Samotność i izolacja",
+		"description_pl": "Osamotnienie, brak kontaktów społecznych, słabe więzi sąsiedzkie.",
+		"description_en": "Loneliness and social isolation: lack of social contact and weak neighbourhood ties."
+	},
+	{
+		"slug": "digital_exclusion",
+		"name_pl": "Wykluczenie cyfrowe",
+		"description_pl": "Brak umiejętności, sprzętu lub dostępu do internetu i e-usług.",
+		"description_en": "Digital exclusion: lack of skills, devices or internet access needed to use online and public e-services."
+	},
+	{
+		"slug": "service_access",
+		"name_pl": "Dostęp do usług społecznych",
+		"description_pl": "Bariery w dostępie do usług opiekuńczych, zdrowotnych, transportu i informacji, szczególnie dla osób z niepełnosprawnościami.",
+		"description_en": "Access to social services: barriers to care, health, transport and information services, especially for people with disabilities."
+	},
+	{
+		"slug": "coordination",
+		"name_pl": "Koordynacja i współpraca międzysektorowa",
+		"description_pl": "Współpraca samorządów, NGO i instytucji, wymiana danych, wspólne planowanie usług.",
+		"description_en": "Coordination: cooperation between local government, NGOs and public institutions, shared planning and information exchange for public services."
+	},
+	{
+		"slug": "depopulation",
+		"name_pl": "Zmiany demograficzne i depopulacja",
+		"description_pl": "Wyludnianie się gmin, odpływ młodych, szybki wzrost przedmieść Krakowa.",
+		"description_en": "Demographic change: depopulating rural municipalities, young people leaving, and fast-growing suburbs around Kraków."
+	},
+	{
+		"slug": "other",
+		"name_pl": "Inne",
+		"description_pl": "Inne wyzwania społeczne.",
+		"description_en": "None of the above areas."
+	}
 ]

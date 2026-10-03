@@ -27,12 +27,16 @@ const schema = z.object({
 export const POST: RequestHandler = async ({ request, locals }) => {
 	const parsed = schema.safeParse(await request.json().catch(() => ({})));
 	if (!parsed.success) error(400, { message: 'Nieprawidłowe dane' });
-	const inno = await db.query.innovations.findFirst({ where: eq(innovations.slug, parsed.data.innovation_slug) });
+	const inno = await db.query.innovations.findFirst({
+		where: eq(innovations.slug, parsed.data.innovation_slug)
+	});
 	if (!inno) error(404, { message: 'Nie znaleziono innowacji' });
 	await rateLimit(locals.clientKey, 'generate');
 
 	const p = parsed.data.profile;
-	const place = p.placeTeryt ? await db.query.places.findFirst({ where: eq(places.teryt, p.placeTeryt) }) : undefined;
+	const place = p.placeTeryt
+		? await db.query.places.findFirst({ where: eq(places.teryt, p.placeTeryt) })
+		: undefined;
 	let placeStats: string | undefined;
 	if (place) {
 		const [s] = await sql<{ n: number; top: string | null }[]>`

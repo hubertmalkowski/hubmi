@@ -1,7 +1,15 @@
 // Small text helpers shared by the mock providers and entity extraction.
 
 const DIACRITICS: Record<string, string> = {
-	ą: 'a', ć: 'c', ę: 'e', ł: 'l', ń: 'n', ó: 'o', ś: 's', ź: 'z', ż: 'z'
+	ą: 'a',
+	ć: 'c',
+	ę: 'e',
+	ł: 'l',
+	ń: 'n',
+	ó: 'o',
+	ś: 's',
+	ź: 'z',
+	ż: 'z'
 };
 
 export function fold(s: string): string {

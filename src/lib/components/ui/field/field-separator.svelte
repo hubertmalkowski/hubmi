@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Separator } from "$lib/components/ui/separator/index.js";
-	import { cn, type WithElementRef } from "$lib/utils.js";
-	import type { Snippet } from "svelte";
-	import type { HTMLAttributes } from "svelte/elements";
+	import { Separator } from '$lib/components/ui/separator/index.js';
+	import { cn, type WithElementRef } from '$lib/utils.js';
+	import type { Snippet } from 'svelte';
+	import type { HTMLAttributes } from 'svelte/elements';
 
 	let {
 		ref = $bindable(null),
@@ -20,7 +20,7 @@
 	bind:this={ref}
 	data-slot="field-separator"
 	data-content={hasContent}
-	class={cn("cn-field-separator relative", className)}
+	class={cn('cn-field-separator relative', className)}
 	{...restProps}
 >
 	<Separator class="absolute inset-0 top-1/2" />

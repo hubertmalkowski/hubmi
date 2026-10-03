@@ -11,7 +11,7 @@
 <svelte:head><title>{m.nav_calls()} | {m.app_name()}</title></svelte:head>
 
 <h1 class="text-3xl font-bold">{m.calls_title()}</h1>
-<p class="text-muted-foreground mt-2 max-w-3xl text-lg">{m.calls_lead()}</p>
+<p class="mt-2 max-w-3xl text-lg text-muted-foreground">{m.calls_lead()}</p>
 
 <section class="mt-8" aria-labelledby="open">
 	<h2 id="open" class="text-2xl font-semibold">{m.calls_open_title()}</h2>
@@ -22,10 +22,15 @@
 				<Card.Root class="h-full">
 					<Card.Header>
 						<Card.Title><h3 class="text-lg">{c.name}</h3></Card.Title>
-						<Card.Description>{m.calls_closes({ date: formatDay(c.closesAt, getLocale()) })}</Card.Description>
+						<Card.Description
+							>{m.calls_closes({ date: formatDay(c.closesAt, getLocale()) })}</Card.Description
+						>
 					</Card.Header>
 					<Card.Content><p>{c.description}</p></Card.Content>
-					<Card.Footer><Button href={localizeHref(`/calls/${c.id}/apply`)}>{m.calls_apply()}</Button></Card.Footer>
+					<Card.Footer
+						><Button href={localizeHref(`/calls/${c.id}/apply`)}>{m.calls_apply()}</Button
+						></Card.Footer
+					>
 				</Card.Root>
 			</li>
 		{/each}
@@ -37,7 +42,9 @@
 		<h2 id="closed" class="text-xl font-semibold">{m.calls_closed_title()}</h2>
 		<ul class="mt-3 flex flex-col gap-2">
 			{#each data.closed as c (c.id)}
-				<li class="text-muted-foreground">{c.name} ({m.calls_closed_on({ date: formatDay(c.closesAt, getLocale()) })})</li>
+				<li class="text-muted-foreground">
+					{c.name} ({m.calls_closed_on({ date: formatDay(c.closesAt, getLocale()) })})
+				</li>
 			{/each}
 		</ul>
 	</section>

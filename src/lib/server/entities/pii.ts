@@ -49,7 +49,8 @@ export function isFirstName(token: string): boolean {
 	for (const e of ENDINGS) {
 		if (e && !t.endsWith(fold(e))) continue;
 		const base = e ? t.slice(0, -fold(e).length) : t;
-		if (FIRST_NAMES.has(base) || FIRST_NAMES.has(base + 'a') || FIRST_NAMES.has(base + 'ek')) return true;
+		if (FIRST_NAMES.has(base) || FIRST_NAMES.has(base + 'a') || FIRST_NAMES.has(base + 'ek'))
+			return true;
 	}
 	return false;
 }
@@ -71,14 +72,21 @@ export function findPii(text: string): PiiSpan[] {
 
 /** "Jan Kowalski", "Marii Wiśniewskiej": a first name followed by a capitalized surname. */
 export function nameCandidates(text: string, taken: PiiSpan[] = []): PiiSpan[] {
-	const re = new RegExp(`(${WORD})\\s+(${WORD}(?:-${WORD})?)`, 'gu');
+	// Check every pair of adjacent capitalized words (overlapping), so "Pan Jan Kowalski"
+	// still yields "Jan Kowalski".
+	const words = [...text.matchAll(new RegExp(`${WORD}(?:-${WORD})?`, 'gu'))].map((m) => ({
+		text: m[0],
+		start: m.index ?? 0,
+		end: (m.index ?? 0) + m[0].length
+	}));
 	const out: PiiSpan[] = [];
-	for (const m of text.matchAll(re)) {
-		const start = m.index ?? 0;
-		const end = start + m[0].length;
-		if (taken.some((s) => start < s.end && end > s.start)) continue;
-		if (!isFirstName(m[1])) continue;
-		out.push({ kind: 'name', start, end, text: m[0] });
+	for (let i = 0; i < words.length - 1; i++) {
+		const [a, b] = [words[i], words[i + 1]];
+		if (!/^\s+$/.test(text.slice(a.end, b.start))) continue;
+		if (taken.some((s) => a.start < s.end && b.end > s.start)) continue;
+		if (out.some((s) => a.start < s.end)) continue;
+		if (!isFirstName(a.text) || isFirstName(b.text)) continue;
+		out.push({ kind: 'name', start: a.start, end: b.end, text: text.slice(a.start, b.end) });
 	}
 	return out;
 }

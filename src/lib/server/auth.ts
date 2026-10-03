@@ -9,12 +9,22 @@ import { sessions, users } from './db/schema';
 export const SESSION_COOKIE = 'sid';
 const TTL_MS = 7 * 86400_000;
 
-export type SessionUser = { id: string; displayName: string; role: 'resident' | 'ngo' | 'jst' | 'expert' | 'admin' };
+export type SessionUser = {
+	id: string;
+	displayName: string;
+	role: 'resident' | 'ngo' | 'jst' | 'expert' | 'admin';
+};
 
 export async function createSession(cookies: Cookies, userId: string, secure: boolean) {
 	const id = randomBytes(24).toString('base64url');
 	await db.insert(sessions).values({ id, userId, expiresAt: new Date(Date.now() + TTL_MS) });
-	cookies.set(SESSION_COOKIE, id, { path: '/', httpOnly: true, sameSite: 'lax', secure, maxAge: TTL_MS / 1000 });
+	cookies.set(SESSION_COOKIE, id, {
+		path: '/',
+		httpOnly: true,
+		sameSite: 'lax',
+		secure,
+		maxAge: TTL_MS / 1000
+	});
 }
 
 export async function readSession(cookies: Cookies): Promise<SessionUser | null> {

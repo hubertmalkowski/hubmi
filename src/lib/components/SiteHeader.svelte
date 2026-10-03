@@ -29,13 +29,20 @@
 	};
 </script>
 
-<header class="bg-background/95 border-border no-print sticky top-0 z-40 border-b backdrop-blur">
+<header class="no-print sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
 	<div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
 		<a href={localizeHref('/')} class="flex items-center gap-2 rounded-md text-lg font-bold">
-			<span class="bg-primary text-primary-foreground grid size-9 place-items-center rounded-lg" aria-hidden="true">
+			<span
+				class="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground"
+				aria-hidden="true"
+			>
 				<WheatIcon class="size-5" />
 			</span>
-			<span>{m.app_name()}<span class="text-muted-foreground block text-xs font-normal">{m.app_tagline()}</span></span>
+			<span
+				>{m.app_name()}<span class="block text-xs font-normal text-muted-foreground"
+					>{m.app_tagline()}</span
+				></span
+			>
 		</a>
 
 		<nav aria-label={m.nav_main()} class="hidden min-w-0 flex-1 xl:block">
@@ -45,7 +52,7 @@
 						<a
 							href={localizeHref(l.href)}
 							aria-current={current(l.href)}
-							class="hover:bg-accent aria-[current=page]:bg-secondary inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium whitespace-nowrap aria-[current=page]:underline aria-[current=page]:underline-offset-4"
+							class="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium whitespace-nowrap hover:bg-accent aria-[current=page]:bg-secondary aria-[current=page]:underline aria-[current=page]:underline-offset-4"
 							>{l.label}</a
 						>
 					</li>
@@ -57,13 +64,14 @@
 			{#if user}
 				<a
 					href={localizeHref('/messages')}
-					class="hover:bg-accent relative inline-flex size-11 items-center justify-center rounded-md"
+					class="relative inline-flex size-11 items-center justify-center rounded-md hover:bg-accent"
 					aria-label={m.nav_notifications({ count: String(unread) })}
 				>
 					<BellIcon class="size-5" aria-hidden="true" />
 					{#if unread > 0}
-						<span class="bg-destructive absolute top-1 right-1 min-w-5 rounded-full px-1 text-center text-xs font-bold text-white" aria-hidden="true"
-							>{unread}</span
+						<span
+							class="absolute top-1 right-1 min-w-5 rounded-full bg-destructive px-1 text-center text-xs font-bold text-white"
+							aria-hidden="true">{unread}</span
 						>
 					{/if}
 				</a>
@@ -72,13 +80,23 @@
 					<Button type="submit" variant="outline" size="sm">{m.auth_logout()}</Button>
 				</form>
 			{:else}
-				<Button href={localizeHref(`/login?next=${encodeURIComponent(page.url.pathname)}`)} variant="outline" size="sm">{m.auth_login()}</Button>
+				<Button
+					href={localizeHref(`/login?next=${encodeURIComponent(page.url.pathname)}`)}
+					variant="outline"
+					size="sm">{m.auth_login()}</Button
+				>
 			{/if}
 
 			<Sheet.Root bind:open>
 				<Sheet.Trigger>
 					{#snippet child({ props })}
-						<Button {...props} variant="ghost" size="icon" class="size-11 xl:hidden" aria-label={m.nav_open_menu()}>
+						<Button
+							{...props}
+							variant="ghost"
+							size="icon"
+							class="size-11 xl:hidden"
+							aria-label={m.nav_open_menu()}
+						>
 							<MenuIcon class="size-6" aria-hidden="true" />
 						</Button>
 					{/snippet}
@@ -93,7 +111,7 @@
 										href={localizeHref(l.href)}
 										aria-current={current(l.href)}
 										onclick={() => (open = false)}
-										class="hover:bg-accent aria-[current=page]:bg-secondary flex min-h-12 items-center rounded-md px-3 text-base font-medium"
+										class="flex min-h-12 items-center rounded-md px-3 text-base font-medium hover:bg-accent aria-[current=page]:bg-secondary"
 										>{l.label}</a
 									>
 								</li>

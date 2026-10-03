@@ -12,12 +12,25 @@ import type { Actions, PageServerLoad } from './$types';
 export const load: PageServerLoad = async () => {
 	const [recentNeeds, moderation, ideaRows, failedJobs] = await Promise.all([
 		db
-			.select({ id: needs.id, text: needs.redactedText, raw: needs.rawText, status: needs.status, area: needs.areaSlug, urgency: needs.urgency, createdAt: needs.createdAt })
+			.select({
+				id: needs.id,
+				text: needs.redactedText,
+				raw: needs.rawText,
+				status: needs.status,
+				area: needs.areaSlug,
+				urgency: needs.urgency,
+				createdAt: needs.createdAt
+			})
 			.from(needs)
 			.orderBy(desc(needs.createdAt))
 			.limit(25),
 		db
-			.select({ id: needs.id, raw: needs.rawText, redacted: needs.redactedText, createdAt: needs.createdAt })
+			.select({
+				id: needs.id,
+				raw: needs.rawText,
+				redacted: needs.redactedText,
+				createdAt: needs.createdAt
+			})
 			.from(needs)
 			.where(eq(needs.status, 'moderation'))
 			.orderBy(desc(needs.createdAt)),
@@ -33,21 +46,36 @@ export const load: PageServerLoad = async () => {
 			})
 			.from(ideas)
 			.innerJoin(users, eq(users.id, ideas.authorId))
-			.where(inArray(ideas.status, ['submitted', 'in_review', 'needs_changes', 'accepted', 'testing']))
+			.where(
+				inArray(ideas.status, ['submitted', 'in_review', 'needs_changes', 'accepted', 'testing'])
+			)
 			.orderBy(desc(ideas.createdAt)),
 		sql<{ id: string; name: string; output: unknown; completed_on: Date | null }[]>`
-			SELECT id, name, output, completed_on FROM pgboss.job WHERE state = 'failed' ORDER BY completed_on DESC NULLS LAST LIMIT 10`.catch(() => [])
+			SELECT id, name, output, completed_on FROM pgboss.job WHERE state = 'failed' ORDER BY completed_on DESC NULLS LAST LIMIT 10`.catch(
+			() => []
+		)
 	]);
 	return { recentNeeds, moderation, ideas: ideaRows, failedJobs };
 };
 
-const IDEA_STATUSES = ['in_review', 'needs_changes', 'accepted', 'testing', 'library', 'rejected'] as const;
+const IDEA_STATUSES = [
+	'in_review',
+	'needs_changes',
+	'accepted',
+	'testing',
+	'library',
+	'rejected'
+] as const;
 
 export const actions: Actions = {
 	reply: async ({ request, locals }) => {
 		const f = Object.fromEntries(await request.formData());
 		const parsed = z
-			.object({ idea_id: z.string().uuid(), body: z.string().trim().min(1).max(4000), status: z.enum(IDEA_STATUSES).optional().or(z.literal('')) })
+			.object({
+				idea_id: z.string().uuid(),
+				body: z.string().trim().min(1).max(4000),
+				status: z.enum(IDEA_STATUSES).optional().or(z.literal(''))
+			})
 			.safeParse(f);
 		if (!parsed.success) return fail(400, { invalid: true });
 		const idea = await db.query.ideas.findFirst({ where: eq(ideas.id, parsed.data.idea_id) });
@@ -66,7 +94,10 @@ export const actions: Actions = {
 		const need = await db.query.needs.findFirst({ where: eq(needs.id, id) });
 		if (!need || need.status !== 'moderation') return fail(404);
 		// approved after review: the redacted text becomes the working text, then matching re-runs
-		await db.update(needs).set({ rawText: need.redactedText, status: 'new' }).where(eq(needs.id, id));
+		await db
+			.update(needs)
+			.set({ rawText: need.redactedText, status: 'new' })
+			.where(eq(needs.id, id));
 		await addStatus('need', id, 'new', 'Zatwierdzone po moderacji.', locals.user!.id);
 		await enqueue(QUEUES.needProcess, { id });
 		return { approved: id };

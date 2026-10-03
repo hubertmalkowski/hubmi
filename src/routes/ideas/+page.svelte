@@ -17,10 +17,16 @@
 
 <ul class="mt-6 flex flex-col gap-3">
 	{#each data.ideas as i (i.id)}
-		<li class="bg-card border-border flex flex-wrap items-center justify-between gap-3 rounded-lg border p-4">
+		<li
+			class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card p-4"
+		>
 			<div>
-				<a class="text-lg font-semibold hover:underline" href={localizeHref(`/ideas/${i.id}`)}>{i.title}</a>
-				<p class="text-muted-foreground text-sm">{formatDay(i.createdAt, getLocale())} · {stageLabel(i.stage)}</p>
+				<a class="text-lg font-semibold hover:underline" href={localizeHref(`/ideas/${i.id}`)}
+					>{i.title}</a
+				>
+				<p class="text-sm text-muted-foreground">
+					{formatDay(i.createdAt, getLocale())} · {stageLabel(i.stage)}
+				</p>
 			</div>
 			<Badge>{needStatusLabel(i.status)}</Badge>
 		</li>

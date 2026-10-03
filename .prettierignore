@@ -8,3 +8,7 @@ bun.lockb
 # Miscellaneous
 /static/
 /drizzle/
+src/lib/styles/style-vega.css
+data/eval
+docs/eval
+src/lib/paraglide

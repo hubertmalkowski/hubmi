@@ -32,7 +32,8 @@ export async function indexInnovation(id: string, refresh = false) {
 export async function indexNeed(id: string, refresh = false) {
 	const row = await db.query.needs.findFirst({ where: eq(needs.id, id) });
 	// Needs under moderation (possible personal data) are never indexed.
-	if (!row || row.status === 'moderation') return es.delete({ index: INDEX.needs, id }, { ignore: [404] });
+	if (!row || row.status === 'moderation')
+		return es.delete({ index: INDEX.needs, id }, { ignore: [404] });
 	const place = row.placeTeryt
 		? await db.query.places.findFirst({ where: eq(places.teryt, row.placeTeryt) })
 		: undefined;
@@ -79,7 +80,14 @@ export async function indexPlaces(teryts?: string[]) {
 		refresh: true,
 		operations: rows.flatMap((p) => [
 			{ index: { _index: INDEX.places, _id: p.teryt } },
-			{ teryt: p.teryt, name: p.name, aliases: p.aliases, kind: p.kind, powiat: p.powiat, powiat_teryt: p.powiatTeryt }
+			{
+				teryt: p.teryt,
+				name: p.name,
+				aliases: p.aliases,
+				kind: p.kind,
+				powiat: p.powiat,
+				powiat_teryt: p.powiatTeryt
+			}
 		])
 	});
 }

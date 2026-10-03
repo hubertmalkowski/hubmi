@@ -11,7 +11,9 @@ export const init: ServerInit = async () => {
 	if (process.env.RUN_WORKERS_IN_APP !== '0' && !process.env.BUILDING) {
 		const { ensureIndices } = await import('$lib/server/search/indices');
 		const { startWorkers } = await import('$lib/server/jobs/handlers');
-		await ensureIndices().catch((e) => console.error('[init] elasticsearch unavailable', e.message));
+		await ensureIndices().catch((e) =>
+			console.error('[init] elasticsearch unavailable', e.message)
+		);
 		await startWorkers().catch((e) => console.error('[init] workers failed to start', e));
 	}
 };

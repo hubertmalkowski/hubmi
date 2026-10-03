@@ -50,9 +50,16 @@ export async function structured<S extends z.ZodType>(opts: {
 		},
 		...(model === models.generate ? { betas: [FALLBACK_BETA], fallbacks: 'default' as const } : {})
 	});
-	recordAi({ kind: opts.kind, provider: 'anthropic', model: res.model, usage: res.usage, latencyMs: performance.now() - started });
+	recordAi({
+		kind: opts.kind,
+		provider: 'anthropic',
+		model: res.model,
+		usage: res.usage,
+		latencyMs: performance.now() - started
+	});
 	if (res.stop_reason === 'refusal') throw new Error(`Claude refused (${opts.kind})`);
-	if (res.parsed_output == null) throw new Error(`Claude returned no parseable output (${opts.kind})`);
+	if (res.parsed_output == null)
+		throw new Error(`Claude returned no parseable output (${opts.kind})`);
 	return res.parsed_output as z.infer<S>;
 }
 
@@ -85,7 +92,11 @@ export async function* streamText(opts: {
 		messages: opts.messages,
 		...(opts.tools ? { tools: opts.tools } : {}),
 		...(model === models.generate
-			? { betas: [FALLBACK_BETA], fallbacks: 'default' as const, output_config: { effort: 'low' as const } }
+			? {
+					betas: [FALLBACK_BETA],
+					fallbacks: 'default' as const,
+					output_config: { effort: 'low' as const }
+				}
 			: {})
 	});
 	for await (const event of stream) {
@@ -99,7 +110,13 @@ export async function* streamText(opts: {
 			if (block.type === 'tool_use') opts.onToolUse(block.name, block.input);
 		}
 	}
-	recordAi({ kind: opts.kind, provider: 'anthropic', model: final.model, usage: final.usage, latencyMs: performance.now() - started });
+	recordAi({
+		kind: opts.kind,
+		provider: 'anthropic',
+		model: final.model,
+		usage: final.usage,
+		latencyMs: performance.now() - started
+	});
 }
 
 /** Collects a full streamed response into a string. */

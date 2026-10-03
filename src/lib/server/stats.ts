@@ -11,7 +11,16 @@ export async function needsByPowiat(area?: string): Promise<Record<string, numbe
 }
 
 export async function totals() {
-	const [r] = await sql<{ innovations: number; open_challenges: number; needs: number; matched: number; challenge: number; ideas: number }[]>`
+	const [r] = await sql<
+		{
+			innovations: number;
+			open_challenges: number;
+			needs: number;
+			matched: number;
+			challenge: number;
+			ideas: number;
+		}[]
+	>`
 		SELECT
 			(SELECT count(*)::int FROM innovations WHERE status = 'published') AS innovations,
 			(SELECT count(*)::int FROM challenges WHERE open) AS open_challenges,

@@ -21,12 +21,25 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const [[{ n }], signed, inno, items] = await Promise.all([
 		db.select({ n: count() }).from(testSignups).where(eq(testSignups.campaignId, c.id)),
 		locals.user
-			? db.query.testSignups.findFirst({ where: and(eq(testSignups.campaignId, c.id), eq(testSignups.userId, locals.user.id)) })
+			? db.query.testSignups.findFirst({
+					where: and(eq(testSignups.campaignId, c.id), eq(testSignups.userId, locals.user.id))
+				})
 			: undefined,
-		c.innovationId ? db.query.innovations.findFirst({ where: eq(innovations.id, c.innovationId), columns: { slug: true, title: true } }) : undefined,
+		c.innovationId
+			? db.query.innovations.findFirst({
+					where: eq(innovations.id, c.innovationId),
+					columns: { slug: true, title: true }
+				})
+			: undefined,
 		staff
 			? db
-					.select({ id: feedback.id, rating: feedback.rating, text: feedback.text, category: feedback.category, author: users.displayName })
+					.select({
+						id: feedback.id,
+						rating: feedback.rating,
+						text: feedback.text,
+						category: feedback.category,
+						author: users.displayName
+					})
 					.from(feedback)
 					.innerJoin(users, eq(users.id, feedback.userId))
 					.where(eq(feedback.campaignId, c.id))
@@ -34,7 +47,13 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			: []
 	]);
 	return {
-		campaign: { id: c.id, title: c.title, description: c.description, slots: c.slots, open: c.open },
+		campaign: {
+			id: c.id,
+			title: c.title,
+			description: c.description,
+			slots: c.slots,
+			open: c.open
+		},
 		signedCount: n,
 		isSigned: !!signed,
 		innovation: inno ?? null,
@@ -45,23 +64,38 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 export const actions: Actions = {
 	signup: async ({ params, locals, url }) => {
-		if (!locals.user) redirect(303, localizeHref(`/login?next=${encodeURIComponent(url.pathname)}`));
+		if (!locals.user)
+			redirect(303, localizeHref(`/login?next=${encodeURIComponent(url.pathname)}`));
 		const c = await campaign(params.id);
-		const [{ n }] = await db.select({ n: count() }).from(testSignups).where(eq(testSignups.campaignId, c.id));
+		const [{ n }] = await db
+			.select({ n: count() })
+			.from(testSignups)
+			.where(eq(testSignups.campaignId, c.id));
 		if (!c.open || n >= c.slots) return fail(409, { full: true });
-		await db.insert(testSignups).values({ campaignId: c.id, userId: locals.user.id }).onConflictDoNothing();
+		await db
+			.insert(testSignups)
+			.values({ campaignId: c.id, userId: locals.user.id })
+			.onConflictDoNothing();
 		return { signedUp: true };
 	},
 	feedback: async ({ params, locals, request }) => {
 		if (!locals.user) return fail(401);
 		const c = await campaign(params.id);
 		const parsed = z
-			.object({ rating: z.coerce.number().int().min(1).max(5), text: z.string().max(2000).optional() })
+			.object({
+				rating: z.coerce.number().int().min(1).max(5),
+				text: z.string().max(2000).optional()
+			})
 			.safeParse(Object.fromEntries(await request.formData()));
 		if (!parsed.success) return fail(400, { invalid: true });
 		const [f] = await db
 			.insert(feedback)
-			.values({ campaignId: c.id, userId: locals.user.id, rating: parsed.data.rating, text: parsed.data.text?.trim() || null })
+			.values({
+				campaignId: c.id,
+				userId: locals.user.id,
+				rating: parsed.data.rating,
+				text: parsed.data.text?.trim() || null
+			})
 			.returning({ id: feedback.id });
 		await enqueue(QUEUES.feedbackClassify, { id: f.id });
 		return { thanks: true };
@@ -71,7 +105,9 @@ export const actions: Actions = {
 		const c = await campaign(params.id);
 		const items = await db.select().from(feedback).where(eq(feedback.campaignId, c.id));
 		if (!items.length) return { summary: [] };
-		const s = await feedbackSummary(items.map((f) => ({ rating: f.rating, text: f.text, category: f.category })));
+		const s = await feedbackSummary(
+			items.map((f) => ({ rating: f.rating, text: f.text, category: f.category }))
+		);
 		return { summary: s.improvements };
 	}
 };

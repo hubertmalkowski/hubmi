@@ -1,62 +1,313 @@
 [
-	{ "text": "Moja mama ma 84 lata i mieszka sama na wsi. Boję się, że upadnie w nocy i nikt nie będzie wiedział. Pracuję w Krakowie i nie mogę być przy niej codziennie.", "place": "1205072", "expected": ["teleopieka-z-opaska"] },
-	{ "text": "Opiekuję się mężem po udarze od trzech lat. Nie mam ani jednego dnia wolnego, jestem wykończona i sama zaczynam chorować.", "place": "1209072", "expected": ["opieka-wytchnieniowa-sasiedzka", "szkola-dla-opiekunow", "dzienny-dom-pobytu-wiejski"] },
-	{ "text": "W naszej wsi seniorzy siedzą całymi dniami sami w domach. Nie ma domu kultury, autobus jeździ dwa razy dziennie.", "place": "1214022", "expected": ["kluby-seniora-w-remizach", "kawiarenka-pokolen"] },
-	{ "text": "Starsi mieszkańcy nie umieją odebrać e-recepty ani założyć profilu zaufanego. Przychodzą do urzędu i proszą urzędniczki, ale one nie mają na to czasu.", "place": "1208052", "expected": ["cyfrowy-asystent-seniora", "kolo-gospodyn-cyfrowych"] },
-	{ "text": "Coraz więcej uczniów w naszej szkole ma ataki paniki i samookalecza się. Na wizytę u psychiatry dziecięcego czeka się pół roku.", "place": "1211011", "expected": ["punkt-pierwszego-kontaktu-psychologicznego", "mlodziezowi-liderzy-wsparcia"] },
-	{ "text": "Rodzice nastolatków z depresją nie wiedzą, jak z nimi rozmawiać. Czują się bezradni i sami potrzebują wsparcia.", "place": "1263011", "expected": ["grupy-wsparcia-dla-rodzicow"] },
-	{ "text": "Osoba na wózku nie ma jak dojechać do lekarza w mieście powiatowym. Nie ma busów przystosowanych dla niepełnosprawnych.", "place": "1204062", "expected": ["transport-na-telefon"] },
-	{ "text": "Mieszkańcy dalekich przysiółków nie przyjeżdżają do ośrodka pomocy społecznej, bo to 20 km. Wiele spraw nie jest w ogóle zgłaszanych.", "place": "1210112", "expected": ["mobilny-punkt-uslug"] },
-	{ "text": "Mam niepełnosprawność ruchową i chciałbym pracować, ale potrzebuję kogoś, kto pomoże mi rano się przygotować i dojechać.", "place": "1261011", "expected": ["asystent-osobisty-ozn", "transport-na-telefon"] },
-	{ "text": "W gminie zamieszkało wiele rodzin z Ukrainy. Nie znają procedur, dzieci mają problem w szkole, dorośli nie mogą znaleźć pracy.", "place": "1219053", "expected": ["centrum-integracji-migrantow"] },
-	{ "text": "Na nowych osiedlach pod Krakowem nikt się nie zna. Młode rodziny nie mają gdzie spotkać się z innymi rodzicami i nie mają pomocy przy dzieciach.", "place": "1206092", "expected": ["osiedlowe-centrum-sasiedzkie"] },
-	{ "text": "Młodzi wyjeżdżają po studiach i nie wracają. Zostają sami starsi ludzie, zamykają szkołę.", "place": "1205072", "expected": ["powroty-mlodych"] },
-	{ "text": "Zamknęli pocztę i aptekę, a sklep ledwo się utrzymuje. Starsi muszą jechać 15 km po leki.", "place": "1218042", "expected": ["sklep-wiejski-z-uslugami", "sasiedzka-siec-zakupowa"] },
-	{ "text": "Samotny sąsiad po operacji nie może wychodzić z domu, a nie ma rodziny. Kto zrobi mu zakupy i wykupi leki?", "place": "1262011", "expected": ["sasiedzka-siec-zakupowa", "telefon-zyczliwosci"] },
-	{ "text": "Seniorka mówi, że czasem przez tydzień nie rozmawia z nikim. Czuje się niepotrzebna.", "place": "1213011", "expected": ["telefon-zyczliwosci", "kawiarenka-pokolen", "kluby-seniora-w-remizach"] },
-	{ "text": "Ośrodek pomocy, szkoła i przychodnia każde robi coś dla seniorów, ale nikt ze sobą nie rozmawia. Część osób dostaje pomoc z trzech stron, a część żadnej.", "place": "1216053", "expected": ["wspolny-plan-uslug-gminy", "karta-uslug-cus"] },
-	{ "text": "Mieszkańcy muszą chodzić do pięciu różnych instytucji, żeby załatwić opiekę dla niepełnosprawnego dziecka. Każda chce innych dokumentów.", "place": "1203013", "expected": ["karta-uslug-cus"] },
-	{ "text": "Mamy wiele osób długotrwale bezrobotnych, a jednocześnie seniorzy potrzebują ciepłych obiadów.", "place": "1202013", "expected": ["spoldzielnia-socjalna-cateringowa"] },
-	{ "text": "Osoby starsze nie chcą iść do DPS, ale nie dają już rady same w dużym domu. Brakuje czegoś pośredniego.", "place": "1201011", "expected": ["mieszkania-wspomagane", "dzienny-dom-pobytu-wiejski"] },
-	{ "text": "Młodzież wieczorami przesiaduje na przystankach, pije alkohol i nie ma do kogo się zwrócić. Pedagog szkolny nie ma do nich dostępu.", "place": "1261011", "expected": ["streetworking-mlodziezowy"] },
-	{ "text": "Zimą osoby bezdomne śpią na dworcu i w altankach. Nie chcą iść do noclegowni.", "place": "1263011", "expected": ["posilek-z-rozmowa-bezdomnosc"] },
-	{ "text": "Osoby z niepełnosprawnością intelektualną nie rozumieją pism z urzędu. Komunikaty gminy są pisane trudnym językiem.", "place": "1212043", "expected": ["aplikacja-latwy-urzad"] },
-	{ "text": "Chodniki są wysokie, brak podjazdów do przychodni i urzędu. Zgłaszamy to od lat, ale nikt nie wie, co naprawić najpierw.", "place": "1218093", "expected": ["mapa-dostepnosci-gminy"] },
-	{ "text": "Leżąca babcia ma pielęgniarkę, opiekunkę z OPS i rehabilitanta, ale oni się nie komunikują i przychodzą w tym samym czasie.", "place": "1207011", "expected": ["opiekun-medyczny-w-domu"] },
-	{ "text": "Rodzina nie ma komputera ani internetu, dzieci nie mogą odrabiać zadań, a mama nie może złożyć wniosku o świadczenie online.", "place": "1204013", "expected": ["wypozyczalnia-tabletow"] },
-	{ "text": "Nastolatki coraz częściej grają w kasynach online i zadłużają się. Rodzice dowiadują się za późno.", "place": "1209013", "expected": ["challenge"] },
-	{ "text": "Brakuje żłobka, a najbliższy ma listę oczekujących na dwa lata. Matki nie mogą wrócić do pracy.", "place": "1206112", "expected": ["challenge"] },
-	{ "text": "We wsi jest problem przemocy w rodzinach, ale kobiety boją się zgłaszać, bo wszyscy się znają.", "place": "1211082", "expected": ["challenge"] },
-	{ "text": "Młodzi ludzie nie mogą znaleźć taniego mieszkania do wynajęcia w gminie, ceny są jak w Krakowie.", "place": "1206022", "expected": ["challenge"] },
-	{ "text": "Dzieci w szkole są nękane w internecie przez rówieśników, nauczyciele nie wiedzą, jak reagować na cyberprzemoc.", "place": "1217011", "expected": ["challenge"] },
-	{ "text": "Rolnicy w wieku przedemerytalnym tracą gospodarstwa i nie mają żadnego zajęcia, popadają w alkoholizm.", "place": "1214033", "expected": ["challenge"] },
-	{ "text": "Nikt nie organizuje opieki nad dziećmi pielęgniarek pracujących na nocne zmiany w szpitalu powiatowym.", "place": "1215011", "expected": ["challenge"] },
-	{ "text": "Lokalne restauracje wyrzucają dużo jedzenia, a w gminie są rodziny, którym go brakuje. Nie ma systemu przekazywania żywności.", "place": "1219042", "expected": ["challenge"] },
-	{ "text": "Seniorzy padają ofiarą oszustów metodą na wnuczka i na policjanta. Tracą oszczędności całego życia.", "place": "1213082", "expected": ["challenge"] },
-	{ "text": "Osoby głuche nie mogą zadzwonić do przychodni ani się umówić, bo rejestracja jest tylko telefoniczna.", "place": "1201052", "expected": ["challenge", "aplikacja-latwy-urzad"] },
-	{ "text": "Моя бабуся живе сама в Тарнові і не може вийти з дому після операції. Їй потрібна допомога з покупками та ліками.", "place": "1263011", "locale": "uk", "expected": ["sasiedzka-siec-zakupowa", "telefon-zyczliwosci"] },
-	{ "text": "Ми переїхали з Харкова, діти не говорять польською, і ми не розуміємо, як записатися до лікаря та до школи.", "place": "1261011", "locale": "uk", "expected": ["centrum-integracji-migrantow"] },
-	{ "text": "My father lives alone in Zakopane and I worry he could fall at night with nobody noticing. I work abroad.", "place": "1217011", "locale": "en", "expected": ["teleopieka-z-opaska"] },
-	{ "text": "Teenagers in our town have nowhere to turn when they feel anxious or depressed; the waiting list for a psychologist is months long.", "place": "1205011", "locale": "en", "expected": ["punkt-pierwszego-kontaktu-psychologicznego"] },
-	{ "text": "Older people in the village cannot use online banking or e-prescriptions and have nobody to teach them.", "place": "1212062", "locale": "en", "expected": ["cyfrowy-asystent-seniora", "kolo-gospodyn-cyfrowych"] },
-	{ "text": "Pan Jan Kowalski z ul. Długiej 5 w Nowym Targu, tel. 600 123 456, mieszka sam i od tygodnia nie wychodzi z domu. Sąsiedzi się martwią.", "place": "1211011", "expected": ["telefon-zyczliwosci", "sasiedzka-siec-zakupowa"], "pii": true },
-	{ "text": "Proszę o kontakt pod adresem anna.nowak@example.com. Moja córka ma 15 lat i od miesiąca nie chodzi do szkoły, zamyka się w pokoju.", "place": "1219053", "expected": ["punkt-pierwszego-kontaktu-psychologicznego", "grupy-wsparcia-dla-rodzicow"], "pii": true },
-	{ "text": "Mój PESEL to 44051401458, potrzebuję pomocy w złożeniu wniosku o zasiłek, nie mam komputera.", "place": "1208013", "expected": ["cyfrowy-asystent-seniora"], "pii": true },
-	{ "text": "Maria Wiśniewska, 32-400 Myślenice, opiekuje się niepełnosprawnym synem i nie ma żadnego wsparcia.", "place": "1209013", "expected": ["opieka-wytchnieniowa-sasiedzka", "asystent-osobisty-ozn"], "pii": true },
-	{ "text": "Zadzwońcie do mnie +48 512 345 678, w naszym bloku mieszka osoba w kryzysie bezdomności na klatce schodowej.", "place": "1262011", "expected": ["posilek-z-rozmowa-bezdomnosc"], "pii": true },
-	{ "text": "W wiosce Hańczowa starsi ludzie nie mają gdzie się spotykać, kiedyś była świetlica, teraz stoi pusta.", "place": "1205072", "expected": ["kluby-seniora-w-remizach", "kawiarenka-pokolen"] },
-	{ "text": "Opiekunowie osób z demencją nie wiedzą, jak przenosić chorego i jakie mają prawa do świadczeń.", "place": "1216142", "expected": ["szkola-dla-opiekunow"] },
-	{ "text": "Seniorzy z Kościeliska chcieliby nauczyć się wideorozmów z wnukami za granicą, ale nie mają tabletów.", "place": "1217032", "expected": ["wypozyczalnia-tabletow", "cyfrowy-asystent-seniora"] },
-	{ "text": "Wielu niepełnosprawnych mieszkańców gminy rezygnuje z rehabilitacji, bo nie ma jak dojechać do ośrodka w Krakowie.", "place": "1206033", "expected": ["transport-na-telefon"] },
-	{ "text": "Gmina rośnie bardzo szybko, przybywa rodzin z małymi dziećmi, a nie ma żadnego miejsca integracji ani zajęć dla dzieci.", "place": "1219053", "expected": ["osiedlowe-centrum-sasiedzkie"] },
-	{ "text": "Matka z trójką dzieci straciła pracę, nie wie, gdzie szukać pomocy, każda instytucja odsyła ją dalej.", "place": "1203013", "expected": ["karta-uslug-cus", "mobilny-punkt-uslug"] },
-	{ "text": "Uczniowie wstydzą się iść do pedagoga, wolą rozmawiać z kolegami, ale koledzy nie wiedzą, jak pomóc.", "place": "1218093", "expected": ["mlodziezowi-liderzy-wsparcia"] },
-	{ "text": "W zimie starsza pani w Czarnym Dunajcu nie ma ciepłego posiłku, bo nie daje rady gotować.", "place": "1211082", "expected": ["spoldzielnia-socjalna-cateringowa", "sasiedzka-siec-zakupowa"] },
-	{ "text": "Na wsi brakuje opieki dziennej dla seniorów, a ich dzieci muszą dojeżdżać do pracy.", "place": "1207082", "expected": ["dzienny-dom-pobytu-wiejski"] },
-	{ "text": "Osoby z niepełnosprawnością nie mogą wejść do połowy budynków publicznych w mieście.", "place": "1263011", "expected": ["mapa-dostepnosci-gminy"] },
-	{ "text": "Psy wałęsają się po wsi i straszą dzieci w drodze do szkoły.", "place": "1210013", "expected": ["challenge"], "not_need": false },
+	{
+		"text": "Moja mama ma 84 lata i mieszka sama na wsi. Boję się, że upadnie w nocy i nikt nie będzie wiedział. Pracuję w Krakowie i nie mogę być przy niej codziennie.",
+		"place": "1205072",
+		"expected": ["teleopieka-z-opaska"]
+	},
+	{
+		"text": "Opiekuję się mężem po udarze od trzech lat. Nie mam ani jednego dnia wolnego, jestem wykończona i sama zaczynam chorować.",
+		"place": "1209072",
+		"expected": [
+			"opieka-wytchnieniowa-sasiedzka",
+			"szkola-dla-opiekunow",
+			"dzienny-dom-pobytu-wiejski"
+		]
+	},
+	{
+		"text": "W naszej wsi seniorzy siedzą całymi dniami sami w domach. Nie ma domu kultury, autobus jeździ dwa razy dziennie.",
+		"place": "1214022",
+		"expected": ["kluby-seniora-w-remizach", "kawiarenka-pokolen"]
+	},
+	{
+		"text": "Starsi mieszkańcy nie umieją odebrać e-recepty ani założyć profilu zaufanego. Przychodzą do urzędu i proszą urzędniczki, ale one nie mają na to czasu.",
+		"place": "1208052",
+		"expected": ["cyfrowy-asystent-seniora", "kolo-gospodyn-cyfrowych"]
+	},
+	{
+		"text": "Coraz więcej uczniów w naszej szkole ma ataki paniki i samookalecza się. Na wizytę u psychiatry dziecięcego czeka się pół roku.",
+		"place": "1211011",
+		"expected": ["punkt-pierwszego-kontaktu-psychologicznego", "mlodziezowi-liderzy-wsparcia"]
+	},
+	{
+		"text": "Rodzice nastolatków z depresją nie wiedzą, jak z nimi rozmawiać. Czują się bezradni i sami potrzebują wsparcia.",
+		"place": "1263011",
+		"expected": ["grupy-wsparcia-dla-rodzicow"]
+	},
+	{
+		"text": "Osoba na wózku nie ma jak dojechać do lekarza w mieście powiatowym. Nie ma busów przystosowanych dla niepełnosprawnych.",
+		"place": "1204062",
+		"expected": ["transport-na-telefon"]
+	},
+	{
+		"text": "Mieszkańcy dalekich przysiółków nie przyjeżdżają do ośrodka pomocy społecznej, bo to 20 km. Wiele spraw nie jest w ogóle zgłaszanych.",
+		"place": "1210112",
+		"expected": ["mobilny-punkt-uslug"]
+	},
+	{
+		"text": "Mam niepełnosprawność ruchową i chciałbym pracować, ale potrzebuję kogoś, kto pomoże mi rano się przygotować i dojechać.",
+		"place": "1261011",
+		"expected": ["asystent-osobisty-ozn", "transport-na-telefon"]
+	},
+	{
+		"text": "W gminie zamieszkało wiele rodzin z Ukrainy. Nie znają procedur, dzieci mają problem w szkole, dorośli nie mogą znaleźć pracy.",
+		"place": "1219053",
+		"expected": ["centrum-integracji-migrantow"]
+	},
+	{
+		"text": "Na nowych osiedlach pod Krakowem nikt się nie zna. Młode rodziny nie mają gdzie spotkać się z innymi rodzicami i nie mają pomocy przy dzieciach.",
+		"place": "1206092",
+		"expected": ["osiedlowe-centrum-sasiedzkie"]
+	},
+	{
+		"text": "Młodzi wyjeżdżają po studiach i nie wracają. Zostają sami starsi ludzie, zamykają szkołę.",
+		"place": "1205072",
+		"expected": ["powroty-mlodych"]
+	},
+	{
+		"text": "Zamknęli pocztę i aptekę, a sklep ledwo się utrzymuje. Starsi muszą jechać 15 km po leki.",
+		"place": "1218042",
+		"expected": ["sklep-wiejski-z-uslugami", "sasiedzka-siec-zakupowa"]
+	},
+	{
+		"text": "Samotny sąsiad po operacji nie może wychodzić z domu, a nie ma rodziny. Kto zrobi mu zakupy i wykupi leki?",
+		"place": "1262011",
+		"expected": ["sasiedzka-siec-zakupowa", "telefon-zyczliwosci"]
+	},
+	{
+		"text": "Seniorka mówi, że czasem przez tydzień nie rozmawia z nikim. Czuje się niepotrzebna.",
+		"place": "1213011",
+		"expected": ["telefon-zyczliwosci", "kawiarenka-pokolen", "kluby-seniora-w-remizach"]
+	},
+	{
+		"text": "Ośrodek pomocy, szkoła i przychodnia każde robi coś dla seniorów, ale nikt ze sobą nie rozmawia. Część osób dostaje pomoc z trzech stron, a część żadnej.",
+		"place": "1216053",
+		"expected": ["wspolny-plan-uslug-gminy", "karta-uslug-cus"]
+	},
+	{
+		"text": "Mieszkańcy muszą chodzić do pięciu różnych instytucji, żeby załatwić opiekę dla niepełnosprawnego dziecka. Każda chce innych dokumentów.",
+		"place": "1203013",
+		"expected": ["karta-uslug-cus"]
+	},
+	{
+		"text": "Mamy wiele osób długotrwale bezrobotnych, a jednocześnie seniorzy potrzebują ciepłych obiadów.",
+		"place": "1202013",
+		"expected": ["spoldzielnia-socjalna-cateringowa"]
+	},
+	{
+		"text": "Osoby starsze nie chcą iść do DPS, ale nie dają już rady same w dużym domu. Brakuje czegoś pośredniego.",
+		"place": "1201011",
+		"expected": ["mieszkania-wspomagane", "dzienny-dom-pobytu-wiejski"]
+	},
+	{
+		"text": "Młodzież wieczorami przesiaduje na przystankach, pije alkohol i nie ma do kogo się zwrócić. Pedagog szkolny nie ma do nich dostępu.",
+		"place": "1261011",
+		"expected": ["streetworking-mlodziezowy"]
+	},
+	{
+		"text": "Zimą osoby bezdomne śpią na dworcu i w altankach. Nie chcą iść do noclegowni.",
+		"place": "1263011",
+		"expected": ["posilek-z-rozmowa-bezdomnosc"]
+	},
+	{
+		"text": "Osoby z niepełnosprawnością intelektualną nie rozumieją pism z urzędu. Komunikaty gminy są pisane trudnym językiem.",
+		"place": "1212043",
+		"expected": ["aplikacja-latwy-urzad"]
+	},
+	{
+		"text": "Chodniki są wysokie, brak podjazdów do przychodni i urzędu. Zgłaszamy to od lat, ale nikt nie wie, co naprawić najpierw.",
+		"place": "1218093",
+		"expected": ["mapa-dostepnosci-gminy"]
+	},
+	{
+		"text": "Leżąca babcia ma pielęgniarkę, opiekunkę z OPS i rehabilitanta, ale oni się nie komunikują i przychodzą w tym samym czasie.",
+		"place": "1207011",
+		"expected": ["opiekun-medyczny-w-domu"]
+	},
+	{
+		"text": "Rodzina nie ma komputera ani internetu, dzieci nie mogą odrabiać zadań, a mama nie może złożyć wniosku o świadczenie online.",
+		"place": "1204013",
+		"expected": ["wypozyczalnia-tabletow"]
+	},
+	{
+		"text": "Nastolatki coraz częściej grają w kasynach online i zadłużają się. Rodzice dowiadują się za późno.",
+		"place": "1209013",
+		"expected": ["challenge"]
+	},
+	{
+		"text": "Brakuje żłobka, a najbliższy ma listę oczekujących na dwa lata. Matki nie mogą wrócić do pracy.",
+		"place": "1206112",
+		"expected": ["challenge"]
+	},
+	{
+		"text": "We wsi jest problem przemocy w rodzinach, ale kobiety boją się zgłaszać, bo wszyscy się znają.",
+		"place": "1211082",
+		"expected": ["challenge"]
+	},
+	{
+		"text": "Młodzi ludzie nie mogą znaleźć taniego mieszkania do wynajęcia w gminie, ceny są jak w Krakowie.",
+		"place": "1206022",
+		"expected": ["challenge"]
+	},
+	{
+		"text": "Dzieci w szkole są nękane w internecie przez rówieśników, nauczyciele nie wiedzą, jak reagować na cyberprzemoc.",
+		"place": "1217011",
+		"expected": ["challenge"]
+	},
+	{
+		"text": "Rolnicy w wieku przedemerytalnym tracą gospodarstwa i nie mają żadnego zajęcia, popadają w alkoholizm.",
+		"place": "1214033",
+		"expected": ["challenge"]
+	},
+	{
+		"text": "Nikt nie organizuje opieki nad dziećmi pielęgniarek pracujących na nocne zmiany w szpitalu powiatowym.",
+		"place": "1215011",
+		"expected": ["challenge"]
+	},
+	{
+		"text": "Lokalne restauracje wyrzucają dużo jedzenia, a w gminie są rodziny, którym go brakuje. Nie ma systemu przekazywania żywności.",
+		"place": "1219042",
+		"expected": ["challenge"]
+	},
+	{
+		"text": "Seniorzy padają ofiarą oszustów metodą na wnuczka i na policjanta. Tracą oszczędności całego życia.",
+		"place": "1213082",
+		"expected": ["challenge"]
+	},
+	{
+		"text": "Osoby głuche nie mogą zadzwonić do przychodni ani się umówić, bo rejestracja jest tylko telefoniczna.",
+		"place": "1201052",
+		"expected": ["challenge", "aplikacja-latwy-urzad"]
+	},
+	{
+		"text": "Моя бабуся живе сама в Тарнові і не може вийти з дому після операції. Їй потрібна допомога з покупками та ліками.",
+		"place": "1263011",
+		"locale": "uk",
+		"expected": ["sasiedzka-siec-zakupowa", "telefon-zyczliwosci"]
+	},
+	{
+		"text": "Ми переїхали з Харкова, діти не говорять польською, і ми не розуміємо, як записатися до лікаря та до школи.",
+		"place": "1261011",
+		"locale": "uk",
+		"expected": ["centrum-integracji-migrantow"]
+	},
+	{
+		"text": "My father lives alone in Zakopane and I worry he could fall at night with nobody noticing. I work abroad.",
+		"place": "1217011",
+		"locale": "en",
+		"expected": ["teleopieka-z-opaska"]
+	},
+	{
+		"text": "Teenagers in our town have nowhere to turn when they feel anxious or depressed; the waiting list for a psychologist is months long.",
+		"place": "1205011",
+		"locale": "en",
+		"expected": ["punkt-pierwszego-kontaktu-psychologicznego"]
+	},
+	{
+		"text": "Older people in the village cannot use online banking or e-prescriptions and have nobody to teach them.",
+		"place": "1212062",
+		"locale": "en",
+		"expected": ["cyfrowy-asystent-seniora", "kolo-gospodyn-cyfrowych"]
+	},
+	{
+		"text": "Pan Jan Kowalski z ul. Długiej 5 w Nowym Targu, tel. 600 123 456, mieszka sam i od tygodnia nie wychodzi z domu. Sąsiedzi się martwią.",
+		"place": "1211011",
+		"expected": ["telefon-zyczliwosci", "sasiedzka-siec-zakupowa"],
+		"pii": true
+	},
+	{
+		"text": "Proszę o kontakt pod adresem anna.nowak@example.com. Moja córka ma 15 lat i od miesiąca nie chodzi do szkoły, zamyka się w pokoju.",
+		"place": "1219053",
+		"expected": ["punkt-pierwszego-kontaktu-psychologicznego", "grupy-wsparcia-dla-rodzicow"],
+		"pii": true
+	},
+	{
+		"text": "Mój PESEL to 44051401458, potrzebuję pomocy w złożeniu wniosku o zasiłek, nie mam komputera.",
+		"place": "1208013",
+		"expected": ["cyfrowy-asystent-seniora"],
+		"pii": true
+	},
+	{
+		"text": "Maria Wiśniewska, 32-400 Myślenice, opiekuje się niepełnosprawnym synem i nie ma żadnego wsparcia.",
+		"place": "1209013",
+		"expected": ["opieka-wytchnieniowa-sasiedzka", "asystent-osobisty-ozn"],
+		"pii": true
+	},
+	{
+		"text": "Zadzwońcie do mnie +48 512 345 678, w naszym bloku mieszka osoba w kryzysie bezdomności na klatce schodowej.",
+		"place": "1262011",
+		"expected": ["posilek-z-rozmowa-bezdomnosc"],
+		"pii": true
+	},
+	{
+		"text": "W wiosce Hańczowa starsi ludzie nie mają gdzie się spotykać, kiedyś była świetlica, teraz stoi pusta.",
+		"place": "1205072",
+		"expected": ["kluby-seniora-w-remizach", "kawiarenka-pokolen"]
+	},
+	{
+		"text": "Opiekunowie osób z demencją nie wiedzą, jak przenosić chorego i jakie mają prawa do świadczeń.",
+		"place": "1216142",
+		"expected": ["szkola-dla-opiekunow"]
+	},
+	{
+		"text": "Seniorzy z Kościeliska chcieliby nauczyć się wideorozmów z wnukami za granicą, ale nie mają tabletów.",
+		"place": "1217032",
+		"expected": ["wypozyczalnia-tabletow", "cyfrowy-asystent-seniora"]
+	},
+	{
+		"text": "Wielu niepełnosprawnych mieszkańców gminy rezygnuje z rehabilitacji, bo nie ma jak dojechać do ośrodka w Krakowie.",
+		"place": "1206033",
+		"expected": ["transport-na-telefon"]
+	},
+	{
+		"text": "Gmina rośnie bardzo szybko, przybywa rodzin z małymi dziećmi, a nie ma żadnego miejsca integracji ani zajęć dla dzieci.",
+		"place": "1219053",
+		"expected": ["osiedlowe-centrum-sasiedzkie"]
+	},
+	{
+		"text": "Matka z trójką dzieci straciła pracę, nie wie, gdzie szukać pomocy, każda instytucja odsyła ją dalej.",
+		"place": "1203013",
+		"expected": ["karta-uslug-cus", "mobilny-punkt-uslug"]
+	},
+	{
+		"text": "Uczniowie wstydzą się iść do pedagoga, wolą rozmawiać z kolegami, ale koledzy nie wiedzą, jak pomóc.",
+		"place": "1218093",
+		"expected": ["mlodziezowi-liderzy-wsparcia"]
+	},
+	{
+		"text": "W zimie starsza pani w Czarnym Dunajcu nie ma ciepłego posiłku, bo nie daje rady gotować.",
+		"place": "1211082",
+		"expected": ["spoldzielnia-socjalna-cateringowa", "sasiedzka-siec-zakupowa"]
+	},
+	{
+		"text": "Na wsi brakuje opieki dziennej dla seniorów, a ich dzieci muszą dojeżdżać do pracy.",
+		"place": "1207082",
+		"expected": ["dzienny-dom-pobytu-wiejski"]
+	},
+	{
+		"text": "Osoby z niepełnosprawnością nie mogą wejść do połowy budynków publicznych w mieście.",
+		"place": "1263011",
+		"expected": ["mapa-dostepnosci-gminy"]
+	},
+	{
+		"text": "Psy wałęsają się po wsi i straszą dzieci w drodze do szkoły.",
+		"place": "1210013",
+		"expected": ["challenge"],
+		"not_need": false
+	},
 	{ "text": "test test 123", "place": null, "expected": ["challenge"], "not_need": true },
-	{ "text": "Nasza gmina się wyludnia, sołectwa pustoszeją, a gmina nie ma pomysłu, jak przyciągnąć ludzi do pracy zdalnej.", "place": "1205072", "expected": ["powroty-mlodych"] },
-	{ "text": "Bliscy osób z chorobami psychicznymi zostają sami, gdy chory wraca ze szpitala i odmawia leczenia.", "place": "1261011", "expected": ["challenge", "grupy-wsparcia-dla-rodzicow"] },
-	{ "text": "Sąsiedzi chcieliby pomagać starszym, ale nie wiedzą, kto potrzebuje pomocy i jak to zorganizować.", "place": "1219042", "expected": ["sasiedzka-siec-zakupowa", "opieka-wytchnieniowa-sasiedzka", "telefon-zyczliwosci"] }
+	{
+		"text": "Nasza gmina się wyludnia, sołectwa pustoszeją, a gmina nie ma pomysłu, jak przyciągnąć ludzi do pracy zdalnej.",
+		"place": "1205072",
+		"expected": ["powroty-mlodych"]
+	},
+	{
+		"text": "Bliscy osób z chorobami psychicznymi zostają sami, gdy chory wraca ze szpitala i odmawia leczenia.",
+		"place": "1261011",
+		"expected": ["challenge", "grupy-wsparcia-dla-rodzicow"]
+	},
+	{
+		"text": "Sąsiedzi chcieliby pomagać starszym, ale nie wiedzą, kto potrzebuje pomocy i jak to zorganizować.",
+		"place": "1219042",
+		"expected": ["sasiedzka-siec-zakupowa", "opieka-wytchnieniowa-sasiedzka", "telefon-zyczliwosci"]
+	}
 ]

@@ -61,7 +61,13 @@ function sortFused(xs: Fused[]): Fused[] {
  * Maximal marginal relevance over a relevance-ordered list, so near-duplicates don't
  * crowd the final results. `sim` returns similarity between two items in 0..1.
  */
-export function mmr<T>(items: T[], relevance: (t: T) => number, sim: (a: T, b: T) => number, k: number, lambda = 0.7): T[] {
+export function mmr<T>(
+	items: T[],
+	relevance: (t: T) => number,
+	sim: (a: T, b: T) => number,
+	k: number,
+	lambda = 0.7
+): T[] {
 	const picked: T[] = [];
 	const pool = [...items];
 	while (picked.length < k && pool.length) {

@@ -13,8 +13,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const d = parsed.data;
 	const a = await decisions().ask(
 		'ideas.completeness',
-		{ idea: { title: d.title, essence: d.essence, for_whom: d.for_whom, how_it_works: d.how_it_works, stage: d.stage } },
+		{
+			idea: {
+				title: d.title,
+				essence: d.essence,
+				for_whom: d.for_whom,
+				how_it_works: d.how_it_works,
+				stage: d.stage
+			}
+		},
 		completenessQuestions
 	);
-	return json({ checks: Object.fromEntries(Object.entries(a).map(([k, v]) => [k, (v as { noul: number }).noul])) });
+	return json({
+		checks: Object.fromEntries(Object.entries(a).map(([k, v]) => [k, (v as { noul: number }).noul]))
+	});
 };

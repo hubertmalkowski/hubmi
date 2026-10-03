@@ -1,42 +1,78 @@
-# sv
+# Zaczyn: Małopolski Hub Innowacji Społecznych
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Prototype for the ROPS Kraków HackYeah challenge. A resident describes a social problem in their own words; Zaczyn finds proven innovations from the regional library, or turns the need into an open challenge for innovators. All seven challenge modules are implemented.
 
-## Creating a project
+| Module                                                                           | Where                                                      |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| I. Social matchmaking (mandatory)                                                | `/report`, `/report/[id]`                                  |
+| II. Knowledge base (challenge map, library, materials, admin trends)             | `/knowledge`, `/knowledge/library`, `/admin/trends`        |
+| III. Idea creator (fiszka, assistant, grant application generator)               | `/ideas/new`, `/ideas/[id]/assistant`, `/calls/[id]/apply` |
+| IV. Innovation tester                                                            | `/tests`                                                   |
+| V. Communication (threads, live notifications)                                   | `/messages`, idea pages                                    |
+| VI. Admin panel (inbox with AI triage and reply drafts, moderation, CRUD, calls) | `/admin`                                                   |
+| VII. Innovation Middleman (implementation plan for an institution)               | `/adapt/[slug]`                                            |
 
-If you're seeing this, you've probably already done this step. Congrats!
+UI in Polish, English and Ukrainian (`/en/…`, `/uk/…`). Accessibility toolbar: text size, high contrast, dark mode, easy-read rewrite, read aloud.
 
-```sh
-# create a new project
-npx sv create my-app
+## How matching works
+
+```
+need text ──► PII redaction (regex + name gazetteer, confirmed by Jev)
+          ──► Jev intake: area (Choice), target groups (Noul each), urgency (Score), place (Choice over gazetteer hits)
+          ──► Elasticsearch: Polish BM25 (hunspell lemmas) ‖ kNN on Voyage embeddings
+          ──► Reciprocal Rank Fusion (k=60, in app code)
+          ──► Jev rerank: one Score (0–4) per candidate, P(score ≥ 3) ≥ 0.6 = match
+          ──► MMR diversity ─► Claude Haiku "why it fits" ─► results
+          └─► no confident match ─► attach to / create an open challenge
 ```
 
-To recreate this project with the same configuration:
+Details and the reasoning behind each choice: [`docs/architektura.md`](docs/architektura.md). Costs: [`docs/koszty.md`](docs/koszty.md).
+
+## Run locally
+
+Requirements: Node 22, pnpm 10, Docker.
 
 ```sh
-# recreate this project
-pnpm dlx sv@0.17.1 create --template minimal --types ts --add prettier eslint vitest="usages:unit" playwright tailwindcss="plugins:typography,forms" sveltekit-adapter="adapter:node" drizzle="database:postgresql+postgresql:postgres.js+docker:no" paraglide="languageTags:pl,en,uk+demo:no" --install pnpm .
+pnpm install
+cp .env.example .env            # add API keys, or keep AI_MOCK=1 to run fully offline
+pnpm es:dict                    # copies the Polish hunspell dictionary into the ES image context
+docker compose up -d db es      # Postgres 16 + Elasticsearch 9 with Polish analysis
+pnpm db:migrate
+pnpm db:seed                    # synthetic demo data, runs every need through the real pipeline
+pnpm dev                        # http://localhost:5173 (job workers run in-process)
 ```
 
-## Developing
+Demo accounts are on `/login` (resident, NGO, municipality, experts, ROPS admin).
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### AI providers
 
-```sh
-npm run dev
+| Variable            | Used for                                                                                                                                  | Without it                  |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| `TYPESAFE_API_KEY`  | Jev decisions: classification, rerank, PII confirmation, triage, completeness                                                             | deterministic lexical mock  |
+| `ANTHROPIC_API_KEY` | Claude: match reasons, challenge text, assistant, grant pre-fill, Middleman, easy-read, translations; also decision fallback if Jev fails | template mock text          |
+| `VOYAGE_API_KEY`    | multilingual embeddings                                                                                                                   | hashed bag-of-words vectors |
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+`AI_MOCK=1` forces all mocks. The mocks exist for tests and offline demos; they are not models, and match quality must be judged with real keys (`pnpm eval:match`).
 
-## Building
+## Scripts
 
-To create a production version of your app:
+| Command                                     | What it does                                                                                                               |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm check`                                | Paraglide compile + svelte-check (types)                                                                                   |
+| `pnpm check:messages`                       | every locale has every Polish key with the same parameters                                                                 |
+| `pnpm vitest run`                           | unit tests (fusion, policy, PII, place matching, fallback mapping, markdown)                                               |
+| `pnpm test:e2e`                             | Playwright flows + axe-core WCAG 2.1 AA checks (needs seeded DB/ES; set `PW_CHROMIUM_PATH` to use a preinstalled Chromium) |
+| `pnpm eval:match`                           | hit@1 / hit@3 / MRR for BM25, kNN, RRF, linear fusion, RRF + rerank; challenge precision/recall                            |
+| `pnpm jev:smoke`                            | Jev area accuracy on 20 Polish needs (pass mark 80%)                                                                       |
+| `pnpm worker`                               | job worker as a separate process (set `RUN_WORKERS_IN_APP=0` on app instances)                                             |
+| `pnpm tsx scripts/es-reindex.ts all`        | zero-downtime rebuild of Elasticsearch indices from Postgres                                                               |
+| `pnpm tsx scripts/import-teryt.ts TERC.csv` | import all 182 Małopolska gminas from the official GUS TERYT file                                                          |
+| `k6 run scripts/load/intake.js`             | load test (run the app with `AI_MOCK=1`)                                                                                   |
 
-```sh
-npm run build
-```
+## Production
 
-You can preview the production build with `npm run preview`.
+`docker compose --profile app up -d` runs app, worker, Postgres and Elasticsearch from one image (`Dockerfile`). Set `ORIGIN` to the public URL. For Elastic Cloud, upload the hunspell dictionary as a custom bundle (`docker/elasticsearch/hunspell/pl_PL`).
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## Data
+
+All seed data is synthetic and contains no real personal data. Powiat TERYT codes are official; the gmina list is a demo subset with placeholder codes. Replace it with `scripts/import-teryt.ts`. The innovation library is fictional and should be replaced with the ROPS Biblioteka export (adapter in `scripts/seed.ts`).

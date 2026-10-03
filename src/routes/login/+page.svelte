@@ -10,7 +10,7 @@
 <svelte:head><title>{m.auth_login()} | {m.app_name()}</title></svelte:head>
 
 <h1 class="text-3xl font-bold">{m.auth_login_title()}</h1>
-<p class="text-muted-foreground mt-2 max-w-2xl">{m.auth_login_demo_note()}</p>
+<p class="mt-2 max-w-2xl text-muted-foreground">{m.auth_login_demo_note()}</p>
 
 <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 	{#each data.demo as u (u.id)}

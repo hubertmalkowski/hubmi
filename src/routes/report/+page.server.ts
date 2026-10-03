@@ -19,7 +19,10 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const form = await request.formData();
-		const parsed = needSchema.safeParse({ text: form.get('text'), place_teryt: form.get('place_teryt') ?? '' });
+		const parsed = needSchema.safeParse({
+			text: form.get('text'),
+			place_teryt: form.get('place_teryt') ?? ''
+		});
 		if (!parsed.success) return fail(400, { text: String(form.get('text') ?? ''), tooShort: true });
 		await rateLimit(locals.clientKey, 'needs');
 

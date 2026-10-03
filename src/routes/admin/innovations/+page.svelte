@@ -19,7 +19,7 @@
 	<table class="w-full text-left text-sm">
 		<caption class="sr-only">{m.admin_innovations()}</caption>
 		<thead>
-			<tr class="border-border border-b">
+			<tr class="border-b border-border">
 				<th scope="col" class="py-2 pr-3">{m.admin_col_title()}</th>
 				<th scope="col" class="py-2 pr-3">{m.report_area()}</th>
 				<th scope="col" class="py-2 pr-3">{m.library_filter_stage()}</th>
@@ -29,11 +29,20 @@
 		</thead>
 		<tbody>
 			{#each data.innovations as i (i.id)}
-				<tr class="border-border border-b">
-					<td class="py-2 pr-3"><a class="font-medium hover:underline" href={localizeHref(`/admin/innovations/${i.id}`)}>{i.title}</a></td>
+				<tr class="border-b border-border">
+					<td class="py-2 pr-3"
+						><a
+							class="font-medium hover:underline"
+							href={localizeHref(`/admin/innovations/${i.id}`)}>{i.title}</a
+						></td
+					>
 					<td class="py-2 pr-3">{areaLabel(i.areaSlug)}</td>
 					<td class="py-2 pr-3">{stageLabel(i.stage)}</td>
-					<td class="py-2 pr-3"><Badge variant={i.status === 'published' ? 'default' : 'secondary'}>{i.status === 'published' ? m.admin_published() : needStatusLabel('draft')}</Badge></td>
+					<td class="py-2 pr-3"
+						><Badge variant={i.status === 'published' ? 'default' : 'secondary'}
+							>{i.status === 'published' ? m.admin_published() : needStatusLabel('draft')}</Badge
+						></td
+					>
 					<td class="py-2 whitespace-nowrap">{formatDate(i.updatedAt, getLocale())}</td>
 				</tr>
 			{/each}

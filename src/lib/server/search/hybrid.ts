@@ -76,7 +76,13 @@ export async function hybridSearch(opts: HybridOptions): Promise<HybridHit[]> {
 									multi_match: {
 										query: opts.text,
 										type: 'best_fields',
-										fields: ['title^3', 'title.folded^1.5', 'summary^2', 'description', 'implementation_notes^0.5'],
+										fields: [
+											'title^3',
+											'title.folded^1.5',
+											'summary^2',
+											'description',
+											'implementation_notes^0.5'
+										],
 										tie_breaker: 0.3
 									}
 								}
@@ -96,13 +102,20 @@ export async function hybridSearch(opts: HybridOptions): Promise<HybridHit[]> {
 					}
 				});
 
-	const vector = mode === 'bm25' ? undefined : (opts.vector ?? (await embedOne(opts.text, 'query')));
+	const vector =
+		mode === 'bm25' ? undefined : (opts.vector ?? (await embedOne(opts.text, 'query')));
 	const knn = vector
 		? es.search<InnovationDoc>({
 				index: INDEX.innovations,
 				size: depth,
 				_source: SOURCE,
-				knn: { field: 'embedding', query_vector: vector, k: depth, num_candidates: Math.max(200, depth * 4), filter }
+				knn: {
+					field: 'embedding',
+					query_vector: vector,
+					k: depth,
+					num_candidates: Math.max(200, depth * 4),
+					filter
+				}
 			})
 		: Promise.resolve(undefined);
 

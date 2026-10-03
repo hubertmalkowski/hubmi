@@ -18,7 +18,11 @@ export function parseA11y(raw: string | undefined): A11yPrefs {
 }
 
 export function htmlClass(p: A11yPrefs): string {
-	return [p.scale !== 100 ? `text-scale-${p.scale}` : '', p.contrast ? 'high-contrast' : '', p.dark ? 'dark' : '']
+	return [
+		p.scale !== 100 ? `text-scale-${p.scale}` : '',
+		p.contrast ? 'high-contrast' : '',
+		p.dark ? 'dark' : ''
+	]
 		.filter(Boolean)
 		.join(' ');
 }

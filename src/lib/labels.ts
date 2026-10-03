@@ -47,7 +47,9 @@ export function needStatusLabel(status: string) {
 }
 
 export function fitText(label: 'direct' | 'good' | 'partial' | 'weak') {
-	return { direct: m.fit_direct, good: m.fit_good, partial: m.fit_partial, weak: m.fit_weak }[label]();
+	return { direct: m.fit_direct, good: m.fit_good, partial: m.fit_partial, weak: m.fit_weak }[
+		label
+	]();
 }
 
 export function feedbackCategoryLabel(c: string | null) {

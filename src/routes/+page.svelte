@@ -24,30 +24,35 @@
 	<div>
 		<h1 class="text-4xl leading-tight font-bold text-balance sm:text-5xl">{m.home_title()}</h1>
 		<EasyRead key="home.lead">
-			<p class="text-muted-foreground mt-4 max-w-xl text-lg">{m.home_lead()}</p>
+			<p class="mt-4 max-w-xl text-lg text-muted-foreground">{m.home_lead()}</p>
 		</EasyRead>
 		<div class="mt-6 flex flex-wrap gap-3">
-			<Button href={localizeHref('/report')} size="lg" class="h-14 px-6 text-lg">{m.home_cta_report()}</Button>
-			<Button href={localizeHref('/knowledge/library')} size="lg" variant="outline" class="h-14 px-6 text-lg"
-				>{m.home_cta_library()}</Button
+			<Button href={localizeHref('/report')} size="lg" class="h-14 px-6 text-lg"
+				>{m.home_cta_report()}</Button
+			>
+			<Button
+				href={localizeHref('/knowledge/library')}
+				size="lg"
+				variant="outline"
+				class="h-14 px-6 text-lg">{m.home_cta_library()}</Button
 			>
 		</div>
 	</div>
 	<dl class="grid grid-cols-2 gap-3">
-		<div class="bg-card border-border rounded-xl border p-5">
-			<dt class="text-muted-foreground text-sm">{m.home_stat_innovations()}</dt>
+		<div class="rounded-xl border border-border bg-card p-5">
+			<dt class="text-sm text-muted-foreground">{m.home_stat_innovations()}</dt>
 			<dd class="mt-1 text-4xl font-bold">{data.totals.innovations}</dd>
 		</div>
-		<div class="bg-card border-border rounded-xl border p-5">
-			<dt class="text-muted-foreground text-sm">{m.home_stat_needs()}</dt>
+		<div class="rounded-xl border border-border bg-card p-5">
+			<dt class="text-sm text-muted-foreground">{m.home_stat_needs()}</dt>
 			<dd class="mt-1 text-4xl font-bold">{data.totals.needs}</dd>
 		</div>
-		<div class="bg-card border-border rounded-xl border p-5">
-			<dt class="text-muted-foreground text-sm">{m.home_stat_matched()}</dt>
+		<div class="rounded-xl border border-border bg-card p-5">
+			<dt class="text-sm text-muted-foreground">{m.home_stat_matched()}</dt>
 			<dd class="mt-1 text-4xl font-bold">{data.totals.matched}</dd>
 		</div>
-		<div class="bg-card border-border rounded-xl border p-5">
-			<dt class="text-muted-foreground text-sm">{m.home_stat_challenges()}</dt>
+		<div class="rounded-xl border border-border bg-card p-5">
+			<dt class="text-sm text-muted-foreground">{m.home_stat_challenges()}</dt>
 			<dd class="mt-1 text-4xl font-bold">{data.totals.open_challenges}</dd>
 		</div>
 	</dl>
@@ -60,12 +65,19 @@
 			<li>
 				<Card.Root class="h-full">
 					<Card.Header>
-						<span class="bg-accent text-accent-foreground grid size-10 place-items-center rounded-lg" aria-hidden="true">
+						<span
+							class="grid size-10 place-items-center rounded-lg bg-accent text-accent-foreground"
+							aria-hidden="true"
+						>
 							<s.icon class="size-5" />
 						</span>
-						<Card.Title><h3 class="text-base"><span class="sr-only">{i + 1}. </span>{s.title}</h3></Card.Title>
+						<Card.Title
+							><h3 class="text-base">
+								<span class="sr-only">{i + 1}. </span>{s.title}
+							</h3></Card.Title
+						>
 					</Card.Header>
-					<Card.Content><p class="text-muted-foreground text-sm">{s.text}</p></Card.Content>
+					<Card.Content><p class="text-sm text-muted-foreground">{s.text}</p></Card.Content>
 				</Card.Root>
 			</li>
 		{/each}
@@ -75,5 +87,9 @@
 <section class="mt-12" aria-labelledby="map">
 	<h2 id="map" class="sr-only">{m.home_map_title()}</h2>
 	<ChallengeMap counts={data.byPowiat} title={m.home_map_title()} />
-	<p class="mt-3"><a class="text-primary underline underline-offset-4" href={localizeHref('/knowledge')}>{m.home_map_more()}</a></p>
+	<p class="mt-3">
+		<a class="text-primary underline underline-offset-4" href={localizeHref('/knowledge')}
+			>{m.home_map_more()}</a
+		>
+	</p>
 </section>

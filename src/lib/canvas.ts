@@ -1,6 +1,16 @@
 import { m } from '$lib/paraglide/messages';
 
-export const CANVAS_KEYS = ['problem', 'beneficiaries', 'solution', 'value', 'partners', 'resources', 'costs', 'risks', 'measures'] as const;
+export const CANVAS_KEYS = [
+	'problem',
+	'beneficiaries',
+	'solution',
+	'value',
+	'partners',
+	'resources',
+	'costs',
+	'risks',
+	'measures'
+] as const;
 export type CanvasKey = (typeof CANVAS_KEYS)[number];
 
 export function canvasLabel(k: string) {

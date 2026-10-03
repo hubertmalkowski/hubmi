@@ -14,7 +14,9 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 	const stream = new ReadableStream({
 		async start(controller) {
 			const l = await sql.listen(channel, (kind) => {
-				controller.enqueue(enc.encode(`event: notification\ndata: ${JSON.stringify({ kind })}\n\n`));
+				controller.enqueue(
+					enc.encode(`event: notification\ndata: ${JSON.stringify({ kind })}\n\n`)
+				);
 			});
 			unlisten = l.unlisten;
 			ping = setInterval(() => controller.enqueue(enc.encode(': ping\n\n')), 25_000);
@@ -33,5 +35,7 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 			await unlisten?.().catch(() => undefined);
 		}
 	});
-	return new Response(stream, { headers: { 'content-type': 'text/event-stream', 'cache-control': 'no-cache' } });
+	return new Response(stream, {
+		headers: { 'content-type': 'text/event-stream', 'cache-control': 'no-cache' }
+	});
 };

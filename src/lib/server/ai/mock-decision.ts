@@ -12,19 +12,42 @@ function entryText(e: unknown): string {
 	if (typeof e === 'string') return e;
 	if (typeof e === 'number' || typeof e === 'boolean') return String(e);
 	if (Array.isArray(e)) return e.map(entryText).join(' ');
-	return Object.values(e as Record<string, unknown>).map(entryText).join(' ');
+	return Object.values(e as Record<string, unknown>)
+		.map(entryText)
+		.join(' ');
 }
 
 // The real model reads Polish against English criteria semantically; the lexical mock
 // needs Polish hint words for the English criteria it is likely to see.
 const HINTS: [RegExp, string][] = [
-	[/ageing|older people|seniors/i, 'senior seniorzy starszy starsze emeryt babcia dziadek mama lata upadnie DPS'],
-	[/mental health/i, 'depresja psychiatra psycholog lęk panika samookalecz kryzys psychicz zdrowie'],
-	[/loneliness|isolation/i, 'samotność samotny samotna sama sami spotykać rozmawiać osamotnienie świetlica'],
-	[/digital/i, 'internet komputer e-recepta profil zaufany tablet online cyfrowy wideorozmowy bankowość wniosek'],
-	[/access to social services|barriers/i, 'dojazd dojechać transport lekarz urząd wózek przychodnia bus rehabilitacja instytucja bariery'],
-	[/coordination|cooperation/i, 'instytucja współpraca koordynacja ośrodek szkoła przychodnia rozmawia dokumenty'],
-	[/demographic|depopulat|suburb/i, 'wyjeżdżają wyludnia młodzi osiedla nowe rośnie zamknęli szkołę poczta'],
+	[
+		/ageing|older people|seniors/i,
+		'senior seniorzy starszy starsze emeryt babcia dziadek mama lata upadnie DPS'
+	],
+	[
+		/mental health/i,
+		'depresja psychiatra psycholog lęk panika samookalecz kryzys psychicz zdrowie'
+	],
+	[
+		/loneliness|isolation/i,
+		'samotność samotny samotna sama sami spotykać rozmawiać osamotnienie świetlica'
+	],
+	[
+		/digital/i,
+		'internet komputer e-recepta profil zaufany tablet online cyfrowy wideorozmowy bankowość wniosek'
+	],
+	[
+		/access to social services|barriers/i,
+		'dojazd dojechać transport lekarz urząd wózek przychodnia bus rehabilitacja instytucja bariery'
+	],
+	[
+		/coordination|cooperation/i,
+		'instytucja współpraca koordynacja ośrodek szkoła przychodnia rozmawia dokumenty'
+	],
+	[
+		/demographic|depopulat|suburb/i,
+		'wyjeżdżają wyludnia młodzi osiedla nowe rośnie zamknęli szkołę poczta'
+	],
 	[/older people or seniors/i, 'senior seniorzy starsi starsza emeryt mama ojciec lata'],
 	[/disabilit/i, 'niepełnosprawność niepełnosprawny wózek OzN głuche'],
 	[/teenagers|young adults/i, 'młodzież nastolatki uczniowie młodzi'],
@@ -86,7 +109,8 @@ function answer(state: EntryType, q: Question) {
 			const text = entryText(state);
 			return { type: 'noul', noul: text.split(/\s+/).length >= 8 ? 0.92 : 0.15 };
 		}
-		const sim = values.length >= 2 ? overlap(values[0], values[1]) : overlap(all, `${rest} ${hints(rest)}`);
+		const sim =
+			values.length >= 2 ? overlap(values[0], values[1]) : overlap(all, `${rest} ${hints(rest)}`);
 		return { type: 'noul', noul: clamp(sigmoid((sim - 0.18) * 14), 0.02, 0.98) };
 	}
 
@@ -128,11 +152,20 @@ function answer(state: EntryType, q: Question) {
 
 export const mockDecisionProvider: DecisionProvider = {
 	name: 'mock',
-	async ask<const Q extends Questions>(kind: string, state: EntryType, questions: Q): Promise<Answers<Q>> {
+	async ask<const Q extends Questions>(
+		kind: string,
+		state: EntryType,
+		questions: Q
+	): Promise<Answers<Q>> {
 		const started = performance.now();
 		const out: Record<string, unknown> = {};
 		for (const [name, q] of Object.entries(questions)) out[name] = answer(state, q);
-		recordAi({ kind, provider: 'mock', model: 'mock-decision', latencyMs: performance.now() - started });
+		recordAi({
+			kind,
+			provider: 'mock',
+			model: 'mock-decision',
+			latencyMs: performance.now() - started
+		});
 		return out as Answers<Q>;
 	}
 };

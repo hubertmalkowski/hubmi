@@ -10,7 +10,11 @@ export function inline(s: string): Inline[] {
 	return s
 		.split(/(\*\*[^*]+\*\*)/g)
 		.filter(Boolean)
-		.map((p) => (p.startsWith('**') && p.endsWith('**') ? { text: p.slice(2, -2), bold: true } : { text: p, bold: false }));
+		.map((p) =>
+			p.startsWith('**') && p.endsWith('**')
+				? { text: p.slice(2, -2), bold: true }
+				: { text: p, bold: false }
+		);
 }
 
 export function parseMarkdown(md: string): Block[] {

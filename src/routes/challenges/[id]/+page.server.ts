@@ -21,7 +21,10 @@ export const load: PageServerLoad = async ({ params }) => {
 			.from(ideas)
 			.where(and(eq(ideas.challengeId, c.id), ne(ideas.status, 'draft'))),
 		c.placeTeryts.length
-			? db.select({ name: places.name, powiat: places.powiat }).from(places).where(inArray(places.teryt, c.placeTeryts))
+			? db
+					.select({ name: places.name, powiat: places.powiat })
+					.from(places)
+					.where(inArray(places.teryt, c.placeTeryts))
 			: []
 	]);
 	return { challenge: c, reports, ideas: answers, gminas };
