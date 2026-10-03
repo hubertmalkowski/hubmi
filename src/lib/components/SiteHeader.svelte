@@ -6,29 +6,59 @@
 	import BellIcon from '@lucide/svelte/icons/bell';
 	import WheatIcon from '@lucide/svelte/icons/wheat';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-	import SiteMenu from '$lib/components/SiteMenu.svelte';
+	import SiteMenu, { type NavGroup, type NavLink } from '$lib/components/SiteMenu.svelte';
 	import type { SessionUser } from '$lib/server/auth';
 
 	let { user, unread }: { user: SessionUser | null; unread: number } = $props();
 
-	const links = $derived([
-		{ href: '/report', label: m.nav_report() },
-		{ href: '/knowledge', label: m.nav_knowledge() },
-		{ href: '/challenges', label: m.nav_challenges() },
-		{ href: '/ideas/new', label: m.nav_ideas() },
-		{ href: '/calls', label: m.nav_calls() },
-		{ href: '/tests', label: m.nav_tests() },
-		...(user ? [{ href: '/messages', label: m.nav_messages() }] : []),
-		...(user?.role === 'admin' ? [{ href: '/admin', label: m.nav_admin() }] : [])
+	// Menu grouped by what people come to do; each item says what is behind it.
+	const groups = $derived<NavGroup[]>([
+		{
+			title: m.nav_group_problem(),
+			links: [
+				{ href: '/report', label: m.nav_report(), desc: m.nav_report_desc() },
+				{ href: '/knowledge/library', label: m.nav_library(), desc: m.nav_library_desc() },
+				{ href: '/tests', label: m.nav_tests(), desc: m.nav_tests_desc() }
+			]
+		},
+		{
+			title: m.nav_group_idea(),
+			links: [
+				{ href: '/challenges', label: m.nav_challenges(), desc: m.nav_challenges_desc() },
+				{ href: '/ideas/new', label: m.nav_ideas(), desc: m.nav_ideas_desc() },
+				{ href: '/calls', label: m.nav_calls(), desc: m.nav_calls_desc() }
+			]
+		},
+		{
+			title: m.nav_group_region(),
+			links: [
+				{ href: '/knowledge', label: m.nav_knowledge(), desc: m.nav_knowledge_desc() },
+				{ href: '/knowledge/materials', label: m.nav_materials(), desc: m.nav_materials_desc() }
+			]
+		}
 	]);
+	const accountLinks = $derived<NavLink[]>(
+		user
+			? [
+					{ href: '/messages', label: m.nav_messages(), badge: unread || undefined },
+					{ href: '/ideas', label: m.nav_my_ideas() },
+					...(user.role === 'admin' ? [{ href: '/admin', label: m.nav_admin() }] : [])
+				]
+			: []
+	);
 
-	const current = (href: string): 'page' | undefined => {
-		const p = page.url.pathname.replace(/^\/(en|uk)(?=\/|$)/, '') || '/';
-		return p === href || p.startsWith(href + '/') ? 'page' : undefined;
-	};
+	// The most specific matching link is current, so /knowledge/library marks
+	// "Sprawdzone rozwiązania" and not "Mapa potrzeb i dane".
+	const activeHref = $derived.by(() => {
+		const path = page.url.pathname.replace(/^\/(en|uk)(?=\/|$)/, '') || '/';
+		const hrefs = [...groups.flatMap((g) => g.links), ...accountLinks].map((l) => l.href);
+		return hrefs
+			.filter((h) => path === h || path.startsWith(h + '/'))
+			.sort((x, y) => y.length - x.length)[0];
+	});
 </script>
 
-<header class="no-print bg-background">
+<header class="no-print relative z-40 bg-background">
 	<div
 		class="mx-auto flex max-w-[110rem] items-center gap-2 px-4 py-4 sm:gap-4 sm:px-8 lg:px-12 lg:py-5"
 	>
@@ -69,7 +99,7 @@
 				>
 			{/if}
 
-			<SiteMenu {links} {current} {user} />
+			<SiteMenu {groups} {accountLinks} {activeHref} {user} />
 		</div>
 	</div>
 </header>
