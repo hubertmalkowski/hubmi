@@ -26,7 +26,7 @@
 	<ol class="flex flex-col gap-3" aria-live="polite">
 		{#each messages as msg (msg.id)}
 			<li
-				class="rounded-lg border border-border bg-card p-4 {msg.role === 'admin' ||
+				class="rounded-lg border border-card-ring bg-card p-4 {msg.role === 'admin' ||
 				msg.role === 'expert'
 					? 'border-l-4 border-l-primary'
 					: ''}"

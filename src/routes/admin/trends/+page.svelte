@@ -27,25 +27,25 @@
 <p class="mt-2 text-muted-foreground">{m.trends_lead()}</p>
 
 <dl class="mt-6 grid gap-3 sm:grid-cols-4">
-	<div class="rounded-xl border border-border bg-card p-4">
+	<div class="rounded-xl border border-card-ring bg-card p-4">
 		<dt class="text-sm text-muted-foreground">{m.trends_total()}</dt>
 		<dd class="text-3xl font-bold">{data.totals.total}</dd>
 	</div>
-	<div class="rounded-xl border border-border bg-card p-4">
+	<div class="rounded-xl border border-card-ring bg-card p-4">
 		<dt class="text-sm text-muted-foreground">{m.trends_matched()}</dt>
 		<dd class="text-3xl font-bold">{pct(data.totals.matched, data.totals.total)}%</dd>
 		<dd class="text-sm text-muted-foreground">
 			{m.trends_of({ n: String(data.totals.matched), total: String(data.totals.total) })}
 		</dd>
 	</div>
-	<div class="rounded-xl border border-border bg-card p-4">
+	<div class="rounded-xl border border-card-ring bg-card p-4">
 		<dt class="text-sm text-muted-foreground">{m.trends_gaps()}</dt>
 		<dd class="text-3xl font-bold">{pct(data.totals.challenge, data.totals.total)}%</dd>
 		<dd class="text-sm text-muted-foreground">
 			{m.trends_of({ n: String(data.totals.challenge), total: String(data.totals.total) })}
 		</dd>
 	</div>
-	<div class="rounded-xl border border-border bg-card p-4">
+	<div class="rounded-xl border border-card-ring bg-card p-4">
 		<dt class="text-sm text-muted-foreground">{m.trends_top_challenge()}</dt>
 		<dd class="mt-1 font-semibold">
 			{#if data.top}<a class="hover:underline" href={localizeHref(`/challenges/${data.top.id}`)}

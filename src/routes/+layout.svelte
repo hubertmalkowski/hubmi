@@ -8,6 +8,7 @@
 	import { setA11y } from '$lib/a11y-state.svelte';
 	import { onMount } from 'svelte';
 	import { invalidate } from '$app/navigation';
+	import { page } from '$app/state';
 	import { toast } from 'svelte-sonner';
 	import { notificationText } from '$lib/notifications';
 
@@ -40,17 +41,26 @@
 	{m.a11y_skip_to_content()}
 </a>
 
-<A11yToolbar {a11y} />
 <SiteHeader user={data.user} unread={data.unread} />
 
-<main id="main" tabindex="-1" class="mx-auto w-full max-w-6xl px-4 py-8 focus:outline-none sm:px-6">
+<!-- The home page lays out its own containers so its hero can span the header width. -->
+<main
+	id="main"
+	tabindex="-1"
+	class={[
+		'w-full focus:outline-none',
+		page.route.id !== '/' && 'mx-auto max-w-6xl px-4 py-8 sm:px-6'
+	]}
+>
 	{@render children()}
 </main>
 
-<footer class="no-print mt-16 border-t border-border text-muted-foreground">
-	<div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-8 text-sm sm:px-6">
-		<p class="font-semibold text-foreground">{m.app_name()}: {m.footer_hub()}</p>
-		<p>{m.footer_rops()}</p>
+<footer class="no-print mt-24 border-t-4 border-primary bg-muted/60 text-muted-foreground">
+	<div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-10 text-sm sm:px-6">
+		<A11yToolbar {a11y} />
+		<hr class="my-6 border-border" />
+		<p class="font-serif text-xl font-semibold text-foreground">{m.app_name()}</p>
+		<p class="text-base text-foreground">{m.footer_hub()}</p>
 		<p>{m.footer_demo_data()}</p>
 	</div>
 </footer>

@@ -162,7 +162,7 @@
 					><PrinterIcon class="size-4" aria-hidden="true" />{m.adapt_print()}</Button
 				>{/if}
 		</div>
-		<div class="mt-3 min-h-64 rounded-xl border border-border bg-card p-6">
+		<div class="mt-3 min-h-64 rounded-xl border border-card-ring bg-card p-6">
 			{#if sheet}
 				<p class="mb-4 text-lg font-semibold print:text-2xl">{data.innovation.title}</p>
 				<Markdown source={sheet} />

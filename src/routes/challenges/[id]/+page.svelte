@@ -32,7 +32,7 @@
 			</h2>
 			<ul class="mt-3 flex flex-col gap-3">
 				{#each data.reports as r (r.id)}
-					<li class="rounded-lg border border-border bg-card p-4">
+					<li class="rounded-lg border border-card-ring bg-card p-4">
 						<p>{r.text}</p>
 						<p class="mt-1 text-sm text-muted-foreground">{formatDay(r.createdAt, getLocale())}</p>
 					</li>

@@ -8,7 +8,7 @@
 </script>
 
 <section aria-labelledby="timeline-title">
-	<h2 id="timeline-title" class="text-lg font-semibold">{m.timeline_title()}</h2>
+	<h2 id="timeline-title" class="text-xl font-semibold">{m.timeline_title()}</h2>
 	{#if !events.length}
 		<p class="mt-2 text-muted-foreground">{m.timeline_empty()}</p>
 	{:else}
@@ -30,7 +30,9 @@
 					<p class="text-sm text-muted-foreground">
 						<time datetime={new Date(e.at).toISOString()}>{formatDate(e.at, getLocale())}</time>
 					</p>
-					{#if e.note}<p class="mt-1 text-sm">{e.note}</p>{/if}
+					{#if e.note}<p class="mt-1 text-sm leading-relaxed text-muted-foreground">
+							{e.note}
+						</p>{/if}
 				</li>
 			{/each}
 		</ol>

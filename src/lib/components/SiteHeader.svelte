@@ -2,15 +2,14 @@
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/state';
-	import * as Sheet from '$lib/components/ui/sheet';
 	import { Button } from '$lib/components/ui/button';
-	import MenuIcon from '@lucide/svelte/icons/menu';
 	import BellIcon from '@lucide/svelte/icons/bell';
 	import WheatIcon from '@lucide/svelte/icons/wheat';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import SiteMenu from '$lib/components/SiteMenu.svelte';
 	import type { SessionUser } from '$lib/server/auth';
 
 	let { user, unread }: { user: SessionUser | null; unread: number } = $props();
-	let open = $state(false);
 
 	const links = $derived([
 		{ href: '/report', label: m.nav_report() },
@@ -23,48 +22,34 @@
 		...(user?.role === 'admin' ? [{ href: '/admin', label: m.nav_admin() }] : [])
 	]);
 
-	const current = (href: string) => {
+	const current = (href: string): 'page' | undefined => {
 		const p = page.url.pathname.replace(/^\/(en|uk)(?=\/|$)/, '') || '/';
 		return p === href || p.startsWith(href + '/') ? 'page' : undefined;
 	};
 </script>
 
-<header class="no-print sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
-	<div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
-		<a href={localizeHref('/')} class="flex items-center gap-2 rounded-md text-lg font-bold">
+<header class="no-print bg-background">
+	<div
+		class="mx-auto flex max-w-[110rem] items-center gap-2 px-4 py-4 sm:gap-4 sm:px-8 lg:px-12 lg:py-5"
+	>
+		<a href={localizeHref('/')} class="flex items-center gap-3 rounded-lg">
 			<span
-				class="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground"
+				class="grid size-10 place-items-center rounded-xl bg-primary text-primary-foreground"
 				aria-hidden="true"
 			>
 				<WheatIcon class="size-5" />
 			</span>
-			<span
-				>{m.app_name()}<span class="block text-xs font-normal text-muted-foreground"
-					>{m.app_tagline()}</span
-				></span
+			<span class="font-serif text-2xl leading-none font-semibold tracking-tight"
+				>{m.app_name()}<span class="sr-only">: {m.app_tagline()}</span></span
 			>
 		</a>
 
-		<nav aria-label={m.nav_main()} class="hidden min-w-0 flex-1 xl:block">
-			<ul class="flex flex-wrap items-center gap-1">
-				{#each links as l (l.href)}
-					<li>
-						<a
-							href={localizeHref(l.href)}
-							aria-current={current(l.href)}
-							class="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium whitespace-nowrap hover:bg-accent aria-[current=page]:bg-secondary aria-[current=page]:underline aria-[current=page]:underline-offset-4"
-							>{l.label}</a
-						>
-					</li>
-				{/each}
-			</ul>
-		</nav>
-
-		<div class="ml-auto flex items-center gap-2">
+		<div class="ml-auto flex items-center gap-1 sm:gap-2">
+			<LanguageSwitcher />
 			{#if user}
 				<a
 					href={localizeHref('/messages')}
-					class="relative inline-flex size-11 items-center justify-center rounded-md hover:bg-accent"
+					class="relative inline-flex size-11 items-center justify-center rounded-full hover:bg-accent"
 					aria-label={m.nav_notifications({ count: String(unread) })}
 				>
 					<BellIcon class="size-5" aria-hidden="true" />
@@ -75,51 +60,16 @@
 						>
 					{/if}
 				</a>
-				<span class="hidden text-sm whitespace-nowrap 2xl:inline">{user.displayName}</span>
-				<form method="POST" action={localizeHref('/logout')}>
-					<Button type="submit" variant="outline" size="sm">{m.auth_logout()}</Button>
-				</form>
+				<span class="hidden text-sm whitespace-nowrap lg:inline">{user.displayName}</span>
 			{:else}
 				<Button
 					href={localizeHref(`/login?next=${encodeURIComponent(page.url.pathname)}`)}
-					variant="outline"
-					size="sm">{m.auth_login()}</Button
+					variant="ghost"
+					class="h-11 rounded-full px-3 sm:px-4">{m.auth_login()}</Button
 				>
 			{/if}
 
-			<Sheet.Root bind:open>
-				<Sheet.Trigger>
-					{#snippet child({ props })}
-						<Button
-							{...props}
-							variant="ghost"
-							size="icon"
-							class="size-11 xl:hidden"
-							aria-label={m.nav_open_menu()}
-						>
-							<MenuIcon class="size-6" aria-hidden="true" />
-						</Button>
-					{/snippet}
-				</Sheet.Trigger>
-				<Sheet.Content side="right">
-					<Sheet.Header><Sheet.Title>{m.nav_main()}</Sheet.Title></Sheet.Header>
-					<nav aria-label={m.nav_main()} class="px-4">
-						<ul class="flex flex-col gap-1">
-							{#each links as l (l.href)}
-								<li>
-									<a
-										href={localizeHref(l.href)}
-										aria-current={current(l.href)}
-										onclick={() => (open = false)}
-										class="flex min-h-12 items-center rounded-md px-3 text-base font-medium hover:bg-accent aria-[current=page]:bg-secondary"
-										>{l.label}</a
-									>
-								</li>
-							{/each}
-						</ul>
-					</nav>
-				</Sheet.Content>
-			</Sheet.Root>
+			<SiteMenu {links} {current} {user} />
 		</div>
 	</div>
 </header>

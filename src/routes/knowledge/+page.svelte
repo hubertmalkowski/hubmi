@@ -6,10 +6,8 @@
 	import ChallengeMap from '$lib/components/ChallengeMap.svelte';
 	import EasyRead from '$lib/components/EasyRead.svelte';
 	import { areaLabel, AREA_SLUGS } from '$lib/labels';
-	import { POWIAT_NAME } from '$lib/powiats';
 
 	let { data } = $props();
-	let selected = $state<string | null>(null);
 	const areas = AREA_SLUGS.filter((a) => a !== 'other');
 </script>
 
@@ -47,21 +45,12 @@
 	<div class="mt-4">
 		<ChallengeMap
 			counts={data.byPowiat}
-			bind:selected
-			interactive
+			href={(t) => localizeHref(`/challenges?powiat=${t}${data.area ? `&area=${data.area}` : ''}`)}
 			title={data.area
 				? m.knowledge_map_area({ area: areaLabel(data.area) })
 				: m.knowledge_map_all()}
 		/>
 	</div>
-	{#if selected}
-		<p class="mt-3" aria-live="polite">
-			{m.knowledge_selected({
-				powiat: POWIAT_NAME.get(selected) ?? selected,
-				count: String(data.byPowiat[selected] ?? 0)
-			})}
-		</p>
-	{/if}
 	<p class="mt-2 text-sm text-muted-foreground">{m.knowledge_map_source()}</p>
 </section>
 

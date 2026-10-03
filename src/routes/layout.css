@@ -2,11 +2,16 @@
 @import 'tw-animate-css';
 @import 'shadcn-svelte/tailwind.css';
 @import '../lib/styles/style-vega.css' layer(components);
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/source-serif-4/opsz.css';
 @plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:is(.dark *));
 
-/* shadcn-svelte default theme, neutral base color. */
+/*
+ * shadcn-svelte neutral theme with a navy primary (gov.uk / america.gov public-service feel).
+ * --focus/--focus-ink: gov.uk focus style, yellow ring with a dark outer ring, visible on any background.
+ */
 :root {
 	--radius: 0.625rem;
 	--background: oklch(1 0 0);
@@ -15,18 +20,21 @@
 	--card-foreground: oklch(0.145 0 0);
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(0.205 0 0);
+	--primary: oklch(0.33 0.1 258);
 	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.97 0 0);
+	--secondary: oklch(0.935 0 0);
 	--secondary-foreground: oklch(0.205 0 0);
 	--muted: oklch(0.97 0 0);
-	--muted-foreground: oklch(0.556 0 0);
+	--muted-foreground: oklch(0.48 0 0);
 	--accent: oklch(0.97 0 0);
 	--accent-foreground: oklch(0.205 0 0);
 	--destructive: oklch(0.577 0.245 27.325);
-	--border: oklch(0.922 0 0);
-	--input: oklch(0.922 0 0);
-	--ring: oklch(0.708 0 0);
+	--border: oklch(0.87 0 0);
+	/* card outline: ~2.2:1 on white, so cards read as separate surfaces */
+	--card-ring: oklch(0.75 0 0);
+	/* form field boundary: 3.6:1 on white (WCAG 1.4.11) */
+	--input: oklch(0.62 0 0);
+	--ring: oklch(0.33 0.1 258);
 	--chart-1: oklch(0.646 0.222 41.116);
 	--chart-2: oklch(0.6 0.118 184.704);
 	--chart-3: oklch(0.398 0.07 227.392);
@@ -34,13 +42,16 @@
 	--chart-5: oklch(0.769 0.188 70.08);
 	--sidebar: oklch(0.985 0 0);
 	--sidebar-foreground: oklch(0.145 0 0);
-	--sidebar-primary: oklch(0.205 0 0);
+	--sidebar-primary: oklch(0.33 0.1 258);
 	--sidebar-primary-foreground: oklch(0.985 0 0);
 	--sidebar-accent: oklch(0.97 0 0);
 	--sidebar-accent-foreground: oklch(0.205 0 0);
-	--sidebar-border: oklch(0.922 0 0);
+	--sidebar-border: oklch(0.87 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
 	--mark: oklch(0.9 0.12 95);
+	--hero: oklch(0.965 0.014 250);
+	--focus: #ffdd00;
+	--focus-ink: #0b0c0c;
 	--font-scale: 1;
 }
 
@@ -51,8 +62,8 @@
 	--card-foreground: oklch(0.985 0 0);
 	--popover: oklch(0.205 0 0);
 	--popover-foreground: oklch(0.985 0 0);
-	--primary: oklch(0.922 0 0);
-	--primary-foreground: oklch(0.205 0 0);
+	--primary: oklch(0.83 0.08 250);
+	--primary-foreground: oklch(0.2 0.05 258);
 	--secondary: oklch(0.269 0 0);
 	--secondary-foreground: oklch(0.985 0 0);
 	--muted: oklch(0.269 0 0);
@@ -61,8 +72,10 @@
 	--accent-foreground: oklch(0.985 0 0);
 	--destructive: oklch(0.704 0.191 22.216);
 	--border: oklch(1 0 0 / 10%);
-	--input: oklch(1 0 0 / 15%);
-	--ring: oklch(0.556 0 0);
+	--card-ring: oklch(1 0 0 / 22%);
+	/* form field boundary: >= 3.6:1 on background and card */
+	--input: oklch(0.55 0 0);
+	--ring: oklch(0.83 0.08 250);
 	--chart-1: oklch(0.488 0.243 264.376);
 	--chart-2: oklch(0.696 0.17 162.48);
 	--chart-3: oklch(0.769 0.188 70.08);
@@ -77,6 +90,8 @@
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.556 0 0);
 	--mark: oklch(0.5 0.1 95);
+	--hero: oklch(0.21 0.02 255);
+	--focus-ink: #ffffff;
 }
 
 /* High contrast mode, toggled from the accessibility toolbar. */
@@ -96,9 +111,11 @@
 	--accent: oklch(0.95 0.1 100);
 	--accent-foreground: oklch(0 0 0);
 	--border: oklch(0 0 0);
+	--card-ring: oklch(0 0 0);
 	--input: oklch(0 0 0);
 	--ring: oklch(0.3 0.12 265);
 	--mark: oklch(0.92 0.18 100);
+	--hero: oklch(1 0 0);
 }
 .dark.high-contrast {
 	--background: oklch(0 0 0);
@@ -116,9 +133,11 @@
 	--accent: oklch(0.25 0.05 100);
 	--accent-foreground: oklch(1 0 0);
 	--border: oklch(1 0 0);
+	--card-ring: oklch(1 0 0);
 	--input: oklch(1 0 0);
 	--ring: oklch(0.92 0.18 100);
 	--mark: oklch(0.45 0.12 100);
+	--hero: oklch(0 0 0);
 }
 
 @theme inline {
@@ -142,6 +161,7 @@
 	--color-accent-foreground: var(--accent-foreground);
 	--color-destructive: var(--destructive);
 	--color-border: var(--border);
+	--color-card-ring: var(--card-ring);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
 	--color-chart-1: var(--chart-1);
@@ -158,6 +178,9 @@
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
 	--color-mark: var(--mark);
+	--color-hero: var(--hero);
+	--font-sans: 'Inter Variable', system-ui, sans-serif;
+	--font-serif: 'Source Serif 4 Variable', Georgia, serif;
 }
 
 @layer base {
@@ -172,8 +195,14 @@
 		@apply bg-background text-foreground antialiased;
 	}
 	:focus-visible {
-		outline: 3px solid var(--ring);
-		outline-offset: 2px;
+		outline: 3px solid var(--focus);
+		outline-offset: 0;
+		box-shadow: 0 0 0 6px var(--focus-ink);
+	}
+	h1,
+	h2 {
+		font-family: var(--font-serif);
+		letter-spacing: -0.015em;
 	}
 	mark {
 		background: var(--mark);
@@ -188,6 +217,16 @@
 			animation-duration: 0.01ms !important;
 			transition-duration: 0.01ms !important;
 		}
+	}
+}
+
+/*
+ * Scroll/entrance reveals (src/lib/motion.ts). Hidden only once JS is running (app.html adds .js),
+ * so content stays visible without JS and with reduced motion.
+ */
+@media (prefers-reduced-motion: no-preference) {
+	.js [data-reveal] {
+		opacity: 0;
 	}
 }
 

@@ -18,7 +18,7 @@
 <ul class="mt-6 flex flex-col gap-3">
 	{#each data.ideas as i (i.id)}
 		<li
-			class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card p-4"
+			class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-card-ring bg-card p-4"
 		>
 			<div>
 				<a class="text-lg font-semibold hover:underline" href={localizeHref(`/ideas/${i.id}`)}

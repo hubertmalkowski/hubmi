@@ -50,11 +50,21 @@ export async function challengeText(
 		system: `You turn reported social problems into an open innovation challenge for the Małopolska Social Innovation Hub. Write in Polish. Title: max 12 words, starts with "Jak" (How might we). Description: max 80 words, describe who is affected and what is missing, without naming any person or address. ${GROUNDING}`,
 		user: needs.map((n, i) => `${i + 1}. ${n}`).join('\n'),
 		schema: z.object({ title: z.string(), description: z.string() }),
+		// offline: the report's first sentence as the title, the report itself as the description
 		mock: () => ({
-			title: `Jak odpowiedzieć na problem: ${needs[0].split(/[.!?]/)[0].slice(0, 70).toLowerCase()}?`,
-			description: `Mieszkańcy zgłaszają potrzebę, na którą Biblioteka Innowacji nie ma jeszcze sprawdzonego rozwiązania. ${needs[0].slice(0, 200)}`
+			title: firstSentence(needs[0], 90),
+			description: needs[0].slice(0, 400)
 		})
 	});
+}
+
+/** First sentence, cut at a word boundary to at most `max` characters. */
+function firstSentence(text: string, max: number): string {
+	const s = text
+		.trim()
+		.split(/(?<=[.!?])\s/)[0]
+		.replace(/[.!?]+$/, '');
+	return s.length <= max ? s : s.slice(0, s.lastIndexOf(' ', max)) + '…';
 }
 
 // ---------- normalize to Polish for BM25 ----------

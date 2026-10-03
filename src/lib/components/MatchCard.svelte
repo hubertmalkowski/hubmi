@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages';
 	import { localizeHref } from '$lib/paraglide/runtime';
-	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
-	import { Badge } from '$lib/components/ui/badge';
-	import Highlighted from './Highlighted.svelte';
 	import { fitText, stageLabel } from '$lib/labels';
 	import CircleCheckIcon from '@lucide/svelte/icons/circle-check-big';
 	import CircleDotIcon from '@lucide/svelte/icons/circle-dot';
@@ -20,17 +17,24 @@
 		stage: string;
 		reason: string | null;
 		fit: 'direct' | 'good' | 'partial' | 'weak';
-		highlights: Partial<Record<'title' | 'summary' | 'description', string[]>>;
 		accepted: boolean;
 		ranks: { bm25: number | null; knn: number | null; rrf: number; jev: number | null };
 	};
 
+	// compact: lower-confidence results, shown without the reason and the adapt/accept actions.
 	let {
 		match,
 		rank,
 		canAccept,
-		showRanks
-	}: { match: Match; rank: number; canAccept: boolean; showRanks: boolean } = $props();
+		showRanks,
+		compact = false
+	}: {
+		match: Match;
+		rank: number;
+		canAccept: boolean;
+		showRanks: boolean;
+		compact?: boolean;
+	} = $props();
 	// follows the server value, and flips locally after a successful accept
 	let accepted = $derived(match.accepted);
 
@@ -41,9 +45,7 @@
 				? CircleDotIcon
 				: CircleDashedIcon
 	);
-	const keywords = $derived(
-		[...(match.highlights.summary ?? []), ...(match.highlights.description ?? [])].slice(0, 2)
-	);
+	const strong = $derived(match.fit === 'direct' || match.fit === 'good');
 
 	async function accept() {
 		const r = await fetch(`/api/matches/${match.id}/accept`, { method: 'POST' });
@@ -54,61 +56,71 @@
 	}
 </script>
 
-<Card.Root class="h-full">
-	<Card.Header>
-		<div class="flex flex-wrap items-center gap-2">
-			<Badge
-				variant={match.fit === 'direct' || match.fit === 'good' ? 'default' : 'secondary'}
-				class="gap-1"
-			>
-				<FitIcon class="size-3.5" aria-hidden="true" />{fitText(match.fit)}
-			</Badge>
-			<Badge variant="outline">{stageLabel(match.stage)}</Badge>
-		</div>
-		<Card.Title>
-			<h3 class="text-xl leading-snug">
-				<span class="sr-only">{m.match_rank({ rank: String(rank) })}</span>
-				{#if match.highlights.title?.[0]}<Highlighted
-						fragment={match.highlights.title[0]}
-					/>{:else}{match.title}{/if}
-			</h3>
-		</Card.Title>
-	</Card.Header>
-	<Card.Content class="flex flex-col gap-3">
-		<p>
-			{#if match.highlights.summary?.[0]}<Highlighted
-					fragment={match.highlights.summary[0]}
-				/>{:else}{match.summary}{/if}
-		</p>
-		{#if match.reason}
-			<p class="rounded-md bg-secondary p-3 text-sm">
-				<strong>{m.match_why()}</strong>
-				{match.reason}
-			</p>
-		{/if}
-		{#if keywords.length && !match.highlights.summary}
-			<p class="text-sm text-muted-foreground">
-				<span class="font-semibold">{m.match_keywords()}</span>
-				{#each keywords as k, i (i)}<span>… <Highlighted fragment={k} /> …</span>{/each}
-			</p>
-		{/if}
-		{#if showRanks}
-			<p class="text-xs text-muted-foreground tabular-nums">
-				BM25 #{match.ranks.bm25 ?? '–'} · kNN #{match.ranks.knn ?? '–'} · RRF #{match.ranks.rrf} · Jev
-				{match.ranks.jev?.toFixed(2) ?? '–'}
-			</p>
-		{/if}
-	</Card.Content>
-	<Card.Footer class="flex flex-wrap gap-2">
-		<Button href={localizeHref(`/knowledge/library/${match.slug}`)} variant="outline"
-			>{m.match_details()}</Button
+<article
+	class="flex h-full flex-col gap-4 rounded-2xl border border-card-ring bg-card {compact
+		? 'p-5'
+		: 'p-6 sm:p-8'}"
+>
+	<p
+		class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-medium {strong
+			? 'text-primary'
+			: 'text-muted-foreground'}"
+	>
+		<FitIcon class="size-4" aria-hidden="true" />{fitText(match.fit)}
+		<span class="text-muted-foreground" aria-hidden="true">·</span>
+		<span class="text-muted-foreground">{stageLabel(match.stage)}</span>
+	</p>
+
+	<h3 class="font-serif leading-tight font-semibold {compact ? 'text-xl' : 'text-2xl sm:text-3xl'}">
+		<span class="sr-only">{m.match_rank({ rank: String(rank) })}</span>
+		<a
+			href={localizeHref(`/knowledge/library/${match.slug}`)}
+			class="underline-offset-4 hover:underline">{match.title}</a
 		>
-		<Button href={localizeHref(`/adapt/${match.slug}`)}>{m.match_adapt()}</Button>
-		{#if canAccept}
-			<Button variant="ghost" onclick={accept} disabled={accepted} aria-pressed={accepted}>
-				<ThumbsUpIcon class="size-4" aria-hidden="true" />
-				{accepted ? m.match_accepted() : m.match_accept()}
-			</Button>
-		{/if}
-	</Card.Footer>
-</Card.Root>
+	</h3>
+
+	<p class="max-w-prose leading-relaxed {compact ? 'text-base text-muted-foreground' : 'text-lg'}">
+		{match.summary}
+	</p>
+
+	{#if match.reason && !compact}
+		<div class="max-w-prose border-l-4 border-primary/40 pl-4">
+			<p class="text-sm font-semibold">{m.match_why()}</p>
+			<p class="mt-1 leading-relaxed">{match.reason}</p>
+		</div>
+	{/if}
+
+	{#if !compact}
+		<div class="mt-auto flex flex-wrap gap-2 pt-2">
+			<Button href={localizeHref(`/adapt/${match.slug}`)} size="lg" class="rounded-full"
+				>{m.match_adapt()}</Button
+			>
+			<Button
+				href={localizeHref(`/knowledge/library/${match.slug}`)}
+				variant="outline"
+				size="lg"
+				class="rounded-full">{m.match_details()}</Button
+			>
+			{#if canAccept}
+				<Button
+					variant="ghost"
+					size="lg"
+					class="rounded-full"
+					onclick={accept}
+					disabled={accepted}
+					aria-pressed={accepted}
+				>
+					<ThumbsUpIcon class="size-4" aria-hidden="true" />
+					{accepted ? m.match_accepted() : m.match_accept()}
+				</Button>
+			{/if}
+		</div>
+	{/if}
+
+	{#if showRanks}
+		<p class="text-xs text-muted-foreground tabular-nums">
+			BM25 #{match.ranks.bm25 ?? '–'} · kNN #{match.ranks.knn ?? '–'} · RRF #{match.ranks.rrf} · Jev
+			{match.ranks.jev?.toFixed(2) ?? '–'}
+		</p>
+	{/if}
+</article>

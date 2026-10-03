@@ -8,6 +8,8 @@ export type Classified = {
 	is_need: number;
 	pii: number;
 	place: { teryt: string; name: string; powiat: string } | null;
+	/** likely related innovations from retrieval only, before reranking */
+	preview: { slug: string; title: string }[];
 };
 
 /** Call during component init; reclassifies whenever `getText()` changes. */

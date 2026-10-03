@@ -27,7 +27,7 @@
 <form
 	method="GET"
 	role="search"
-	class="mt-6 grid gap-3 rounded-xl border border-border bg-card p-4 sm:grid-cols-2 sm:items-end lg:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))_auto]"
+	class="mt-6 grid gap-3 rounded-xl border border-card-ring bg-card p-4 sm:grid-cols-2 sm:items-end lg:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))_auto]"
 >
 	<label class="flex flex-col gap-1 text-sm font-medium">
 		{m.library_search_label()}

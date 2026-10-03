@@ -52,7 +52,7 @@
 	<Alert.Root class="mt-6"><Alert.Title>{m.apply_no_ideas()}</Alert.Title></Alert.Root>
 {:else}
 	<form method="POST" class="mt-6 flex max-w-3xl flex-col gap-5">
-		<div class="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+		<div class="flex flex-col gap-3 rounded-xl border border-card-ring bg-card p-4">
 			<Label for="idea_id">{m.apply_choose_idea()}</Label>
 			<select
 				id="idea_id"

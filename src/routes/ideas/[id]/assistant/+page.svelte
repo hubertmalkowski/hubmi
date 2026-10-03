@@ -75,7 +75,7 @@
 				<li
 					class="max-w-[85%] rounded-xl p-4 whitespace-pre-line {msg.role === 'user'
 						? 'self-end bg-primary text-primary-foreground'
-						: 'border border-border bg-card'}"
+						: 'border border-card-ring bg-card'}"
 				>
 					<span class="sr-only"
 						>{msg.role === 'user' ? m.assistant_you() : m.assistant_name()}:</span

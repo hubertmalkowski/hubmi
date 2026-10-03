@@ -10,6 +10,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { Spinner } from '$lib/components/ui/spinner';
 	import VoiceInput from '$lib/components/VoiceInput.svelte';
+	import GminaCombobox from '$lib/components/GminaCombobox.svelte';
 	import { areaLabel, groupLabel } from '$lib/labels';
 	import { NEED_MIN, NEED_MAX } from '$lib/schemas/need';
 	import { createClassifier } from '$lib/need-classifier.svelte';
@@ -36,7 +37,6 @@
 	});
 
 	const length = $derived(text.trim().length);
-	const powiats = $derived([...new Set(data.places.map((p) => p.powiat))]);
 
 	function appendDictation(t: string) {
 		text = text ? `${text.trimEnd()} ${t}` : t;
@@ -93,21 +93,14 @@
 
 			<div class="flex flex-col gap-2">
 				<Label for="place" class="text-base">{m.report_place_label()}</Label>
-				<select
-					id="place"
-					name="place_teryt"
+				<GminaCombobox
+					places={data.places}
 					bind:value={placeTeryt}
-					class="min-h-12 rounded-md border border-input bg-background px-3 text-base"
-				>
-					<option value="">{m.report_place_unknown()}</option>
-					{#each powiats as pw (pw)}
-						<optgroup label={m.report_powiat({ name: pw })}>
-							{#each data.places.filter((p) => p.powiat === pw) as p (p.teryt)}
-								<option value={p.teryt}>{p.name}</option>
-							{/each}
-						</optgroup>
-					{/each}
-				</select>
+					id="place"
+					label={m.report_place_label()}
+					placeholder={m.report_place_unknown()}
+					class="h-12 w-full rounded-md text-base"
+				/>
 			</div>
 
 			<p class="flex items-start gap-2 text-sm text-muted-foreground">
