@@ -4,6 +4,12 @@ Prototyp przygotowany na wyzwanie ROPS Kraków (HackYeah). Mieszkaniec opisuje p
 
 Nazwa: zaczyn to zakwas, mała porcja, od której rośnie cały bochenek. Jedno sprawdzone rozwiązanie z jednej gminy może pomóc w wielu innych.
 
+## Wideo (58 s)
+
+[![Zaczyn: film prezentacyjny](docs/zaczyn-showcase.jpg)](docs/zaczyn-showcase.mp4)
+
+Kliknij obraz, żeby obejrzeć film z lektorem ([MP4, 5 MB](docs/zaczyn-showcase.mp4)). Film powstaje z prawdziwych nagrań aplikacji; jak go odtworzyć, opisuje [`video/README.md`](video/README.md).
+
 ## Co potrafi
 
 **Mieszkaniec**
