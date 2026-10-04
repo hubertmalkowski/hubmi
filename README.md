@@ -2,7 +2,7 @@
 
 Projekt na HackYeah, wyzwanie ROPS Kraków: Małopolski Hub Innowacji Społecznych.
 
-Mieszkaniec opisuje problem swoimi słowami (np. „nie mam jak dojechać do lekarza”), a my szukamy w Bibliotece Innowacji Społecznych rozwiązań, które gdzieś już zadziałały. Jak nic nie pasuje, zgłoszenie zamienia się w otwarte wyzwanie, na które mogą odpowiedzieć NGO, gminy albo zwykli ludzie z pomysłem. Zespół ROPS ma panel, w którym widzi zgłoszenia, pomysły i trendy.
+Mieszkaniec opisuje problem swoimi słowami (np. „nie mam jak dojechać do lekarza”), a my szukamy w Bibliotece Innowacji Społecznych rozwiązań, które gdzieś już zadziałały. Jeżeli nic nie pasuje, zgłoszenie zamienia się w otwarte wyzwanie, na które mogą odpowiedzieć NGO, gminy albo zwykli ludzie z pomysłem. Zespół ROPS ma panel, w którym widzi zgłoszenia, pomysły i trendy.
 
 Zrobiliśmy wszystkie siedem modułów z opisu wyzwania:
 
