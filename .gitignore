@@ -27,3 +27,8 @@ test-results
 src/lib/paraglide
 project.inlang/cache/
 docker/elasticsearch/hunspell/
+
+# Showcase video
+video/node_modules
+video/out
+video/public/clips
