@@ -20,53 +20,119 @@ Interfejs jest po polsku, angielsku i ukraińsku. W stopce są ustawienia dostę
 
 ## Uruchomienie z danymi demo
 
-Wymagania: Node 22, pnpm 10, Docker.
+Instrukcja krok po kroku. Całość zajmuje około 10 minut, najdłużej trwa pierwsze pobranie obrazów Dockera.
 
-**1. Zależności i konfiguracja**
+### Krok 0. Zainstaluj potrzebne programy
+
+Potrzebujesz trzech rzeczy:
+
+- **Node.js 22**: pobierz z [nodejs.org](https://nodejs.org). Sprawdź w terminalu: `node -v` powinno pokazać `v22.…`.
+- **pnpm 10**: po instalacji Node wpisz `npm install -g pnpm@10`. Sprawdź: `pnpm -v` powinno pokazać `10.…`.
+- **Docker**: [Docker Desktop](https://www.docker.com/products/docker-desktop/) na Windows i macOS albo Docker Engine na Linuksie. Docker musi być **uruchomiony**. Sprawdź: `docker info` nie może zwracać błędu.
+
+Upewnij się też, że porty 5432 (Postgres), 9200 (Elasticsearch) i 5173 (aplikacja) są wolne. Jeśli masz lokalnie zainstalowanego Postgresa, zatrzymaj go na czas uruchamiania.
+
+### Krok 1. Pobierz kod
+
+```sh
+git clone https://github.com/hubertmalkowski/hubmi.git
+cd hubmi
+```
+
+Wszystkie kolejne polecenia wpisujesz w tym katalogu.
+
+### Krok 2. Zainstaluj zależności
 
 ```sh
 pnpm install
+```
+
+### Krok 3. Utwórz plik `.env`
+
+Skopiuj przykładowy plik konfiguracyjny:
+
+```sh
 cp .env.example .env
 ```
 
-Przy ustawianiu `.env` zdecyduj, czy działasz z kluczami API, czy bez:
+Na Windows w PowerShellu: `copy .env.example .env`.
 
-- Jeśli nie masz kluczy ustaw `AI_MOCK=1`. Zamiast modeli działają proste reguły na słowach kluczowych. Wszystko da się przeklikać, ale dopasowania są słabe.
-- Jeśli masz klucze zostaw `AI_MOCK=0` i uzupełnij:
-  - `TYPESAFE_API_KEY`: Jev, czyli klasyfikacja zgłoszeń, moderacja i ocena dopasowania,
-  - `ANTHROPIC_API_KEY`: Claude, czyli teksty (wyjaśnienia, asystent, wnioski, tłumaczenia),
-  - `VOYAGE_API_KEY`: embeddingi do wyszukiwania.
+Otwórz `.env` w dowolnym edytorze tekstu i wybierz jedną z dwóch opcji:
 
+**Opcja A: bez kluczy API (najprostsza).** Zmień linię `AI_MOCK=0` na:
 
-**2. Postgres i Elasticsearch**
+```
+AI_MOCK=1
+```
+
+Nic więcej nie trzeba. Aplikacja nie łączy się wtedy z żadnym zewnętrznym API, a zamiast modeli AI używa prostych reguł na słowach kluczowych. Wszystko da się przeklikać, ale dopasowania i teksty są gorszej jakości.
+
+**Opcja B: z kluczami API (pełna jakość).** Zostaw `AI_MOCK=0` i wpisz klucze po znaku `=`:
+
+```
+TYPESAFE_API_KEY=twój_klucz      # Jev: klasyfikacja zgłoszeń, moderacja, ocena dopasowania
+ANTHROPIC_API_KEY=twój_klucz     # Claude: wyjaśnienia, asystent, wnioski, tłumaczenia
+VOYAGE_API_KEY=twój_klucz        # embeddingi do wyszukiwania
+```
+
+Pozostałych linii w `.env` nie zmieniaj, domyślne wartości pasują do kroku 4.
+
+### Krok 4. Uruchom bazę danych i wyszukiwarkę
 
 ```sh
-pnpm es:dict                     # kopiuje polski słownik hunspell do obrazu Elasticsearch
+pnpm es:dict
 docker compose up -d --wait db es
 ```
 
-Pierwsze uruchomienie buduje obraz Elasticsearch, więc trwa chwilę. `--wait` czeka, aż oba kontenery będą gotowe.
+Pierwsze polecenie kopiuje polski słownik do obrazu Elasticsearch. Drugie uruchamia w Dockerze Postgresa i Elasticsearch i czeka, aż będą gotowe. Za pierwszym razem pobiera i buduje obrazy, więc może to potrwać kilka minut.
 
-**3. Schemat bazy i dane demo**
+Gdy się skończy, powinieneś zobaczyć:
+
+```
+ Container hubmi-db-1 Healthy
+ Container hubmi-es-1 Healthy
+```
+
+### Krok 5. Utwórz tabele i wgraj dane demo
 
 ```sh
 pnpm db:migrate
 pnpm db:seed
 ```
 
-Seed wgrywa obszary, grupy docelowe, 22 powiaty i 42 gminy, 30 innowacji w Bibliotece, konta demo, dwa nabory grantowe i kampanie testowe. Potem przepuszcza 60 przykładowych zgłoszeń przez ten sam pipeline co prawdziwe, więc na końcu część z nich ma dopasowania, część jest otwartymi wyzwaniami, a pojedyncze czekają w moderacji. Bez kluczy trwa to kilkanaście sekund, z kluczami dłużej, bo każde zgłoszenie idzie przez API.
+`db:migrate` tworzy tabele w bazie. `db:seed` wgrywa dane demo: 22 powiaty i 42 gminy, 30 innowacji w Bibliotece, konta demo, dwa nabory grantowe i kampanie testowe. Potem przepuszcza 60 przykładowych zgłoszeń przez ten sam mechanizm dopasowania co prawdziwe zgłoszenia.
 
-`db:seed` za każdym razem czyści bazę i indeksy w Elasticsearch. Uruchom go ponownie po zmianie `AI_MOCK`, żeby dane demo przeszły przez właściwe modele.
+Na końcu zobaczysz podsumowanie w tym stylu (liczby mogą się różnić):
 
-**4. Aplikacja**
-
-```sh
-pnpm dev                         # http://localhost:5173
+```
+needs by status: Result(3) [
+  { status: 'matched', n: 32 },
+  { status: 'challenge', n: 27 },
+  { status: 'moderation', n: 1 }
+]
 ```
 
-Zadania w tle (powiadomienia, trendy) działają w tym samym procesie, osobny worker nie jest potrzebny.
+Czyli część zgłoszeń dostała dopasowane rozwiązania, część stała się otwartymi wyzwaniami, a pojedyncze czekają na moderację. Bez kluczy trwa to kilkanaście sekund, z kluczami dłużej.
 
-Żeby zacząć od zera, usuń kontenery razem z danymi: `docker compose down -v`.
+Uwaga: `db:seed` za każdym razem **czyści całą bazę** i wgrywa dane od nowa. Jeśli zmienisz `AI_MOCK` w `.env`, uruchom go jeszcze raz.
+
+### Krok 6. Uruchom aplikację
+
+```sh
+pnpm dev
+```
+
+Otwórz w przeglądarce **http://localhost:5173**. Zaloguj się na jedno z kont demo opisanych niżej.
+
+Aplikację zatrzymujesz klawiszami `Ctrl+C`. Bazę i wyszukiwarkę zatrzymujesz poleceniem `docker compose down`, a jeśli chcesz też usunąć wszystkie dane, `docker compose down -v`.
+
+### Gdy coś nie działa
+
+- **`docker compose` zwraca błąd połączenia**: Docker nie jest uruchomiony. Włącz Docker Desktop i spróbuj ponownie.
+- **`port is already allocated`**: inny program zajmuje port 5432 albo 9200. Zatrzymaj go (najczęściej lokalny Postgres).
+- **Kontener `es` nie dochodzi do stanu `Healthy`**: Elasticsearch potrzebuje około 2 GB wolnej pamięci RAM. W Docker Desktop zwiększ limit pamięci w ustawieniach.
+- **`pnpm db:seed` kończy się błędem połączenia**: kontenery z kroku 4 nie działają. Sprawdź `docker compose ps`.
+- **Strona się otwiera, ale nie ma żadnych wyzwań ani innowacji**: nie uruchomiono `pnpm db:seed` albo zakończył się błędem.
 
 ## Konta demo
 
