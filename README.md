@@ -155,12 +155,14 @@ Kilka rzeczy, które łatwo przeoczyć:
 
 ## Jak działa dopasowanie
 
-1. Z tekstu usuwamy dane osobowe.
-2. Jev klasyfikuje zgłoszenie: obszar, grupa, pilność, gmina, czy to w ogóle problem i czy nie jest obraźliwe. Podejrzane zgłoszenia idą do moderacji.
-3. Szukamy w Elasticsearch na dwa sposoby: BM25 z polską lematyzacją i kNN na embeddingach. Wyniki łączymy przez RRF.
-4. Jev ocenia każdego kandydata w skali 0–4. Kandydat jest dopasowaniem, jeśli szansa na ocenę 3 lub 4 wynosi co najmniej 60%.
-5. Claude pisze krótko, dlaczego dane rozwiązanie pasuje.
-6. Jeśli nic nie przeszło progu, zgłoszenie dołącza do podobnego otwartego wyzwania albo tworzy nowe.
+Każde zgłoszenie przechodzi przez te same kroki:
+
+1. **Anonimizacja.** Usuwamy z tekstu dane osobowe.
+2. **Klasyfikacja.** Jev określa obszar, grupę docelową, pilność i gminę. Sprawdza też, czy tekst opisuje problem społeczny i czy nie zawiera obraźliwych treści. Jeśli coś budzi wątpliwości, zgłoszenie trafia do moderacji.
+3. **Wyszukiwanie.** Szukamy rozwiązań w Elasticsearch dwiema metodami: pełnotekstowo (BM25 z polską lematyzacją) i semantycznie (kNN na embeddingach). Obie listy łączymy metodą RRF.
+4. **Ocena.** Jev ocenia w skali 0–4, jak dobrze każde znalezione rozwiązanie pasuje do problemu. Do wyników trafiają tylko te, które osiągają próg zgodności, czyli z prawdopodobieństwem co najmniej 60% dostają ocenę 3 lub 4.
+5. **Uzasadnienie.** Claude krótko wyjaśnia, dlaczego każde z wybranych rozwiązań odpowiada na zgłoszony problem.
+6. **Wyzwanie.** Jeśli żadne rozwiązanie nie osiągnęło progu zgodności, zgłoszenie trafia do podobnego otwartego wyzwania, a gdy takiego brakuje, staje się nowym wyzwaniem.
 
 Progi są w `src/lib/server/match/policy.ts`. Więcej o architekturze w [`docs/architektura.md`](docs/architektura.md), o kosztach w [`docs/koszty.md`](docs/koszty.md).
 
