@@ -320,7 +320,7 @@ function TrendsScene({ duration }: { duration: number }) {
 // The camera moves to the large-text panel on "osoba słabowidząca"
 // and to the Ukrainian panel on "ktoś, kto dopiero uczy się polskiego".
 const A11Y_LEN = len(STARTS.a11y, STARTS.outro);
-const A11Y_FOCUS = [f(P(4) + 3.2 - STARTS.a11y), f(P(4) + 5.8 - STARTS.a11y)];
+const A11Y_FOCUS = [f(P(4) + 2.5 - STARTS.a11y), f(P(4) + 4.5 - STARTS.a11y)];
 function A11yScene({ duration }: { duration: number }) {
 	const frame = useCurrentFrame();
 	const { fps } = useVideoConfig();

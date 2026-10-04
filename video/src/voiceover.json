@@ -1,5 +1,5 @@
 {
-	"duration": 57.88,
+	"duration": 54.72,
 	"paragraphs": [
 		{
 			"start": 0,
@@ -19,11 +19,11 @@
 		},
 		{
 			"start": 41.34,
-			"end": 51.02
+			"end": 47.86
 		},
 		{
-			"start": 51.82,
-			"end": 57.88
+			"start": 48.66,
+			"end": 54.72
 		}
 	]
 }

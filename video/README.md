@@ -1,6 +1,6 @@
 # Zaczyn: showcase video
 
-A 1920x1080, 30 fps, ~61 s promo video with a Polish voiceover, built from real recordings of the app.
+A 1920x1080, 30 fps, ~58 s promo video with a Polish voiceover, built from real recordings of the app.
 This is a standalone package with its own `node_modules`. The app does not depend on it.
 
 - `capture/record.mjs` drives the running app with Playwright. It records each scene as a sharp 3200x1800 clip via CDP screencast, draws a fake cursor with click ripples, and writes `public/clips/<scene>.mp4` plus `<scene>.json` (marker times and element boxes).
@@ -54,4 +54,4 @@ Optional music: put a licensed track at `public/audio/music.mp3`. It is ducked u
 | 0:22.3 | A jeśli takiego rozwiązania jeszcze nie ma?…  | County map, then open challenges (0:29.5)       |
 | 0:35.9 | Zespół ROPS widzi to wszystko z góry…         | Trends                                          |
 | 0:42.8 | Z Zaczyna skorzysta każdy…                    | Accessibility split, zooms on large text and UK |
-| 0:53.3 | Bo wiele problemów ktoś już kiedyś rozwiązał… | Screen wall, logo outro                         |
+| 0:50.2 | Bo wiele problemów ktoś już kiedyś rozwiązał… | Screen wall, logo outro                         |

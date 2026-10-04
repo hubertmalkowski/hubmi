@@ -17,6 +17,8 @@ if (!input) throw new Error('usage: node video/capture/voiceover.mjs <recording>
 // Paragraph breaks in the raw recording (seconds), one between each pair of the script's paragraphs.
 // Found from the pause pattern; adjust if the recording changes.
 const BREAKS = [8.6, 22.2, 37.5, 46.0, 58.4];
+// Ranges of the raw recording to drop (retakes). 46.7-50.7: first take of "Z Zaczyna skorzysta każdy".
+const CUTS = [[46.7, 50.7]];
 const PAUSE = 0.4; // longest pause kept inside a paragraph
 const BREAK = 0.8; // pause kept between paragraphs (scene cuts land here)
 const PAD = 0.08; // kept around each speech run
@@ -66,7 +68,10 @@ levels.forEach((db, i) => {
 	if (last && t - last[1] < 0.25) last[1] = t + STEP;
 	else runs.push([t, t + STEP]);
 });
-runs = runs.filter(([a, b]) => b - a >= 0.12).map(([a, b]) => [Math.max(0, a - PAD), b + PAD]);
+runs = runs
+	.filter(([a, b]) => b - a >= 0.12)
+	.filter(([a, b]) => !CUTS.some(([x, y]) => a >= x && b <= y))
+	.map(([a, b]) => [Math.max(0, a - PAD), b + PAD]);
 
 // 4. Rebuild the timeline with shortened pauses, tracking where each paragraph lands.
 const parts = [];
