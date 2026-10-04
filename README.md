@@ -8,7 +8,7 @@ Nazwa: zaczyn to zakwas, mała porcja, od której rośnie cały bochenek. Jedno 
 
 [![Zaczyn: film prezentacyjny](docs/zaczyn-showcase.jpg)](docs/zaczyn-showcase.mp4)
 
-Kliknij obraz, żeby obejrzeć film z lektorem ([MP4, 5 MB](docs/zaczyn-showcase.mp4)). Film powstaje z prawdziwych nagrań aplikacji; jak go odtworzyć, opisuje [`video/README.md`](video/README.md).
+Film powstał z prawdziwych nagrań z aplikacji.
 
 ## Co potrafi
 
