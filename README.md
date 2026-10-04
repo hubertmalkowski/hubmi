@@ -160,7 +160,7 @@ Każde zgłoszenie przechodzi przez te same kroki:
 1. **Anonimizacja.** Usuwamy z tekstu dane osobowe.
 2. **Klasyfikacja.** Jev określa obszar, grupę docelową, pilność i gminę. Sprawdza też, czy tekst opisuje problem społeczny i czy nie zawiera obraźliwych treści. Jeśli coś budzi wątpliwości, zgłoszenie trafia do moderacji.
 3. **Wyszukiwanie.** Szukamy rozwiązań w Elasticsearch dwiema metodami: pełnotekstowo (BM25 z polską lematyzacją) i semantycznie (kNN na embeddingach). Obie listy łączymy metodą RRF.
-4. **Ocena.** Jev ocenia dopasowanie każdego kandydata w skali 0–4. Rozwiązanie uznajemy za pasujące, jeśli prawdopodobieństwo oceny co najmniej 3 wynosi minimum 60%.
+4. **Ocena.** Jev ocenia w skali 0–4, jak dobrze każde znalezione rozwiązanie pasuje do problemu. Do wyników trafiają tylko te, które z prawdopodobieństwem co najmniej 60% dostają ocenę 3 lub 4.
 5. **Uzasadnienie.** Claude dopisuje do każdego pasującego rozwiązania krótkie wyjaśnienie, dlaczego pasuje.
 6. **Wyzwanie.** Jeśli żadne rozwiązanie nie przekroczyło progu, zgłoszenie dołącza do podobnego otwartego wyzwania. Gdy takiego nie ma, powstaje nowe.
 
