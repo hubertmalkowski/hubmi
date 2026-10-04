@@ -2,7 +2,7 @@
 
 Projekt na HackYeah, wyzwanie ROPS Kraków: Małopolski Hub Innowacji Społecznych.
 
-Mieszkaniec opisuje problem swoimi słowami (np. „nie mam jak dojechać do lekarza”), a my szukamy w Bibliotece Innowacji Społecznych rozwiązań, które gdzieś już zadziałały. Jak nic nie pasuje, zgłoszenie zamienia się w otwarte wyzwanie, na które mogą odpowiedzieć NGO, gminy albo zwykli ludzie z pomysłem. Zespół ROPS ma do tego panel, w którym widzi zgłoszenia, pomysły i trendy.
+Mieszkaniec opisuje problem swoimi słowami (np. „nie mam jak dojechać do lekarza”), a my szukamy w Bibliotece Innowacji Społecznych rozwiązań, które gdzieś już zadziałały. Jak nic nie pasuje, zgłoszenie zamienia się w otwarte wyzwanie, na które mogą odpowiedzieć NGO, gminy albo zwykli ludzie z pomysłem. Zespół ROPS ma panel, w którym widzi zgłoszenia, pomysły i trendy.
 
 Zrobiliśmy wszystkie siedem modułów z opisu wyzwania:
 
@@ -20,7 +20,7 @@ Interfejs jest po polsku, angielsku i ukraińsku. W stopce są ustawienia dostę
 
 ## Uruchomienie z danymi demo
 
-Potrzebne: Node 22, pnpm 10, Docker.
+Wymagania: Node 22, pnpm 10, Docker.
 
 **1. Zależności i konfiguracja**
 
@@ -29,15 +29,14 @@ pnpm install
 cp .env.example .env
 ```
 
-W `.env` zdecyduj, czy działasz z kluczami API, czy bez:
+Przy ustawianiu `.env` zdecyduj, czy działasz z kluczami API, czy bez:
 
-- bez kluczy ustaw `AI_MOCK=1`. Zamiast modeli działają proste reguły na słowach kluczowych. Wszystko da się przeklikać, ale dopasowania są słabe.
-- z kluczami zostaw `AI_MOCK=0` i uzupełnij:
+- Jeśli nie masz kluczy ustaw `AI_MOCK=1`. Zamiast modeli działają proste reguły na słowach kluczowych. Wszystko da się przeklikać, ale dopasowania są słabe.
+- Jeśli masz klucze zostaw `AI_MOCK=0` i uzupełnij:
   - `TYPESAFE_API_KEY`: Jev, czyli klasyfikacja zgłoszeń, moderacja i ocena dopasowania,
   - `ANTHROPIC_API_KEY`: Claude, czyli teksty (wyjaśnienia, asystent, wnioski, tłumaczenia),
   - `VOYAGE_API_KEY`: embeddingi do wyszukiwania.
 
-Do pokazywania projektu lepiej mieć klucze.
 
 **2. Postgres i Elasticsearch**
 
