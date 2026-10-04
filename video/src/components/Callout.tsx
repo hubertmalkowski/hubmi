@@ -20,11 +20,11 @@ export function Callout({
 	dim?: number;
 }) {
 	const t = useSourceTime();
-	const fadeIn = easeInOut(clamp01((t - t0) / 0.35));
-	const fadeOut = 1 - easeInOut(clamp01((t - (t1 - 0.3)) / 0.3));
+	const fadeIn = easeInOut(clamp01((t - t0) / 0.6));
+	const fadeOut = 1 - easeInOut(clamp01((t - (t1 - 0.5)) / 0.5));
 	const o = Math.min(fadeIn, fadeOut);
 	if (o <= 0) return null;
-	const draw = easeInOut(clamp01((t - t0) / 0.6));
+	const draw = easeInOut(clamp01((t - t0) / 1.0));
 	const x = box.x - pad,
 		y = box.y - pad,
 		w = box.w + pad * 2,

@@ -1,6 +1,6 @@
-# Zaczyn: 30-second showcase video
+# Zaczyn: showcase video
 
-A 1920x1080, 30 fps, 30 s promo video built from real recordings of the app.
+A 1920x1080, 30 fps, 41 s promo video built from real recordings of the app.
 This is a standalone package with its own `node_modules`. The app does not depend on it.
 
 - `capture/record.mjs` drives the running app with Playwright. It records each scene as a sharp 3200x1800 clip via CDP screencast, draws a fake cursor with click ripples, and writes `public/clips/<scene>.mp4` plus `<scene>.json` (marker times and element boxes).
@@ -27,7 +27,7 @@ If you re-record, check the camera keyframes and callout boxes in `src/Main.tsx`
 cd video
 npm install
 npx remotion studio src/index.ts            # live preview
-REMOTION_BROWSER=/path/to/chrome-headless-shell npm run render   # -> out/zaczyn-30s.mp4
+REMOTION_BROWSER=/path/to/chrome-headless-shell npm run render   # -> out/zaczyn-showcase.mp4
 ```
 
 Remotion needs `chrome-headless-shell` (Playwright's `chromium_headless_shell-*` works). Without `REMOTION_BROWSER` it downloads one.
@@ -37,14 +37,14 @@ Remotion needs `chrome-headless-shell` (Playwright's `chromium_headless_shell-*`
 | Time   | Scene                                     | Caption                                                        |
 | ------ | ----------------------------------------- | -------------------------------------------------------------- |
 | 0:00   | Logo intro                                | Opisz problem. Znajdź sprawdzone rozwiązanie.                  |
-| 0:02.0 | Browser tilts in, resident types a report | Mieszkaniec · Opisuje problem własnymi słowami                 |
+| 0:02.3 | Browser tilts in, resident types a report | Mieszkaniec · Opisuje problem własnymi słowami                 |
 |        | Gmina detected, Library preview           | Na bieżąco · Rozpoznana gmina i podobne rozwiązania            |
 |        | Results: personal data redacted           | Prywatność · Dane osobowe usunięte automatycznie               |
 |        | Matching solution                         | Biblioteka Innowacji · Sprawdzone rozwiązanie z Małopolski     |
-| 0:13.6 | Whip to the county map                    | Brak rozwiązania? · Powstaje otwarte wyzwanie na mapie regionu |
-| 0:17.2 | Whip to open challenges                   | Innowatorzy · Organizacje i gminy zgłaszają pomysły            |
-| 0:20.3 | Zoom to ROPS trends                       | Zespół ROPS · Trendy i luki w całym regionie                   |
-| 0:23.7 | Accessibility split                       | Dostępny dla każdego                                           |
-| 0:26.4 | Screen wall → logo outro                  | Małopolski Hub Innowacji Społecznych                           |
+| 0:17.2 | Whip to the county map                    | Brak rozwiązania? · Powstaje otwarte wyzwanie na mapie regionu |
+| 0:23.0 | Whip to open challenges                   | Innowatorzy · Organizacje i gminy zgłaszają pomysły            |
+| 0:28.0 | Zoom to ROPS trends                       | Zespół ROPS · Trendy i luki w całym regionie                   |
+| 0:32.8 | Accessibility split                       | Dostępny dla każdego                                           |
+| 0:36.4 | Screen wall → logo outro                  | Małopolski Hub Innowacji Społecznych                           |
 
-The video is silent. The whip transitions at 0:13.6 and 0:17.2 are the strongest hits to put on a beat.
+The video is silent. The whip transitions at 0:17.2 and 0:23.0 are the strongest hits to put on a beat.

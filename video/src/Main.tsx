@@ -19,8 +19,8 @@ import { Footage, segmentsLength, sourceTime, type Segment } from './components/
 import { Logo } from './components/Logo';
 import { C, FPS, PAGE, SANS, SERIF, clamp01, easeInOut } from './theme';
 
-// Cuts land on a 2-second grid (120 BPM) where possible so a music track drops in cleanly.
-const OVERLAP = 14;
+// Transition length; long enough that moves read as calm, not snappy.
+const OVERLAP = 22;
 
 type Move = 'tilt' | 'whip' | 'zoom' | 'rise' | 'none';
 
@@ -46,7 +46,7 @@ function Shot({
 	const { fps } = useVideoConfig();
 	const inK =
 		enter === 'tilt'
-			? spring({ frame, fps, config: { damping: 20, mass: 1.1 }, durationInFrames: 34 })
+			? spring({ frame, fps, config: { damping: 24, mass: 1.2 }, durationInFrames: 50 })
 			: easeInOut(clamp01(frame / OVERLAP));
 	const outK = easeInOut(clamp01((frame - (duration - OVERLAP)) / OVERLAP));
 
@@ -65,7 +65,7 @@ function Shot({
 		o *= clamp01(inK * 3);
 	} else if (enter === 'whip') {
 		tx += (1 - inK) * 1900;
-		blurX += Math.sin(inK * Math.PI) * 40;
+		blurX += Math.sin(inK * Math.PI) * 24;
 	} else if (enter === 'zoom') {
 		s *= 0.75 + 0.25 * inK;
 		o *= inK;
@@ -74,7 +74,7 @@ function Shot({
 	}
 	if (exit === 'whip') {
 		tx -= outK * 1900;
-		blurX += Math.sin(outK * Math.PI) * 40;
+		blurX += Math.sin(outK * Math.PI) * 24;
 	} else if (exit === 'zoom') {
 		s *= 1 + outK * 1.4;
 		o *= 1 - outK;
@@ -109,10 +109,10 @@ function Shot({
 	);
 }
 
-/** White flash, used where the page navigates inside a shot. */
+/** Soft white fade, used where the page navigates inside a shot. */
 function Flash({ at }: { at: number }) {
 	const frame = useCurrentFrame();
-	const o = interpolate(frame, [at - 3, at, at + 8], [0, 0.85, 0], {
+	const o = interpolate(frame, [at - 6, at, at + 12], [0, 0.3, 0], {
 		extrapolateLeft: 'clamp',
 		extrapolateRight: 'clamp'
 	});
@@ -140,27 +140,27 @@ function Intro({ duration }: { duration: number }) {
 
 // ---------- Scene 2: resident report (home → results, one continuous recording) ----------
 const REPORT: Segment[] = [
-	{ from: 0.6, to: 2.4, rate: 1.2 }, // page reveals, cursor moves to the field
-	{ from: 2.4, to: 7.2, rate: 2.2 }, // typing
-	{ from: 7.2, to: 10.85, rate: 1.4 }, // gmina detected, Library preview, PII warning, submit
+	{ from: 0.6, to: 2.4, rate: 1.0 }, // page reveals, cursor moves to the field
+	{ from: 2.4, to: 7.2, rate: 1.5 }, // typing
+	{ from: 7.2, to: 10.85, rate: 1.0 }, // gmina detected, Library preview, PII warning, submit
 	{ from: 10.85, to: 12.2, rate: 1.0 }, // "Usuwamy dane osobowe..."
-	{ from: 12.2, to: 16.6, rate: 1.0 } // redacted report + match
+	{ from: 12.2, to: 16.6, rate: 1.0 }, // redacted report + match
+	{ hold: 1.2 } // rest on the match (source time runs on to 17.8)
 ];
+// Every move takes about a second on screen, with holds in between.
 const REPORT_CAM: Key[] = [
 	{ t: 0.6, x: 800, y: 450, s: 1 },
-	{ t: 2.2, x: 800, y: 450, s: 1 },
-	{ t: 3.0, x: 800, y: 470, s: 1.6 },
-	{ t: 6.9, x: 800, y: 480, s: 1.6 },
-	{ t: 7.8, x: 800, y: 650, s: 1.3 },
-	{ t: 9.7, x: 800, y: 650, s: 1.3 },
-	{ t: 10.5, x: 1060, y: 540, s: 1.8 },
-	{ t: 10.84, x: 1080, y: 535, s: 1.95 },
-	{ t: 10.86, x: 800, y: 450, s: 1.1 },
-	{ t: 12.3, x: 800, y: 450, s: 1 },
-	{ t: 13.0, x: 640, y: 290, s: 1.55 },
-	{ t: 14.3, x: 640, y: 290, s: 1.55 },
-	{ t: 15.0, x: 660, y: 660, s: 1.3 },
-	{ t: 16.6, x: 660, y: 670, s: 1.33 }
+	{ t: 2.6, x: 800, y: 450, s: 1 },
+	{ t: 3.6, x: 800, y: 470, s: 1.4 },
+	{ t: 6.8, x: 800, y: 480, s: 1.4 },
+	{ t: 7.9, x: 800, y: 640, s: 1.2 },
+	{ t: 9.4, x: 800, y: 640, s: 1.2 },
+	{ t: 10.4, x: 800, y: 450, s: 1 }, // back to full view before the click, no punch-in
+	{ t: 12.4, x: 800, y: 450, s: 1 },
+	{ t: 13.4, x: 640, y: 300, s: 1.35 },
+	{ t: 14.6, x: 640, y: 300, s: 1.35 },
+	{ t: 15.6, x: 660, y: 650, s: 1.25 },
+	{ t: 17.8, x: 660, y: 660, s: 1.28 }
 ];
 const at = (segs: Segment[], t: number) => {
 	// Inverse of sourceTime: first scene frame showing source time t.
@@ -174,9 +174,9 @@ function Report({ duration }: { duration: number }) {
 			<Shot duration={duration} enter="tilt" exit="whip">
 				<BrowserFrame path={useCurrentFrame() < at(REPORT, 10.85) ? '/' : '/report/…'}>
 					<Footage clip="report" segments={REPORT} camera={REPORT_CAM}>
-						<Callout box={{ x: 464, y: 616, w: 672, h: 260 }} t0={8.4} t1={9.8} dim={0.3} />
-						<Callout box={{ x: 248, y: 228, w: 784, h: 65 }} t0={12.9} t1={14.4} />
-						<Callout box={{ x: 248, y: 501, w: 784, h: 341 }} t0={14.9} t1={16.6} dim={0.3} />
+						<Callout box={{ x: 464, y: 616, w: 672, h: 260 }} t0={8.5} t1={10.2} dim={0.3} />
+						<Callout box={{ x: 248, y: 228, w: 784, h: 65 }} t0={13.3} t1={15.1} />
+						<Callout box={{ x: 248, y: 501, w: 784, h: 341 }} t0={15.6} t1={17.8} dim={0.3} />
 					</Footage>
 				</BrowserFrame>
 			</Shot>
@@ -184,38 +184,38 @@ function Report({ duration }: { duration: number }) {
 			<Caption
 				kicker="Mieszkaniec"
 				text="Opisuje problem *własnymi* słowami"
-				from={at(REPORT, 2.5)}
-				to={at(REPORT, 7.6)}
+				from={at(REPORT, 2.6)}
+				to={at(REPORT, 7.5)}
 			/>
 			<Caption
 				kicker="Na bieżąco"
 				text="Rozpoznana gmina i *podobne* rozwiązania"
-				from={at(REPORT, 8.0)}
-				to={at(REPORT, 10.6)}
+				from={at(REPORT, 7.8)}
+				to={at(REPORT, 10.5)}
 			/>
 			<Caption
 				kicker="Prywatność"
 				text="Dane osobowe usunięte *automatycznie*"
-				from={at(REPORT, 12.7)}
-				to={at(REPORT, 14.5)}
+				from={at(REPORT, 12.6)}
+				to={at(REPORT, 15.1)}
 			/>
 			<Caption
 				kicker="Biblioteka Innowacji"
 				text="Sprawdzone rozwiązanie *z Małopolski*"
-				from={at(REPORT, 14.8)}
-				to={duration - 6}
+				from={at(REPORT, 15.4)}
+				to={duration - 10}
 			/>
 		</>
 	);
 }
 
 // ---------- Scene 3: challenge map ----------
-const MAP: Segment[] = [{ from: 1.0, to: 6.9, rate: 1.45 }];
+const MAP: Segment[] = [{ from: 1.0, to: 6.95, rate: 1.0 }, { hold: 0.6 }];
 const MAP_CAM: Key[] = [
 	{ t: 1.0, x: 800, y: 450, s: 1 },
-	{ t: 3.1, x: 800, y: 450, s: 1.02 },
-	{ t: 4.0, x: 640, y: 470, s: 1.5 },
-	{ t: 6.9, x: 630, y: 470, s: 1.6 }
+	{ t: 3.3, x: 800, y: 450, s: 1.02 },
+	{ t: 4.5, x: 640, y: 470, s: 1.35 },
+	{ t: 7.55, x: 630, y: 470, s: 1.4 }
 ];
 function MapScene({ duration }: { duration: number }) {
 	return (
@@ -223,27 +223,27 @@ function MapScene({ duration }: { duration: number }) {
 			<Shot duration={duration} enter="whip" exit="whip">
 				<BrowserFrame path="/knowledge">
 					<Footage clip="map" segments={MAP} camera={MAP_CAM}>
-						<Pulse x={612} y={445} t0={4.0} t1={6.9} />
+						<Pulse x={612} y={445} t0={4.3} t1={7.55} />
 					</Footage>
 				</BrowserFrame>
 			</Shot>
 			<Caption
 				kicker="Brak rozwiązania?"
 				text="Powstaje *otwarte wyzwanie* na mapie regionu"
-				from={10}
-				to={duration - 4}
+				from={14}
+				to={duration - 10}
 			/>
 		</>
 	);
 }
 
 // ---------- Scene 4: open challenges ----------
-const CHALLENGES: Segment[] = [{ from: 0.6, to: 5.8, rate: 1.45 }];
+const CHALLENGES: Segment[] = [{ from: 0.6, to: 5.85, rate: 1.0 }, { hold: 0.5 }];
 const CHALLENGES_CAM: Key[] = [
 	{ t: 0.6, x: 800, y: 450, s: 1 },
-	{ t: 3.2, x: 800, y: 450, s: 1 },
-	{ t: 4.1, x: 520, y: 330, s: 1.45 },
-	{ t: 5.8, x: 520, y: 330, s: 1.5 }
+	{ t: 3.4, x: 800, y: 450, s: 1 },
+	{ t: 4.5, x: 520, y: 330, s: 1.3 },
+	{ t: 6.35, x: 520, y: 330, s: 1.33 }
 ];
 function ChallengesScene({ duration }: { duration: number }) {
 	return (
@@ -251,25 +251,25 @@ function ChallengesScene({ duration }: { duration: number }) {
 			<Shot duration={duration} enter="whip" exit="zoom">
 				<BrowserFrame path="/challenges">
 					<Footage clip="challenges" segments={CHALLENGES} camera={CHALLENGES_CAM}>
-						<Callout box={{ x: 248, y: 340, w: 540, h: 244 }} t0={4.0} t1={5.8} dim={0.3} />
+						<Callout box={{ x: 248, y: 340, w: 540, h: 244 }} t0={4.3} t1={6.35} dim={0.3} />
 					</Footage>
 				</BrowserFrame>
 			</Shot>
 			<Caption
 				kicker="Innowatorzy"
 				text="Organizacje i gminy *zgłaszają pomysły*"
-				from={8}
-				to={duration - 4}
+				from={14}
+				to={duration - 10}
 			/>
 		</>
 	);
 }
 
 // ---------- Scene 5: ROPS trends ----------
-const TRENDS: Segment[] = [{ from: 0.2, to: 5.0, rate: 1.25 }];
+const TRENDS: Segment[] = [{ from: 0.2, to: 5.25, rate: 1.0 }, { hold: 0.4 }];
 const TRENDS_CAM: Key[] = [
-	{ t: 0.2, x: 800, y: 300, s: 1.12 },
-	{ t: 5.0, x: 800, y: 450, s: 1 }
+	{ t: 0.2, x: 800, y: 300, s: 1.08 },
+	{ t: 5.65, x: 800, y: 450, s: 1 }
 ];
 function TrendsScene({ duration }: { duration: number }) {
 	return (
@@ -282,8 +282,8 @@ function TrendsScene({ duration }: { duration: number }) {
 			<Caption
 				kicker="Zespół ROPS"
 				text="Trendy i luki *w całym regionie*"
-				from={8}
-				to={duration - 6}
+				from={14}
+				to={duration - 12}
 			/>
 		</>
 	);
@@ -347,7 +347,7 @@ function A11yScene({ duration }: { duration: number }) {
 				</div>
 			</div>
 			{panels.map((p, i) => {
-				const s = spring({ frame: frame - 6 - i * 5, fps, config: { damping: 16, mass: 0.8 } });
+				const s = spring({ frame: frame - 8 - i * 8, fps, config: { damping: 20, mass: 1 } });
 				return (
 					<div
 						key={p.clip}
@@ -410,8 +410,8 @@ const WALL = [
 function Outro() {
 	const frame = useCurrentFrame();
 	const { fps } = useVideoConfig();
-	const zoom = spring({ frame, fps, config: { damping: 200 }, durationInFrames: 34 });
-	const cover = easeInOut(clamp01((frame - 30) / 16));
+	const zoom = spring({ frame, fps, config: { damping: 200 }, durationInFrames: 50 });
+	const cover = easeInOut(clamp01((frame - 50) / 20));
 	const tw = 480,
 		th = 270,
 		gap = 26;
@@ -460,7 +460,7 @@ function Outro() {
 					opacity: cover
 				}}
 			/>
-			<Sequence from={34} layout="none">
+			<Sequence from={56} layout="none">
 				<AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center' }}>
 					<Logo size={0.82} tagline="Małopolski Hub Innowacji Społecznych" />
 				</AbsoluteFill>
@@ -498,12 +498,12 @@ function OutroFooter() {
 
 // ---------- Timeline ----------
 const scenes: [string, number, (p: { duration: number }) => ReactNode][] = [
-	['intro', 74, Intro],
+	['intro', 90, Intro],
 	['report', segmentsLength(REPORT), Report],
 	['map', segmentsLength(MAP), MapScene],
 	['challenges', segmentsLength(CHALLENGES), ChallengesScene],
 	['trends', segmentsLength(TRENDS), TrendsScene],
-	['a11y', 96, A11yScene],
+	['a11y', 130, A11yScene],
 	['outro', 0, Outro]
 ];
 let cursor = 0;
@@ -512,7 +512,7 @@ const timeline = scenes.map(([name, len, Comp], i) => {
 	cursor = from + len;
 	return { name, from, len, Comp };
 });
-export const DURATION = 900;
+export const DURATION = 1230;
 // The outro takes whatever is left of the 30 seconds.
 timeline.at(-1)!.len = DURATION - timeline.at(-1)!.from;
 

@@ -20,9 +20,9 @@ export function Caption({
 }) {
 	const frame = useCurrentFrame();
 	const { fps } = useVideoConfig();
-	if (frame < from - 1 || frame > to + 12) return null;
+	if (frame < from - 1 || frame > to + 16) return null;
 	const local = frame - from;
-	const exit = interpolate(frame, [to, to + 10], [0, 1], {
+	const exit = interpolate(frame, [to, to + 14], [0, 1], {
 		extrapolateLeft: 'clamp',
 		extrapolateRight: 'clamp'
 	});
@@ -88,11 +88,11 @@ export function Caption({
 				>
 					{words.map(({ w, marked, last }, i) => {
 						const s = spring({
-							frame: local - 5 - i * 2.2,
+							frame: local - 6 - i * 3,
 							fps,
-							config: { damping: 16, mass: 0.6 }
+							config: { damping: 20, mass: 0.8 }
 						});
-						const sweep = spring({ frame: local - 12 - i * 2.2, fps, config: { damping: 22 } });
+						const sweep = spring({ frame: local - 14 - i * 3, fps, config: { damping: 26 } });
 						return (
 							<span
 								key={i}
