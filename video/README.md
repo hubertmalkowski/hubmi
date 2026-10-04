@@ -1,9 +1,10 @@
 # Zaczyn: showcase video
 
-A 1920x1080, 30 fps, 41 s promo video built from real recordings of the app.
+A 1920x1080, 30 fps, ~61 s promo video with a Polish voiceover, built from real recordings of the app.
 This is a standalone package with its own `node_modules`. The app does not depend on it.
 
 - `capture/record.mjs` drives the running app with Playwright. It records each scene as a sharp 3200x1800 clip via CDP screencast, draws a fake cursor with click ripples, and writes `public/clips/<scene>.mp4` plus `<scene>.json` (marker times and element boxes).
+- `capture/voiceover.mjs` cleans the recorded voiceover and writes the paragraph timings the timeline is built from.
 - `src/` is a [Remotion](https://remotion.dev) composition. It adds the browser frame, camera zooms, callouts, kinetic captions, transitions, the intro and the outro.
 
 ## 1. Record the clips
@@ -32,19 +33,25 @@ REMOTION_BROWSER=/path/to/chrome-headless-shell npm run render   # -> out/zaczyn
 
 Remotion needs `chrome-headless-shell` (Playwright's `chromium_headless_shell-*` works). Without `REMOTION_BROWSER` it downloads one.
 
-## Timeline (for music sync)
+## 3. Audio
 
-| Time   | Scene                                     | Caption                                                        |
-| ------ | ----------------------------------------- | -------------------------------------------------------------- |
-| 0:00   | Logo intro                                | Opisz problem. Znajdź sprawdzone rozwiązanie.                  |
-| 0:02.3 | Browser tilts in, resident types a report | Mieszkaniec · Opisuje problem własnymi słowami                 |
-|        | Gmina detected, Library preview           | Na bieżąco · Rozpoznana gmina i podobne rozwiązania            |
-|        | Results: personal data redacted           | Prywatność · Dane osobowe usunięte automatycznie               |
-|        | Matching solution                         | Biblioteka Innowacji · Sprawdzone rozwiązanie z Małopolski     |
-| 0:17.2 | Whip to the county map                    | Brak rozwiązania? · Powstaje otwarte wyzwanie na mapie regionu |
-| 0:23.0 | Whip to open challenges                   | Innowatorzy · Organizacje i gminy zgłaszają pomysły            |
-| 0:28.0 | Zoom to ROPS trends                       | Zespół ROPS · Trendy i luki w całym regionie                   |
-| 0:32.8 | Accessibility split                       | Dostępny dla każdego                                           |
-| 0:36.4 | Screen wall → logo outro                  | Małopolski Hub Innowacji Społecznych                           |
+The timeline follows the voiceover: each scene starts just before its paragraph.
 
-The video is silent. The whip transitions at 0:17.2 and 0:23.0 are the strongest hits to put on a beat.
+```sh
+node video/capture/voiceover.mjs path/to/recording.wav
+```
+
+This denoises the take, shortens long pauses, normalises to -16 LUFS and writes `public/audio/voiceover.wav` plus `src/voiceover.json` (paragraph start/end times). `BREAKS` at the top of the script lists where the paragraph breaks are in the raw recording; update it for a new take.
+
+Optional music: put a licensed track at `public/audio/music.mp3`. It is ducked under the voice and faded in and out. Both files are picked up automatically when present.
+
+## Timeline
+
+| Time   | Voiceover paragraph                           | Scene                                           |
+| ------ | --------------------------------------------- | ----------------------------------------------- |
+| 0:00   | (voice starts at 0:01.5) Mama pani Ani…       | Logo intro, browser tilts in, home page         |
+| 0:09.6 | Pani Ania opisuje to w Zaczynie…              | Typing, gmina + Library preview, match          |
+| 0:22.3 | A jeśli takiego rozwiązania jeszcze nie ma?…  | County map, then open challenges (0:29.5)       |
+| 0:35.9 | Zespół ROPS widzi to wszystko z góry…         | Trends                                          |
+| 0:42.8 | Z Zaczyna skorzysta każdy…                    | Accessibility split, zooms on large text and UK |
+| 0:53.3 | Bo wiele problemów ktoś już kiedyś rozwiązał… | Screen wall, logo outro                         |

@@ -195,7 +195,7 @@ async function newPage(browser, { a11y, user } = {}) {
 }
 
 const REPORT =
-	'Pan Jan Kowalski, tel. 600 123 456, mieszka sam w Bochni i od tygodnia nie wychodzi z domu. Sąsiedzi się martwią.';
+	'Moja mama z Kościeliska chce rozmawiać z wnukami za granicą przez wideorozmowę, ale nie ma tabletu ani internetu.';
 
 const scenes = {
 	// Resident types a problem, sees live hints, submits, gets a redacted report and a match.
@@ -224,7 +224,7 @@ const scenes = {
 					.getByText('Podobne w Bibliotece')
 					.locator('xpath=ancestor::*[self::section or self::div][2]')
 			);
-			await mark('place', page.getByText('Bochnia', { exact: true }).first());
+			await mark('place', page.getByText('Kościelisko', { exact: true }).first());
 			await sleep(1600);
 			const send = page.locator('form button[type=submit]').first();
 			await glide(page, send);

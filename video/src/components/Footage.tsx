@@ -6,8 +6,9 @@ import { SourceTime } from './source-time';
 
 /**
  * A stretch of a recorded clip played at `rate` (source seconds), or a `hold` (seconds) that
- * freezes the previous segment's last frame. During a hold, source time keeps counting past the
- * frozen frame, so camera keys and overlays can be placed there.
+ * freezes the previous segment's last frame. During a trailing hold, source time keeps counting
+ * past the frozen frame, so camera keys and overlays can be placed there; a hold between two
+ * segments keeps source time still, so time never runs backwards.
  */
 export type Segment = { from: number; to: number; rate: number } | { hold: number };
 
@@ -23,8 +24,9 @@ export function sourceTime(segs: Segment[], frame: number) {
 	for (const s of segs) {
 		const len = frames(s);
 		if ('hold' in s) {
-			if (frame < start + len) return t + (frame - start) / FPS;
-			t += s.hold;
+			const trailing = s === segs.at(-1);
+			if (frame < start + len) return trailing ? t + (frame - start) / FPS : t;
+			if (trailing) t += s.hold;
 		} else {
 			if (frame < start + len) return s.from + ((frame - start) / FPS) * s.rate;
 			t = s.to;

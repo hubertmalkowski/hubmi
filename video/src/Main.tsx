@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
 import {
 	AbsoluteFill,
+	Audio,
 	Freeze,
+	getStaticFiles,
 	OffthreadVideo,
 	Sequence,
 	interpolate,
@@ -16,6 +18,7 @@ import { Callout, Pulse } from './components/Callout';
 import type { Key } from './components/Camera';
 import { Caption } from './components/Caption';
 import { Footage, segmentsLength, sourceTime, type Segment } from './components/Footage';
+import voiceover from './voiceover.json';
 import { Logo } from './components/Logo';
 import { C, FPS, PAGE, SANS, SERIF, clamp01, easeInOut } from './theme';
 
@@ -119,6 +122,38 @@ function Flash({ at }: { at: number }) {
 	return o > 0 ? <AbsoluteFill style={{ background: C.white, opacity: o }} /> : null;
 }
 
+// ---------- Timeline, driven by the voiceover paragraphs ----------
+// Voice starts after the logo has appeared. Each scene begins just before its paragraph,
+// so the cut lands in the pause between paragraphs.
+const VO_START = 1.5;
+const P = (i: number) => VO_START + voiceover.paragraphs[i].start;
+const OV = OVERLAP / FPS;
+const STARTS = {
+	intro: 0,
+	report: 4.6,
+	map: P(2) - 0.5,
+	challenges: P(2) + 7.2,
+	trends: P(3) - 0.5,
+	a11y: P(4) - 0.5,
+	outro: P(5) - 0.6
+};
+const END = VO_START + voiceover.duration + 1.6;
+export const DURATION = Math.round(END * FPS);
+const f = (sec: number) => Math.round(sec * FPS);
+/** Scene length in frames: until the next scene has finished coming in. */
+const len = (from: number, next: number) => f(next + OV - from);
+
+/** Pads a segment list with a trailing hold so it fills `frames`. */
+const fill = (segs: Segment[], frames: number): Segment[] => {
+	const rest = frames - segmentsLength(segs);
+	return rest > 0 ? [...segs, { hold: rest / FPS }] : segs;
+};
+/** Inverse of sourceTime: first scene frame showing source time t. */
+const at = (segs: Segment[], t: number) => {
+	for (let i = 0; i < 4000; i++) if (sourceTime(segs, i) >= t) return i;
+	return 0;
+};
+
 // ---------- Scene 1: intro ----------
 function Intro({ duration }: { duration: number }) {
 	const frame = useCurrentFrame();
@@ -139,83 +174,73 @@ function Intro({ duration }: { duration: number }) {
 }
 
 // ---------- Scene 2: resident report (home → results, one continuous recording) ----------
-const REPORT: Segment[] = [
-	{ from: 0.6, to: 2.4, rate: 1.0 }, // page reveals, cursor moves to the field
-	{ from: 2.4, to: 7.2, rate: 1.5 }, // typing
-	{ from: 7.2, to: 10.85, rate: 1.0 }, // gmina detected, Library preview, PII warning, submit
-	{ from: 10.85, to: 12.2, rate: 1.0 }, // "Usuwamy dane osobowe..."
-	{ from: 12.2, to: 16.6, rate: 1.0 }, // redacted report + match
-	{ hold: 1.2 } // rest on the match (source time runs on to 17.8)
-];
-// Every move takes about a second on screen, with holds in between.
+const REPORT_LEN = len(STARTS.report, STARTS.map);
+// Typing starts with "Pani Ania opisuje to w Zaczynie…".
+const TYPING_AT = P(1) + 0.1 - STARTS.report;
+const REPORT: Segment[] = fill(
+	[
+		{ from: 0.6, to: 2.55, rate: 0.6 }, // page reveals, cursor moves to the field
+		{ hold: Math.max(0, TYPING_AT - 1.95 / 0.6) }, // wait for the paragraph
+		{ from: 2.55, to: 7.3, rate: 1.3 }, // typing
+		{ from: 7.3, to: 16.3, rate: 1.0 } // gmina + Library preview, submit, match
+	],
+	REPORT_LEN
+);
 const REPORT_CAM: Key[] = [
 	{ t: 0.6, x: 800, y: 450, s: 1 },
-	{ t: 2.6, x: 800, y: 450, s: 1 },
-	{ t: 3.6, x: 800, y: 470, s: 1.4 },
-	{ t: 6.8, x: 800, y: 480, s: 1.4 },
+	{ t: 2.55, x: 800, y: 450, s: 1 },
+	{ t: 3.5, x: 800, y: 470, s: 1.4 },
+	{ t: 7.0, x: 800, y: 480, s: 1.4 },
 	{ t: 7.9, x: 800, y: 640, s: 1.2 },
-	{ t: 9.4, x: 800, y: 640, s: 1.2 },
-	{ t: 10.4, x: 800, y: 450, s: 1 }, // back to full view before the click, no punch-in
-	{ t: 12.4, x: 800, y: 450, s: 1 },
-	{ t: 13.4, x: 640, y: 300, s: 1.35 },
-	{ t: 14.6, x: 640, y: 300, s: 1.35 },
-	{ t: 15.6, x: 660, y: 650, s: 1.25 },
-	{ t: 17.8, x: 660, y: 660, s: 1.28 }
+	{ t: 9.6, x: 800, y: 640, s: 1.2 },
+	{ t: 10.5, x: 800, y: 450, s: 1 }, // back to full view before the click
+	{ t: 12.8, x: 800, y: 450, s: 1 },
+	{ t: 13.8, x: 660, y: 680, s: 1.25 },
+	{ t: 17.5, x: 660, y: 690, s: 1.28 }
 ];
-const at = (segs: Segment[], t: number) => {
-	// Inverse of sourceTime: first scene frame showing source time t.
-	for (let f = 0; f < 2000; f++) if (sourceTime(segs, f) >= t) return f;
-	return 0;
-};
 
 function Report({ duration }: { duration: number }) {
 	return (
 		<>
 			<Shot duration={duration} enter="tilt" exit="whip">
-				<BrowserFrame path={useCurrentFrame() < at(REPORT, 10.85) ? '/' : '/report/…'}>
+				<BrowserFrame path={useCurrentFrame() < at(REPORT, 10.95) ? '/' : '/report/…'}>
 					<Footage clip="report" segments={REPORT} camera={REPORT_CAM}>
-						<Callout box={{ x: 464, y: 616, w: 672, h: 260 }} t0={8.5} t1={10.2} dim={0.3} />
-						<Callout box={{ x: 248, y: 228, w: 784, h: 65 }} t0={13.3} t1={15.1} />
-						<Callout box={{ x: 248, y: 501, w: 784, h: 341 }} t0={15.6} t1={17.8} dim={0.3} />
+						<Callout box={{ x: 464, y: 616, w: 672, h: 180 }} t0={8.6} t1={10.3} dim={0.3} />
+						<Callout box={{ x: 248, y: 501, w: 784, h: 371 }} t0={13.6} t1={17.5} dim={0.3} />
 					</Footage>
 				</BrowserFrame>
 			</Shot>
-			<Flash at={at(REPORT, 10.85)} />
+			<Flash at={at(REPORT, 10.95)} />
 			<Caption
-				kicker="Mieszkaniec"
+				kicker="Mieszkanka"
 				text="Opisuje problem *własnymi* słowami"
 				from={at(REPORT, 2.6)}
-				to={at(REPORT, 7.5)}
+				to={at(REPORT, 7.4)}
 			/>
 			<Caption
 				kicker="Na bieżąco"
-				text="Rozpoznana gmina i *podobne* rozwiązania"
-				from={at(REPORT, 7.8)}
-				to={at(REPORT, 10.5)}
-			/>
-			<Caption
-				kicker="Prywatność"
-				text="Dane osobowe usunięte *automatycznie*"
-				from={at(REPORT, 12.6)}
-				to={at(REPORT, 15.1)}
+				text="Gmina i *podobne* rozwiązania"
+				from={at(REPORT, 8.3)}
+				to={at(REPORT, 10.7)}
 			/>
 			<Caption
 				kicker="Biblioteka Innowacji"
-				text="Sprawdzone rozwiązanie *z Małopolski*"
-				from={at(REPORT, 15.4)}
-				to={duration - 10}
+				text="Rozwiązanie, które *już działa*"
+				from={at(REPORT, 13.5)}
+				to={duration - 12}
 			/>
 		</>
 	);
 }
 
 // ---------- Scene 3: challenge map ----------
-const MAP: Segment[] = [{ from: 1.0, to: 6.95, rate: 1.0 }, { hold: 0.6 }];
+const MAP_LEN = len(STARTS.map, STARTS.challenges);
+const MAP: Segment[] = fill([{ from: 1.0, to: 6.95, rate: 1.0 }], MAP_LEN);
 const MAP_CAM: Key[] = [
 	{ t: 1.0, x: 800, y: 450, s: 1 },
 	{ t: 3.3, x: 800, y: 450, s: 1.02 },
 	{ t: 4.5, x: 640, y: 470, s: 1.35 },
-	{ t: 7.55, x: 630, y: 470, s: 1.4 }
+	{ t: 9.0, x: 630, y: 470, s: 1.42 }
 ];
 function MapScene({ duration }: { duration: number }) {
 	return (
@@ -223,27 +248,28 @@ function MapScene({ duration }: { duration: number }) {
 			<Shot duration={duration} enter="whip" exit="whip">
 				<BrowserFrame path="/knowledge">
 					<Footage clip="map" segments={MAP} camera={MAP_CAM}>
-						<Pulse x={612} y={445} t0={4.3} t1={7.55} />
+						<Pulse x={612} y={445} t0={4.3} t1={99} />
 					</Footage>
 				</BrowserFrame>
 			</Shot>
 			<Caption
 				kicker="Brak rozwiązania?"
-				text="Powstaje *otwarte wyzwanie* na mapie regionu"
+				text="Powstaje *otwarte wyzwanie*"
 				from={14}
-				to={duration - 10}
+				to={duration - 12}
 			/>
 		</>
 	);
 }
 
 // ---------- Scene 4: open challenges ----------
-const CHALLENGES: Segment[] = [{ from: 0.6, to: 5.85, rate: 1.0 }, { hold: 0.5 }];
+const CHALLENGES_LEN = len(STARTS.challenges, STARTS.trends);
+const CHALLENGES: Segment[] = fill([{ from: 0.6, to: 5.85, rate: 1.0 }], CHALLENGES_LEN);
 const CHALLENGES_CAM: Key[] = [
 	{ t: 0.6, x: 800, y: 450, s: 1 },
 	{ t: 3.4, x: 800, y: 450, s: 1 },
 	{ t: 4.5, x: 520, y: 330, s: 1.3 },
-	{ t: 6.35, x: 520, y: 330, s: 1.33 }
+	{ t: 8.0, x: 520, y: 330, s: 1.35 }
 ];
 function ChallengesScene({ duration }: { duration: number }) {
 	return (
@@ -251,7 +277,7 @@ function ChallengesScene({ duration }: { duration: number }) {
 			<Shot duration={duration} enter="whip" exit="zoom">
 				<BrowserFrame path="/challenges">
 					<Footage clip="challenges" segments={CHALLENGES} camera={CHALLENGES_CAM}>
-						<Callout box={{ x: 248, y: 340, w: 540, h: 244 }} t0={4.3} t1={6.35} dim={0.3} />
+						<Callout box={{ x: 248, y: 340, w: 540, h: 244 }} t0={4.3} t1={99} dim={0.3} />
 					</Footage>
 				</BrowserFrame>
 			</Shot>
@@ -259,17 +285,18 @@ function ChallengesScene({ duration }: { duration: number }) {
 				kicker="Innowatorzy"
 				text="Organizacje i gminy *zgłaszają pomysły*"
 				from={14}
-				to={duration - 10}
+				to={duration - 12}
 			/>
 		</>
 	);
 }
 
 // ---------- Scene 5: ROPS trends ----------
-const TRENDS: Segment[] = [{ from: 0.2, to: 5.25, rate: 1.0 }, { hold: 0.4 }];
+const TRENDS_LEN = len(STARTS.trends, STARTS.a11y);
+const TRENDS: Segment[] = fill([{ from: 0.2, to: 5.25, rate: 0.8 }], TRENDS_LEN);
 const TRENDS_CAM: Key[] = [
 	{ t: 0.2, x: 800, y: 300, s: 1.08 },
-	{ t: 5.65, x: 800, y: 450, s: 1 }
+	{ t: 6.5, x: 800, y: 450, s: 1 }
 ];
 function TrendsScene({ duration }: { duration: number }) {
 	return (
@@ -283,13 +310,17 @@ function TrendsScene({ duration }: { duration: number }) {
 				kicker="Zespół ROPS"
 				text="Trendy i luki *w całym regionie*"
 				from={14}
-				to={duration - 12}
+				to={duration - 14}
 			/>
 		</>
 	);
 }
 
 // ---------- Scene 6: accessibility split ----------
+// The camera moves to the large-text panel on "osoba słabowidząca"
+// and to the Ukrainian panel on "ktoś, kto dopiero uczy się polskiego".
+const A11Y_LEN = len(STARTS.a11y, STARTS.outro);
+const A11Y_FOCUS = [f(P(4) + 3.2 - STARTS.a11y), f(P(4) + 5.8 - STARTS.a11y)];
 function A11yScene({ duration }: { duration: number }) {
 	const frame = useCurrentFrame();
 	const { fps } = useVideoConfig();
@@ -302,8 +333,25 @@ function A11yScene({ duration }: { duration: number }) {
 	const head = spring({ frame: frame - 4, fps, config: { damping: 18 } });
 	const scale = 0.335;
 	const w = PAGE.w * scale,
-		gap = 36;
+		h = (PAGE.h + BAR) * scale,
+		gap = 36,
+		top = 460;
 	const left = (1920 - (w * 3 + gap * 2)) / 2;
+
+	// Camera over the panels: overview → panel 0 → panel 2.
+	const center = (i: number) => ({ x: left + i * (w + gap) + w / 2, y: top + h / 2 + 30, s: 2.1 });
+	const overview = { x: 960, y: 540, s: 1 };
+	const ease = (a: number, b: number) => easeInOut(clamp01((frame - a) / (b - a)));
+	const k1 = ease(A11Y_FOCUS[0] - 14, A11Y_FOCUS[0] + 16);
+	const k2 = ease(A11Y_FOCUS[1] - 14, A11Y_FOCUS[1] + 16);
+	const p0 = center(0),
+		p2 = center(2);
+	const mix = (a: number, b: number, k: number) => a + (b - a) * k;
+	const cam = {
+		x: mix(mix(overview.x, p0.x, k1), p2.x, k2),
+		y: mix(mix(overview.y, p0.y, k1), p2.y, k2),
+		s: mix(mix(overview.s, p0.s, k1), p2.s, k2)
+	};
 	return (
 		<AbsoluteFill
 			style={{
@@ -312,106 +360,118 @@ function A11yScene({ duration }: { duration: number }) {
 				filter: `blur(${out * 10}px)`
 			}}
 		>
-			<div
+			<AbsoluteFill
 				style={{
-					position: 'absolute',
-					top: 220,
-					width: '100%',
-					textAlign: 'center',
-					opacity: head,
-					transform: `translateY(${(1 - head) * 30}px)`
+					transformOrigin: '0 0',
+					transform: `translate(${960 - cam.x * cam.s}px, ${540 - cam.y * cam.s}px) scale(${cam.s})`
 				}}
 			>
 				<div
 					style={{
-						fontFamily: SANS,
-						fontWeight: 700,
-						fontSize: 22,
-						letterSpacing: '0.14em',
-						textTransform: 'uppercase',
-						color: C.yellow
+						position: 'absolute',
+						top: 220,
+						width: '100%',
+						textAlign: 'center',
+						opacity: head * (1 - k1),
+						transform: `translateY(${(1 - head) * 30}px)`
 					}}
 				>
-					WCAG 2.1 AA · PL / EN / UK
-				</div>
-				<div
-					style={{
-						fontFamily: SERIF,
-						fontWeight: 600,
-						fontSize: 68,
-						color: C.white,
-						marginTop: 10
-					}}
-				>
-					Dostępny dla każdego
-				</div>
-			</div>
-			{panels.map((p, i) => {
-				const s = spring({ frame: frame - 8 - i * 8, fps, config: { damping: 20, mass: 1 } });
-				return (
 					<div
-						key={p.clip}
 						style={{
-							position: 'absolute',
-							left: left + i * (w + gap),
-							top: 460,
-							width: w,
-							transform: `translateY(${(1 - s) * 500}px) rotate(${(1 - s) * (i - 1) * 6}deg)`,
-							opacity: clamp01(s * 2)
+							fontFamily: SANS,
+							fontWeight: 700,
+							fontSize: 22,
+							letterSpacing: '0.14em',
+							textTransform: 'uppercase',
+							color: C.yellow
 						}}
 					>
-						<div style={{ width: w, height: (PAGE.h + BAR) * scale }}>
-							<div
-								style={{
-									transform: `scale(${scale})`,
-									transformOrigin: '0 0',
-									width: PAGE.w,
-									height: PAGE.h + BAR
-								}}
-							>
-								<BrowserFrame path={p.path} dark={p.dark}>
-									<OffthreadVideo
-										src={staticFile(`clips/${p.clip}.mp4`)}
-										trimBefore={Math.round(0.9 * FPS)}
-										muted
-										style={{ width: PAGE.w, height: PAGE.h }}
-									/>
-								</BrowserFrame>
-							</div>
-						</div>
+						WCAG 2.1 AA · PL / EN / UK
+					</div>
+					<div
+						style={{
+							fontFamily: SERIF,
+							fontWeight: 600,
+							fontSize: 68,
+							color: C.white,
+							marginTop: 10
+						}}
+					>
+						Dostępny dla każdego
+					</div>
+				</div>
+				{panels.map((p, i) => {
+					const s = spring({ frame: frame - 8 - i * 8, fps, config: { damping: 20, mass: 1 } });
+					return (
 						<div
+							key={p.clip}
 							style={{
-								marginTop: 30,
-								textAlign: 'center',
-								fontFamily: SANS,
-								fontWeight: 600,
-								fontSize: 30,
-								color: C.white
+								position: 'absolute',
+								left: left + i * (w + gap),
+								top,
+								width: w,
+								transform: `translateY(${(1 - s) * 500}px) rotate(${(1 - s) * (i - 1) * 6}deg)`,
+								opacity: clamp01(s * 2)
 							}}
 						>
-							{p.label}
+							<div style={{ width: w, height: h }}>
+								<div
+									style={{
+										transform: `scale(${scale})`,
+										transformOrigin: '0 0',
+										width: PAGE.w,
+										height: PAGE.h + BAR
+									}}
+								>
+									<BrowserFrame path={p.path} dark={p.dark}>
+										{/* clips are ~4 s long; hold the last frame after that */}
+										<Freeze frame={Math.min(frame, 90)}>
+											<OffthreadVideo
+												src={staticFile(`clips/${p.clip}.mp4`)}
+												trimBefore={Math.round(0.9 * FPS)}
+												muted
+												style={{ width: PAGE.w, height: PAGE.h }}
+											/>
+										</Freeze>
+									</BrowserFrame>
+								</div>
+							</div>
+							<div
+								style={{
+									marginTop: 30,
+									textAlign: 'center',
+									fontFamily: SANS,
+									fontWeight: 600,
+									fontSize: 30,
+									color: C.white
+								}}
+							>
+								{p.label}
+							</div>
 						</div>
-					</div>
-				);
-			})}
+					);
+				})}
+			</AbsoluteFill>
 		</AbsoluteFill>
 	);
 }
 
 // ---------- Scene 7: outro wall + logo ----------
+// The logo lands on "Zaczyn pomaga to rozwiązanie znaleźć".
+const OUTRO_LOGO = f(P(5) + 3.0 - STARTS.outro);
 const WALL = [
 	['report', 9.8],
 	['map', 6.0],
 	['challenges', 5.0],
-	['report', 16.0],
+	['report', 15.5],
 	['trends', 4.0],
 	['a11y-uk', 3.0]
 ] as const;
 function Outro() {
 	const frame = useCurrentFrame();
 	const { fps } = useVideoConfig();
-	const zoom = spring({ frame, fps, config: { damping: 200 }, durationInFrames: 50 });
-	const cover = easeInOut(clamp01((frame - 50) / 20));
+	const zoom = spring({ frame, fps, config: { damping: 200 }, durationInFrames: 60 });
+	const cover = easeInOut(clamp01((frame - (OUTRO_LOGO - 30)) / 30));
 	const tw = 480,
 		th = 270,
 		gap = 26;
@@ -460,7 +520,7 @@ function Outro() {
 					opacity: cover
 				}}
 			/>
-			<Sequence from={56} layout="none">
+			<Sequence from={OUTRO_LOGO} layout="none">
 				<AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center' }}>
 					<Logo size={0.82} tagline="Małopolski Hub Innowacji Społecznych" />
 				</AbsoluteFill>
@@ -496,35 +556,52 @@ function OutroFooter() {
 	);
 }
 
-// ---------- Timeline ----------
-const scenes: [string, number, (p: { duration: number }) => ReactNode][] = [
-	['intro', 90, Intro],
-	['report', segmentsLength(REPORT), Report],
-	['map', segmentsLength(MAP), MapScene],
-	['challenges', segmentsLength(CHALLENGES), ChallengesScene],
-	['trends', segmentsLength(TRENDS), TrendsScene],
-	['a11y', 130, A11yScene],
-	['outro', 0, Outro]
+const MUSIC = 'audio/music.mp3';
+const VOICE = 'audio/voiceover.wav';
+
+/** Music volume: lower under each voice paragraph, fade in and out. */
+function musicVolume(frame: number) {
+	const t = frame / FPS;
+	const ramp = 0.25;
+	let duck = 0;
+	for (const p of voiceover.paragraphs) {
+		const a = VO_START + p.start,
+			b = VO_START + p.end;
+		duck = Math.max(
+			duck,
+			Math.min(clamp01((t - (a - ramp)) / ramp), clamp01((b + ramp - t) / ramp))
+		);
+	}
+	const fade = Math.min(clamp01(t / 0.5), clamp01((END - t) / 1.5));
+	return (0.35 - 0.25 * duck) * fade;
+}
+
+const scenes: [string, number, number, (p: { duration: number }) => ReactNode][] = [
+	['intro', STARTS.intro, f(STARTS.report + 0.8), Intro],
+	['report', STARTS.report, REPORT_LEN, Report],
+	['map', STARTS.map, MAP_LEN, MapScene],
+	['challenges', STARTS.challenges, CHALLENGES_LEN, ChallengesScene],
+	['trends', STARTS.trends, TRENDS_LEN, TrendsScene],
+	['a11y', STARTS.a11y, A11Y_LEN, A11yScene],
+	['outro', STARTS.outro, f(END - STARTS.outro), Outro]
 ];
-let cursor = 0;
-const timeline = scenes.map(([name, len, Comp], i) => {
-	const from = i === 0 ? 0 : cursor - OVERLAP;
-	cursor = from + len;
-	return { name, from, len, Comp };
-});
-export const DURATION = 1230;
-// The outro takes whatever is left of the 30 seconds.
-timeline.at(-1)!.len = DURATION - timeline.at(-1)!.from;
 
 export function Main() {
+	const files = new Set(getStaticFiles().map((s) => s.name));
 	return (
 		<AbsoluteFill style={{ background: C.navyDeep }}>
 			<Background />
-			{timeline.map(({ name, from, len, Comp }) => (
-				<Sequence key={name} name={name} from={from} durationInFrames={len}>
-					<Comp duration={len} />
+			{scenes.map(([name, start, frames, Comp]) => (
+				<Sequence key={name} name={name} from={f(start)} durationInFrames={frames}>
+					<Comp duration={frames} />
 				</Sequence>
 			))}
+			{files.has(VOICE) && (
+				<Sequence name="voiceover" from={f(VO_START)}>
+					<Audio src={staticFile(VOICE)} />
+				</Sequence>
+			)}
+			{files.has(MUSIC) && <Audio src={staticFile(MUSIC)} volume={musicVolume} />}
 		</AbsoluteFill>
 	);
 }
