@@ -18,29 +18,56 @@ Zrobiliśmy wszystkie siedem modułów z opisu wyzwania:
 
 Interfejs jest po polsku, angielsku i ukraińsku. W stopce są ustawienia dostępności (większy tekst, kontrast, tekst łatwy do czytania, czytanie na głos).
 
-## Uruchomienie
+## Uruchomienie z danymi demo
 
 Potrzebne: Node 22, pnpm 10, Docker.
+
+**1. Zależności i konfiguracja**
 
 ```sh
 pnpm install
 cp .env.example .env
-pnpm es:dict                 # polski słownik hunspell dla Elasticsearch
-docker compose up -d db es
-pnpm db:migrate
-pnpm db:seed
-pnpm dev                     # http://localhost:5173
 ```
 
-Uwaga: `db:seed` czyści bazę i indeksy w Elasticsearch.
+W `.env` zdecyduj, czy działasz z kluczami API, czy bez:
 
-Bez kluczy API ustaw `AI_MOCK=1` w `.env`. Wtedy zamiast modeli działają proste reguły na słowach kluczowych. Wszystko da się przeklikać, ale wyniki dopasowania są słabe. Do pokazywania lepiej mieć klucze:
+- bez kluczy ustaw `AI_MOCK=1`. Zamiast modeli działają proste reguły na słowach kluczowych. Wszystko da się przeklikać, ale dopasowania są słabe.
+- z kluczami zostaw `AI_MOCK=0` i uzupełnij:
+  - `TYPESAFE_API_KEY`: Jev, czyli klasyfikacja zgłoszeń, moderacja i ocena dopasowania,
+  - `ANTHROPIC_API_KEY`: Claude, czyli teksty (wyjaśnienia, asystent, wnioski, tłumaczenia),
+  - `VOYAGE_API_KEY`: embeddingi do wyszukiwania.
 
-- `TYPESAFE_API_KEY`: Jev, czyli klasyfikacja zgłoszeń, moderacja i ocena dopasowania,
-- `ANTHROPIC_API_KEY`: Claude, czyli teksty (wyjaśnienia, asystent, wnioski, tłumaczenia),
-- `VOYAGE_API_KEY`: embeddingi do wyszukiwania.
+Do pokazywania projektu lepiej mieć klucze.
 
-Po zmianie `AI_MOCK` warto puścić `pnpm db:seed` jeszcze raz, bo dane demo przechodzą przez ten sam pipeline co prawdziwe zgłoszenia.
+**2. Postgres i Elasticsearch**
+
+```sh
+pnpm es:dict                     # kopiuje polski słownik hunspell do obrazu Elasticsearch
+docker compose up -d --wait db es
+```
+
+Pierwsze uruchomienie buduje obraz Elasticsearch, więc trwa chwilę. `--wait` czeka, aż oba kontenery będą gotowe.
+
+**3. Schemat bazy i dane demo**
+
+```sh
+pnpm db:migrate
+pnpm db:seed
+```
+
+Seed wgrywa obszary, grupy docelowe, 22 powiaty i 42 gminy, 30 innowacji w Bibliotece, konta demo, dwa nabory grantowe i kampanie testowe. Potem przepuszcza 60 przykładowych zgłoszeń przez ten sam pipeline co prawdziwe, więc na końcu część z nich ma dopasowania, część jest otwartymi wyzwaniami, a pojedyncze czekają w moderacji. Bez kluczy trwa to kilkanaście sekund, z kluczami dłużej, bo każde zgłoszenie idzie przez API.
+
+`db:seed` za każdym razem czyści bazę i indeksy w Elasticsearch. Uruchom go ponownie po zmianie `AI_MOCK`, żeby dane demo przeszły przez właściwe modele.
+
+**4. Aplikacja**
+
+```sh
+pnpm dev                         # http://localhost:5173
+```
+
+Zadania w tle (powiadomienia, trendy) działają w tym samym procesie, osobny worker nie jest potrzebny.
+
+Żeby zacząć od zera, usuń kontenery razem z danymi: `docker compose down -v`.
 
 ## Konta demo
 
@@ -66,7 +93,7 @@ Kilka rzeczy, które łatwo przeoczyć:
 1. Z tekstu usuwamy dane osobowe.
 2. Jev klasyfikuje zgłoszenie: obszar, grupa, pilność, gmina, czy to w ogóle problem i czy nie jest obraźliwe. Podejrzane zgłoszenia idą do moderacji.
 3. Szukamy w Elasticsearch na dwa sposoby: BM25 z polską lematyzacją i kNN na embeddingach. Wyniki łączymy przez RRF.
-4. Jev ocenia każdego kandydata w skali 0–4. Wszystko z dość wysokim prawdopodobieństwem oceny 3 lub więcej uznajemy za dopasowanie.
+4. Jev ocenia każdego kandydata w skali 0–4. Kandydat jest dopasowaniem, jeśli szansa na ocenę 3 lub 4 wynosi co najmniej 60%.
 5. Claude pisze krótko, dlaczego dane rozwiązanie pasuje.
 6. Jeśli nic nie przeszło progu, zgłoszenie dołącza do podobnego otwartego wyzwania albo tworzy nowe.
 
